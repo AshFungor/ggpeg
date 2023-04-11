@@ -1,9 +1,11 @@
 #include <iostream>
 
-using namespace std;
+// Local headers.
+#include <clp-parser/clp-parser.hpp>
+#include <image/image.hpp>
+#include <processing/processing.hpp>
 
 int main()
 {
-    cout << "Hello World!" << endl;
     return 0;
 }
