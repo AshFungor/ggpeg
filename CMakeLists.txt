@@ -16,7 +16,7 @@ foreach(child IN ITEMS ${children})
     message(STATUS "Looking through possible target: ${child}")
     set(current "${source_dir}/${child}")
     if(IS_DIRECTORY ${current})
-        message(STATUS "Target <${child}> is a directory, building library...")
+        message(STATUS "Target <${child}> is a directory, setting library...")
         file(GLOB files
             RELATIVE ${current}
             CONFIGURE_DEPENDS
