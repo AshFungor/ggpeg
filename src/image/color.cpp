@@ -24,6 +24,7 @@ void img::Color::B(int value) {
 }
 
 img::Color::Color(int r, int g, int b) {
+    _data = 0;
     _data |= static_cast<data32_t>(r) << red_shift & red;
     _data |= static_cast<data32_t>(g) << green_shift & green;
     _data |= static_cast<data32_t>(b) << blue_shift & blue;
