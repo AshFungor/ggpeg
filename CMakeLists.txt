@@ -50,7 +50,6 @@ include_directories(${source_dir})
 # Catch2 (for unit testing)
 FetchContent_MakeAvailable(Catch2)
 
-
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
