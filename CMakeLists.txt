@@ -12,8 +12,17 @@ set(modules "")
 # Unit tests directory.
 set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
 
-# Catch2 path.
-set(Catch2_DIR "external/Catch2/lib/cmake/Catch2")
+
+# For external libraries
+Include(FetchContent)
+
+# Catch2 fetching from remote
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.3.2
+)
+
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -39,7 +48,8 @@ endforeach()
 include_directories(${source_dir})
 
 # Catch2 (for unit testing)
-find_package(Catch2 3 REQUIRED CONFIG)
+FetchContent_MakeAvailable(Catch2)
+
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
