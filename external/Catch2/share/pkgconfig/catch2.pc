@@ -1,0 +1,11 @@
+prefix=/home/fungor/extended-hard-drive/projects/cplusplus-projects/ggpeg/external/Catch2
+exec_prefix=${prefix}
+includedir=/home/fungor/extended-hard-drive/projects/cplusplus-projects/ggpeg/external/Catch2/include
+libdir=/home/fungor/extended-hard-drive/projects/cplusplus-projects/ggpeg/external/Catch2/lib
+
+Name: Catch2
+Description: A modern, C++-native, test framework for C++14 and above
+URL: https://github.com/catchorg/Catch2
+Version: 3.3.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -lCatch2

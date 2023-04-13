@@ -24,14 +24,17 @@ namespace img {
         static constexpr data32_t red    {0x00ff0000};
         static constexpr data32_t green  {0x0000ff00};
         static constexpr data32_t blue   {0x000000ff};
+        static constexpr data32_t red_shift   {8 * 2};
+        static constexpr data32_t green_shift {8 * 1};
+        static constexpr data32_t blue_shift      {0};
         data32_t _data;
     public:
         int R() const;
         int G() const;
         int B() const;
-        int R(int value);
-        int G(int value);
-        int B(int value);
+        void R(int value);
+        void G(int value);
+        void B(int value);
         Color();
         Color(int r, int g, int b);
     };
