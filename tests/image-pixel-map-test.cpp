@@ -87,10 +87,10 @@ TEST_CASE("Expansion of class <PixelMap>", "[pixel_map_expansion]") {
 
 TEST_CASE("Large expansion of class <PixelMap>", "[pixel_map_expansion_complexity]") {
     img::PixelMap map {0, 0};
-    map.expand(img::JointSide::bottom_and_top, 1'000, 1'000);
-    map.expand(img::JointSide::left_and_right, 1'000, 1'000);
-    REQUIRE(map.columns() == 2'000);
-    REQUIRE(map.rows() == 2'000);
+    map.expand(img::JointSide::bottom_and_top, 1'000, 4'000);
+    map.expand(img::JointSide::left_and_right, 1'000, 4'000);
+    REQUIRE(map.columns() == 5'000);
+    REQUIRE(map.rows() == 5'000);
     for (int row {0}; row < map.rows(); ++row) {
         for (int column {0}; column < map.columns(); ++column) {
             REQUIRE(map.at(row, column) == img::Color());

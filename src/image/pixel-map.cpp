@@ -79,4 +79,30 @@ void img::PixelMap::expand(Side side, int count) {
     }
 }
 
+void img::PixelMap::trim(Side side, int count) {
+    switch(side) {
+    case Side::right:
+        _width -= count;
+        for (std::vector<Color>& row : _map) {
+            row.erase(row.end() - count, row.end());
+        }
+        break;
+    case Side::bottom:
+        _height -= count;
+        _map.erase(_map.end() - count, _map.end());
+        break;
+    case Side::left:
+        _width -= count;
+        for (std::vector<Color>& row : _map) {
+            row.erase(row.begin(), row.begin() + count);
+        }
+        break;
+    case Side::top:
+        _height -= count;
+        _map.erase(_map.begin(), _map.begin() + count);
+        break;
+    default:
+        throw std::runtime_error("Parameter <side> value is out of acceptable range.");
+    }
+}
 
