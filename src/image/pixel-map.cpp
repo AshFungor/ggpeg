@@ -106,3 +106,25 @@ void img::PixelMap::trim(Side side, int count) {
     }
 }
 
+void img::PixelMap::trim(JointSide sides, int count_1, int count_2) {
+    if (sides == JointSide::bottom_and_top) {
+        int& top = count_2;
+        int& bottom = count_1;
+        _height -= top + bottom;
+        _map.erase(_map.begin(), _map.begin() + top);
+        _map.erase(_map.end() - bottom, _map.end());
+    }
+    else if (sides == JointSide::left_and_right) {
+        int& left = count_2;
+        int& right = count_1;
+        _width -= left + right;
+        for (std::vector<Color>& row : _map) {
+            row.erase(row.begin(), row.begin() + left);
+            row.erase(row.end() - right, row.end());
+        }
+    }
+    else {
+        throw std::runtime_error("Parameter <sides> value is out of acceptable range.");
+    }
+}
+
