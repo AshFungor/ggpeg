@@ -35,6 +35,7 @@ namespace img {
         void R(int value);
         void G(int value);
         void B(int value);
+        bool operator==(Color other) const;
         Color();
         Color(int r, int g, int b);
     };
@@ -49,7 +50,7 @@ namespace img {
         void trim(JointSide sides, int count_1, int count_2);
         void expand(Side side, int count);
         void expand(JointSide sides, int count_1, int count_2);
-        Color& at(int x, int y);
+        Color& at(int row, int column);
         size_t rows() const;
         size_t columns() const;
         PixelMap(size_t width, size_t height);

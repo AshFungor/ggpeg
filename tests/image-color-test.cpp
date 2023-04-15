@@ -23,3 +23,9 @@ TEST_CASE("Construction of <Color> class and basic usage", "[color_base]") {
     REQUIRE(colors_match(24, 24, 24, test_color));
 }
 
+TEST_CASE("<Color> comparisons", "[color_comp]") {
+    img::Color test_color{};
+    REQUIRE(test_color == img::Color{});
+    REQUIRE_FALSE(test_color == img::Color{12, 12, 12});
+}
+
