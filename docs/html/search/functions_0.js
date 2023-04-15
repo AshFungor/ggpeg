@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['b_0',['B',['../classimg_1_1Color.html#a32d1f21b4cf9dba2d35546dcb9f3b723',1,'img::Color::B() const'],['../classimg_1_1Color.html#a4535492784fdd699628a9a8630833325',1,'img::Color::B(int value)']]]
+  ['at_0',['at',['../classimg_1_1PixelMap.html#aa0e557a8919e828bb608a7d3f0febdd0',1,'img::PixelMap']]]
 ];

@@ -70,7 +70,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>img</b></li><li class="navelem"><a class="el" href="classimg_1_1Color.html">Color</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceimg.html">img</a></li><li class="navelem"><a class="el" href="classimg_1_1Color.html">Color</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -81,7 +81,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color storing supplied with cheap member functions to operate the palette.  
+<p>Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color storing supplied with cheap member functions to operate RGB palette.  
  <a href="classimg_1_1Color.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="image_8hpp_source.html">image.hpp</a>&gt;</code></p>
@@ -118,7 +118,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
 <tr class="separator:a55ccfdec7703cfcd3ac5589ed1c25322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color storing supplied with cheap member functions to operate the palette. </p>
+<div class="textblock"><p>Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color storing supplied with cheap member functions to operate RGB palette. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a55ccfdec7703cfcd3ac5589ed1c25322" name="a55ccfdec7703cfcd3ac5589ed1c25322"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55ccfdec7703cfcd3ac5589ed1c25322">&#9670;&#160;</a></span>Color()</h2>
@@ -157,10 +157,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
   <table class="params">
     <tr><td class="paramname">r</td><td>red component. </td></tr>
     <tr><td class="paramname">g</td><td>green component. </td></tr>
-    <tr><td class="paramname">b</td><td>blue component. Initializes color from three color components. </td></tr>
+    <tr><td class="paramname">b</td><td>blue component.</td></tr>
   </table>
   </dd>
 </dl>
+<p>Initializes color from three color components. </p>
 
 </div>
 </div>
@@ -204,10 +205,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
 <p>Set blue component of the color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set. This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts blue color component into unspecified state. </td></tr>
+    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set.</td></tr>
   </table>
   </dd>
 </dl>
+<p>This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts blue color component into unspecified state. </p>
 
 </div>
 </div>
@@ -250,10 +252,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
 <p>Set green component of the color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set. This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts green color component into unspecified state. </td></tr>
+    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set.</td></tr>
   </table>
   </dd>
 </dl>
+<p>This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts green color component into unspecified state. </p>
 
 </div>
 </div>
@@ -296,10 +299,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
 <p>Set red component of the color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set. This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts red color component into unspecified state. </td></tr>
+    <tr><td class="paramname">value</td><td>number in range [0, 256) to be set.</td></tr>
   </table>
   </dd>
 </dl>
+<p>This method does not perform range-checking for <em>value</em>, which means that passing this value outside of valid range puts red color component into unspecified state. </p>
 
 </div>
 </div>

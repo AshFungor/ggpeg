@@ -25,6 +25,13 @@
 var NAVTREE =
 [
   [ "ggpeg", "index.html", [
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -35,8 +42,7 @@ var NAVTREE =
     ] ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ]
-    ] ],
-    [ "Examples", "examples.html", "examples" ]
+    ] ]
   ] ]
 ];
 
