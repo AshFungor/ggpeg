@@ -86,7 +86,27 @@ TEST_CASE("Large expansion of class <PixelMap>", "[pixel_map][.]") {
     for_each_in_map(map, [&map](int r, int c) { REQUIRE(map.at(r, c) == img::Color{}); });
 }
 
-//TEST_CASE("Trimming class <PixelMap>", "[pixel_map]") {
-//    img::PixelMap map {12, 12};
+TEST_CASE("Trimming class <PixelMap>", "[pixel_map]") {
+    img::PixelMap map {magic_size, magic_size};
+    SECTION("Trimming one-side") {
+        using img::Side;
+        map.trim(Side::right, 1);
+        map.trim(Side::bottom, 1);
+        map.trim(Side::left, 1);
+        map.trim(Side::top, 1);
+        REQUIRE(check_map_size(map, magic_size - 2, magic_size - 2));
+        for_each_in_map(map, [&map](int r, int c) {
+            REQUIRE(map.at(r, c) == img::Color{});
+        });
+    }
+    SECTION("Trimming double-side") {
+        using img::JointSide;
+        map.trim(JointSide::left_and_right, 1, 1);
+        map.trim(JointSide::bottom_and_top, 1, 1);
+        REQUIRE(check_map_size(map, magic_size - 2, magic_size - 2));
+        for_each_in_map(map, [&map](int r, int c) {
+            REQUIRE(map.at(r, c) == img::Color{});
+        });
+    }
 
-//}
+}
