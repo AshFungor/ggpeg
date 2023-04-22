@@ -1,3 +1,3 @@
 #include "image.hpp"
 
-// Definitions for processing functions.
+// Definitions for image class and its supportive structures.

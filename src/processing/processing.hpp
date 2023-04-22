@@ -1,5 +1,5 @@
 #pragma once
 
-namespace img {
-    // Code for image class and its supportive structures.
+namespace proc {
+    // Code for processing functions.
 }
