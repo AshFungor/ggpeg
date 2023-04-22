@@ -11,6 +11,8 @@ set(source_dir "${CMAKE_SOURCE_DIR}/src")
 set(modules "")
 # Unit tests directory.
 set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
+# Image test files directory.
+set(image_test_dir "${testing_dir}/test-data")
 
 
 # For external libraries
@@ -68,4 +70,16 @@ foreach(lib IN ITEMS ${modules})
     else()
         message(STATUS "tests are not found, skipping...")
     endif()
+endforeach()
+
+file(GLOB test_images
+    RELATIVE "${image_test_dir}"
+    CONFIGURE_DEPENDS
+    "${image_test_dir}/*")
+
+foreach(image_file IN ITEMS ${test_images})
+    message(STATUS "copying ${image_file} to resources directory...")
+    configure_file("${image_test_dir}/${image_file}"
+                "${CMAKE_CURRENT_BINARY_DIR}/resources/${image_file}"
+                COPYONLY)
 endforeach()

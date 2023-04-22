@@ -100,6 +100,10 @@ namespace img {
         Color(int r, int g, int b);
     };
 
+    /** \brief Class representing matrix of pixels.
+     *  Provides member functions to trim and expand the matrix,
+     *  alongside default element and dimension access.
+     */
     class PixelMap {
         using pixel_map_t = std::vector<std::vector<Color>>;
         pixel_map_t _map;
@@ -165,17 +169,19 @@ namespace img {
     };
 
     class Image {
-        using status16_t = uint_least16_t;
-        PixelMap _map;
-        status16_t _status;
-        static constexpr status16_t loaded {0x0001};
+        const char ppm_magic_number[3]  {"P6"};
+        int _ppm_max_color {-1};
+        PixelMap _map {0, 0};
+        bool _loaded {false};
         // ...
 
     public:
-        int load(const std::string& path);
-        int write_out(const std::string& path);
+        void read_ppm(const std::string& path);
+        void write_out_ppm(const std::string& path);
+        // two others for a different format
         PixelMap& get_pixel_map();
         bool is_loaded() const;
+        Image() = default;
         // ...
     };
 }
