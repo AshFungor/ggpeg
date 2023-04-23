@@ -1,34 +1,49 @@
 #include "image.hpp"
 #include <fstream>
 #include <string>
+#include <string_view>
 #include <cstddef>
 #include <algorithm>
 #include <memory>
 
 // Definitions for image class and its supportive structures.
-img::PixelMap& img::Image::get_pixel_map() { return _map; }
-bool img::Image::is_loaded() const { return _loaded; }
 
-void img::Image::read_ppm(const std::string& path) {
+img::PixelMap& img::Image::get_map() { return _map; }
+bool img::Image::good() { return _status; }
+void img::Image::read(std::string_view path) {}
+void img::Image::write(std::string_view path) {}
+
+void img::PPMImage::read(std::string_view path) {
     using byte = char;
-    std::ifstream file {path, std::ios::in | std::ios::binary};
 
+    std::ifstream file {path.data(), std::ios::in | std::ios::binary};
     std::uint_fast32_t height, width, max_color;
     std::string magic_number {};
-    _loaded = false;
+
+    // first the state of object must be discarded
+    _status = false;
+    _map.trim(img::Side::bottom, _map.rows());
+    _max_color = 0;
 
     file >> magic_number >> std::ws;
-    if (magic_number != ppm_magic_number) {
+    if (magic_number != _binary_magic_number) {
         return;
     }
     file >> width >> std::ws;
     file >> height >> std::ws;
     file >> max_color >> std::ws;
-    _ppm_max_color = max_color;
-    std::unique_ptr<byte[]> buffer = std::make_unique<byte[]>(height * width * 3);
+    _max_color = max_color;
+
+    if (width > _size_limit || height > _size_limit) {
+        return;
+    }
+
+    auto buffer = std::make_unique<byte[]>(height * width * 3);
     file.read(buffer.get(), height * width * 3);
+
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
+
     std::uint8_t red, green, blue;
     for (int row {0}; row < height; ++row) {
         for (int column {0}; column < width; ++column) {
@@ -39,25 +54,21 @@ void img::Image::read_ppm(const std::string& path) {
         }
     }
 
-    _loaded = true;
+    _status = true;
     file.close();
 }
 
-void img::Image::write_out_ppm(const std::string& path) {
+void img::PPMImage::write(std::string_view path) {
     using byte = char;
-    std::ofstream file {path, std::ios::out | std::ios::binary};
-    file << ppm_magic_number << '\n';
+
+    _status = false;
+
+    std::ofstream file {path.data(), std::ios::out | std::ios::binary};
+    file << _binary_magic_number << '\n';
     file << _map.columns() << ' ' << _map.rows() << '\n';
-    if (_ppm_max_color == -1) {
-        for (int row {0}; row < _map.rows(); ++row) {
-            for (int column {0}; column < _map.columns(); ++column) {
-                auto& color = _map.at(row, column);
-                _ppm_max_color = std::max({color.R(), color.G(), color.B()});
-            }
-        }
-    }
-    file << _ppm_max_color << '\n';
-    std::unique_ptr<byte[]> buffer = std::make_unique<byte[]>(_map.rows() * _map.columns() * 3);
+    file << _max_color << '\n';
+
+    auto buffer = std::make_unique<byte[]>(_map.rows() * _map.columns() * 3);
     for (int row {0}; row < _map.rows(); ++row) {
         for (int column {0}; column < _map.columns(); ++column) {
             auto& color = _map.at(row, column);
@@ -70,7 +81,9 @@ void img::Image::write_out_ppm(const std::string& path) {
             buffer[row * _map.columns() * 3 + column * 3 + 2] = reinterpret_cast<byte&>(blue);
         }
     }
+
     file.write(buffer.get(), _map.rows() * _map.columns() * 3);
+    _status = true;
     file.close();
 }
 

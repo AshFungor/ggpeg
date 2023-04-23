@@ -2,6 +2,7 @@
 #include <string>
 #include <cstddef>
 #include <vector>
+#include <string_view>
 
 // Header guard.
 #pragma once
@@ -169,20 +170,28 @@ namespace img {
     };
 
     class Image {
-        const char ppm_magic_number[3]  {"P6"};
-        int _ppm_max_color {-1};
+    protected:
         PixelMap _map {0, 0};
-        bool _loaded {false};
-        // ...
-
-    public:
-        void read_ppm(const std::string& path);
-        void write_out_ppm(const std::string& path);
-        // two others for a different format
-        PixelMap& get_pixel_map();
-        bool is_loaded() const;
+        bool _status {false};
         Image() = default;
-        // ...
+    public:
+        virtual void read(std::string_view path);
+        virtual void write(std::string_view path);
+        PixelMap& get_map();
+        bool good();
+        virtual ~Image() = default;
+    };
+
+    class PPMImage : public Image {
+    private:
+        constexpr  static std::uint_fast64_t _size_limit {5000};
+        constexpr static char _binary_magic_number[3] {"P6"};
+        constexpr static char _ascii_magic_number[3] {"P3"};
+        int _max_color {0};
+    public:
+        virtual void read(std::string_view path) override;
+        virtual void write(std::string_view path) override;
+        PPMImage() = default;
     };
 }
 
