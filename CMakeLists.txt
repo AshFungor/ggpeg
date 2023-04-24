@@ -14,7 +14,6 @@ set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
 # Image test files directory.
 set(image_test_dir "${testing_dir}/test-data")
 
-
 # For external libraries
 Include(FetchContent)
 

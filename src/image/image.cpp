@@ -1,7 +1,6 @@
 #include "image.hpp"
 #include <fstream>
 #include <string>
-#include <string_view>
 #include <cstddef>
 #include <algorithm>
 #include <memory>
@@ -33,17 +32,10 @@ void img::PPMImage::read(std::string_view path) {
     file >> height >> std::ws;
     file >> max_color >> std::ws;
     _max_color = max_color;
-
-    if (width > _size_limit || height > _size_limit) {
-        return;
-    }
-
-    auto buffer = std::make_unique<byte[]>(height * width * 3);
+    std::unique_ptr<byte[]> buffer = std::make_unique<byte[]>(height * width * 3);
     file.read(buffer.get(), height * width * 3);
-
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
-
     std::uint8_t red, green, blue;
     for (int row {0}; row < height; ++row) {
         for (int column {0}; column < width; ++column) {
@@ -82,8 +74,8 @@ void img::PPMImage::write(std::string_view path) {
         }
     }
 
-    file.write(buffer.get(), _map.rows() * _map.columns() * 3);
     _status = true;
+    file.write(buffer.get(), _map.rows() * _map.columns() * 3);
     file.close();
 }
 

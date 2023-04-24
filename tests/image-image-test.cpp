@@ -36,5 +36,4 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
         REQUIRE(check);
     }
 
-
 }
