@@ -20,9 +20,9 @@ clpp::Parser::Parser(const std::vector<std::string>& tokens)
 
 	for (size_t i{1}; i != tokens.size(); ++i)
 	{
-		if (tokens[i][0] != '-'){ _exceptions_for_incorrect_format(tokens[i]); }
-		if (tokens[i][1] == '-'){ _check_long_command(tokens[i]);              }
-		else                    { _check_combination_short_command(tokens[i]); }
+        if (tokens[i][0] != '-')    { _exceptions_for_incorrect_format(tokens[i]); }
+        if (tokens[i][1] == '-')    { _check_long_command(tokens[i]);              }
+        else                        { _check_combination_short_command(tokens[i]); }
 	}
 
 	_tokens = tokens;
@@ -35,7 +35,9 @@ clpp::Parser::~Parser()
 
 void clpp::Parser::_check_combination_short_command(const std::string &combination_short_command)
 {
-	std::string correct_short_command{"nxyvh"};
+    // Такие константы (да, я сделал это константой) лучше определять на уровне класса
+    // т.е. как член класса. (такое же в 56 строчке)
+    const std::string correct_short_command{"nxyvh"};
 	for (size_t j{1}; j != combination_short_command.size(); ++j)
 	{
 		if (correct_short_command.find(combination_short_command[j]) == std::string::npos)
@@ -49,13 +51,15 @@ void clpp::Parser::_check_long_command(const std::string &long_command)
 {	
 	//std::cerr << "long " << long_command << std::endl;
 	size_t separator = long_command.find('=');
-	std::string command = long_command.substr(2, separator-2);
+    std::string command = long_command.substr(2, separator - 2);
 	//std::cerr << command << ' ' << separator << std::endl;
 	std::vector<std::string> allowed_commands = {"crop", "rotate", "resize", 
 												 "negative", "insert", "convert_to", 
 												 "reflect_x", "reflect_y", "version",
 												 "help"};
-	if (std::find(allowed_commands.begin(), allowed_commands.end(), command) == allowed_commands.end())
+    // Длинные строки следует переносить.
+    if (std::find(allowed_commands.begin(), allowed_commands.end(), command)
+            == allowed_commands.end())
 	{
 		_exceptions_for_incorrect_format(command);
 	}
@@ -67,15 +71,15 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
-		std::cerr<< path << std::endl;
+        std::cerr << path << std::endl;
 		setConsoleColor(12);
-		std::cerr <<"There is no such file in this directory" << std::endl;
+        std::cerr << "There is no such file in this directory" << std::endl;
 		setConsoleColor(7);
 		exit(EXIT_FAILURE);
 	}
 
 	// check format
-	std::string format{path.end()-3, path.end()};
+    std::string format{path.end() - 3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
 		std::cerr<< path << std::endl;
