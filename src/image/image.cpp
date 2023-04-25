@@ -1,3 +1,8 @@
+// logging
+#include <spdlog/spdlog.h>
+#include "spdlog/sinks/basic_file_sink.h"
+
+// std headers
 #include "image.hpp"
 #include <fstream>
 #include <string>
@@ -78,4 +83,74 @@ void img::PPMImage::write(std::string_view path) {
     file.write(buffer.get(), _map.rows() * _map.columns() * 3);
     file.close();
 }
+
+bool img::PNGImage::_cmp_chunks(const char* chunk_1, size_t size_1,
+                                const char* chunk_2, size_t size_2) {
+    if (size_1 != size_2) return false;
+    bool res = true;
+    for (int i {0}; i < size_1; ++i) {
+        res &= *(chunk_1 + i) == *(chunk_2 + i);
+    }
+    return res;
+}
+
+std::uint64_t img::PNGImage::_parse_bytes(char* bytes, size_t size) {
+
+    std::uint8_t mask {0x80}, curr_byte {};
+    size_t iter {0};
+    std::uint64_t result;
+
+    while (size > 0) {
+        curr_byte = reinterpret_cast<std::uint8_t&>(*(bytes + iter++));
+        while (mask > 0) {
+            result += (curr_byte & mask) << size;
+            mask >>= 1; size--;
+        }
+        mask = 0x80;
+    }
+
+    return result;
+}
+
+void img::PNGImage::read(std::string_view path) {
+    using byte = char;
+
+    _status = false;
+    auto logger = spdlog::basic_logger_mt("basic_logger", "read_log.txt");
+    logger->debug("beginning to parse PNG file \'{}\'", path);
+
+    std::ifstream file {path.data(), std::ios::in | std::ios::binary};
+    char chunk_4b[4] {};
+    char chunk_8b[8] {};
+
+    // parse 8-bit header
+    file.read(chunk_8b, 8);
+    if (!_cmp_chunks(chunk_8b, 8, _signature, 8)) {
+        logger->critical("signature of PNG file is not met, received: <{}>",
+                         std::string{chunk_8b});
+        return;
+    }
+
+    // parse IHDR (image header chunk)
+    logger->debug("successfully verified header, reading IHDR");
+    file.read(chunk_4b, 4);
+    if (_parse_bytes(chunk_4b, 4) != 13) {
+        logger->critical("first chunk must be size 13, received: <{}>",
+                         _parse_bytes(chunk_4b, 4));
+        return;
+    }
+
+    file.read(chunk_4b, 4);
+    if (!_cmp_chunks(chunk_4b, 4, _ihdr_name, 4)) {
+        logger->critical("first chunk must be IHDR, received: <{}>",
+                         std::string{chunk_4b});
+        return;
+    }
+
+
+
+
+}
+
+void img::PNGImage::write(std::string_view path) {}
 

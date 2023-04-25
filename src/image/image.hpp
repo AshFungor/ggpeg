@@ -184,7 +184,7 @@ namespace img {
 
     class PPMImage : public Image {
     private:
-        constexpr  static std::uint_fast64_t _size_limit {5000};
+        constexpr static std::uint_fast64_t _size_limit {5000};
         constexpr static char _binary_magic_number[3] {"P6"};
         constexpr static char _ascii_magic_number[3] {"P3"};
         int _max_color {0};
@@ -192,6 +192,27 @@ namespace img {
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
         PPMImage() = default;
+    };
+
+    class PNGImage : public Image {
+    private:
+        /* First byte is 137 (unsigned).
+         * Then three bytes are PNG.
+         * Then CR + LF
+         * Then ^Z + LF
+         */
+        constexpr static char _signature[9]
+        {-119, 80, 78, 71, 13, 10, 26, 10, 0};
+        constexpr static char _upper_flag {0b00100000};
+        constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
+        // helper functions
+        bool _cmp_chunks(const char* chunk_1, size_t size_1,
+                        const char* chunk_2, size_t size_2);
+        std::uint64_t _parse_bytes(char* bytes, size_t size);
+    public:
+        virtual void read(std::string_view path) override;
+        virtual void write(std::string_view path) override;
+        PNGImage() = default;
     };
 }
 

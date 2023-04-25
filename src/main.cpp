@@ -1,6 +1,6 @@
 #include <iostream>
-
 #include <vector>
+#include <rang.hpp>
 
 // Local headers.
 #include <clp-parser/clp-parser.hpp>
@@ -15,6 +15,8 @@ int main(int argc, char** argv)
     // commands given when the program starts
     std::vector<std::string> input_Tokens;
 
+    // test (REMOVE PLS)
+    std::cout << rang::fg::green << "I AM SHREK\n";
 
     // Add tokens to vector
     for (size_t i = 1; i < argc; ++i)
@@ -23,7 +25,6 @@ int main(int argc, char** argv)
     }
     // std::cerr<<inputTokens[0];
     clpp::Parser parser {input_Tokens};
-
 
     return 0;
 }

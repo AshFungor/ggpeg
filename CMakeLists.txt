@@ -24,6 +24,20 @@ FetchContent_Declare(
   GIT_TAG        v3.3.2
 )
 
+FetchContent_Declare(
+  spdlog
+  GIT_REPOSITORY https://github.com/gabime/spdlog
+  GIT_TAG        v1.11.0
+)
+
+FetchContent_Declare(
+    rang
+    GIT_REPOSITORY  https://github.com/agauniyal/rang
+    GIT_TAG         v3.2
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+)
+
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -48,12 +62,14 @@ endforeach()
 
 include_directories(${source_dir})
 
-# Catch2 (for unit testing)
-FetchContent_MakeAvailable(Catch2)
+FetchContent_MakeAvailable(Catch2 spdlog rang)
+include_directories("${rang_SOURCE_DIR}/include")
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
+    # link libs to targets
+    target_link_libraries(${lib} spdlog::spdlog)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp
