@@ -20,9 +20,9 @@ clpp::Parser::Parser(const std::vector<std::string>& tokens)
 
 	for (size_t i{1}; i != tokens.size(); ++i)
 	{
-		if (tokens[i][0] != '-'){ _exceptions_for_incorrect_format(tokens[i]); }
-		if (tokens[i][1] == '-'){ _check_long_command(tokens[i]);              }
-		else                    { _check_combination_short_command(tokens[i]); }
+		if (tokens[i][0] != '-') { _exceptions_for_incorrect_format(tokens[i]); }
+		if (tokens[i][1] == '-') { _check_long_command(tokens[i]);              }
+		else                     { _check_combination_short_command(tokens[i]); }
 	}
 
 	_tokens = tokens;
@@ -32,13 +32,11 @@ clpp::Parser::~Parser()
 {
 	_tokens.clear();
 }
-
 void clpp::Parser::_check_combination_short_command(const std::string &combination_short_command)
 {
-	std::string correct_short_command{"nxyvh"};
 	for (size_t j{1}; j != combination_short_command.size(); ++j)
 	{
-		if (correct_short_command.find(combination_short_command[j]) == std::string::npos)
+		if (_correct_short_command.find(combination_short_command[j]) == std::string::npos)
 		{ 
 			_exceptions_for_short_command(combination_short_command[j]); 
 		}
@@ -51,11 +49,8 @@ void clpp::Parser::_check_long_command(const std::string &long_command)
 	size_t separator = long_command.find('=');
 	std::string command = long_command.substr(2, separator-2);
 	//std::cerr << command << ' ' << separator << std::endl;
-	std::vector<std::string> allowed_commands = {"crop", "rotate", "resize", 
-												 "negative", "insert", "convert_to", 
-												 "reflect_x", "reflect_y", "version",
-												 "help"};
-	if (std::find(allowed_commands.begin(), allowed_commands.end(), command) == allowed_commands.end())
+
+	if (std::find(_correct_long_commands.begin(), _correct_long_commands.end(), command) == _correct_long_commands.end())
 	{
 		_exceptions_for_incorrect_format(command);
 	}
@@ -134,12 +129,12 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
 
 std::string clpp::Parser::_convert_to_long(const char sh)
 {
-	if (sh == 'n'){ return "negative"; };
-	if (sh == 'x'){ return "reflect_x"; };
-	if (sh == 'y'){ return "reflect_y"; };
-	if (sh == 'v'){ return "version"; };
-	if (sh == 'h'){ return "help"; };
-	std::string error{"error" + sh};
+	if (sh == 'n') { return "negative"; };
+	if (sh == 'x') { return "reflect_x"; };
+	if (sh == 'y') { return "reflect_y"; };
+	if (sh == 'v') { return "version"; };
+	if (sh == 'h') { return "help"; };
+	std::string error {"error" + sh};
 	return error;
 }
 
@@ -173,15 +168,6 @@ void clpp::Parser::_parse_to_queue()
 	}
 }
 
-std::vector<std::string> clpp::Parser::get_tokens()
-{
-	return _tokens;
-}
-std::vector<std::string> clpp::Parser::get_line_of_command()
-{
-	return _line_of_command;
-}
-
 void clpp::Parser::show_tokens()
 {
 	for(size_t i{0}; i != _tokens.size(); ++i)
@@ -196,6 +182,50 @@ void clpp::Parser::show_line_of_command()
 		std::cerr << _line_of_command[i] << std::endl;
 	}
 }
+void clpp::Parser::show_queue_of_command()
+{
+	std::cerr << "Queue elements:" << std::endl;
+	std::queue<Command> queue_of_command_for_show{_queue_of_command};
+	while(!queue_of_command_for_show.empty())
+	{
+		Command tp_command = queue_of_command_for_show.front();
+		std::cerr << "###########################" << std::endl;
+		tp_command.show_command();
+		tp_command.show_param();
+		std::cerr << "###########################" << std::endl << std::endl;
+		queue_of_command_for_show.pop();
+	}
+
+}
+void clpp::Parser::show_correct_long_command()
+{
+	for (size_t i{0}; i != _correct_long_commands.size(); ++i)
+	{
+		std::cerr << _correct_long_commands[i] << std::endl;
+	}
+}
+void clpp::Parser::show_correct_short_command()
+{
+	for (char c : _correct_short_command)
+	{
+		std::cerr << c << ' ';
+	}
+	std::cerr << std::endl;
+}
+
+std::vector<std::string> clpp::Parser::get_tokens()
+{
+	return _tokens;
+}
+std::vector<std::string> clpp::Parser::get_line_of_command()
+{
+	return _line_of_command;
+}
+std::queue<clpp::Command> clpp::Parser::get_queue_of_command()
+{
+	return _queue_of_command;
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -240,16 +270,14 @@ clpp::Command::Command(std::string& command)
 	}
 	else if (first_part == "reflect_x") { _command = clpp::CommandType::reflect_x; }
 	else if (first_part == "reflect_y") { _command = clpp::CommandType::reflect_y; }
-	else if (first_part == "version") { _command = clpp::CommandType::version; }
-	else if (first_part == "help") { _command = clpp::CommandType::help; }
+	else if (first_part == "version")   { _command = clpp::CommandType::version;   }
+	else if (first_part == "help")      { _command = clpp::CommandType::help;      }
 
-	show_param();
+	//show_param();
 
 	//show_command();
 }
-
-
-void clpp::Command::_parser_param_crop(std::string& second_part)
+void clpp::Command::_parser_param_crop(const std::string& second_part)
 {	
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
@@ -261,7 +289,7 @@ void clpp::Command::_parser_param_crop(std::string& second_part)
 			{
 				int int_tp_param{std::stoi(str_tp_param)};
 				if (int_tp_param > 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
-				else                                        { _error_param(); }
+				else                                        { _error_param();                    }
 				str_tp_param = "";
 			}
 			else{ _error_param(); }
@@ -272,12 +300,12 @@ void clpp::Command::_parser_param_crop(std::string& second_part)
 	{
 		int int_tp_param{std::stoi(str_tp_param)};
 		if (int_tp_param > 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
-		else                                        { _error_param(); }
+		else                                        { _error_param();                    }
 	}
 	else{ _error_param(); }
 }
 
-void clpp::Command::_parser_param_rotate(std::string& second_part)
+void clpp::Command::_parser_param_rotate(const std::string& second_part)
 {
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
@@ -289,11 +317,12 @@ void clpp::Command::_parser_param_rotate(std::string& second_part)
 	{
 		int int_tp_param{std::stoi(str_tp_param)};
 		int_tp_param %= 360;
+		if (int_tp_param < 0) { int_tp_param += 360; }
 		_param.emplace_back(std::to_string(int_tp_param));
 	}
 	else{ _error_param(); }
 }
-void clpp::Command::_parser_param_resize(std::string& second_part)
+void clpp::Command::_parser_param_resize(const std::string& second_part)
 {
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
@@ -307,7 +336,7 @@ void clpp::Command::_parser_param_resize(std::string& second_part)
 		_param.emplace_back(std::to_string(double_tp_param));
 	}
 }
-void clpp::Command::_parser_param_insert(std::string& second_part)
+void clpp::Command::_parser_param_insert(const std::string& second_part)
 {
 	std::string str_tp_x_y;
 	std::string path_to_new;
@@ -343,7 +372,7 @@ void clpp::Command::_parser_param_insert(std::string& second_part)
 	_exceptions_for_new_image(path_to_new);
 	_param.emplace_back(path_to_new);
 }
-void clpp::Command::_parser_param_convert_to(std::string& second_part)
+void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 {
 	std::string new_format;
 
@@ -374,7 +403,7 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 	{	
 		std::cerr<< path << std::endl;
 		setConsoleColor(12);
-		std::cerr <<"There is no such file in this directory" << std::endl;
+		std::cerr <<"There is no such file in this directory." << std::endl;
 		setConsoleColor(7);
 		exit(EXIT_FAILURE);
 	}
@@ -395,19 +424,33 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		exit(EXIT_FAILURE);
 	}
 }
-
 void clpp::Command::_error_param()
 {
 	setConsoleColor(12);
-	std::cerr <<"Error entering command parameters. \nTo view the full list of available commands and his parametrs, type -h or --help during the next program launch." << std::endl;
+	std::cerr <<"Error entering command parameters."
+			  << "\nTo view the full list of available commands and his parametrs," 
+			  << "type -h or --help during the next program launch." << std::endl;
 	setConsoleColor(7);
 	exit(EXIT_FAILURE);	
 }
-
 void clpp::Command::show_param()
-{
+{	
+	std::cerr << "Param of this command:" << std::endl;
 	for (size_t i{0}; i != _param.size(); ++i)
 	{
 		std::cerr << _param[i] << std::endl;
 	}
+}
+void clpp::Command::show_command()
+{
+	std::cerr << "Command is " << static_cast<int>(_command) << std::endl;
+}
+
+std::vector<std::string> clpp::Command::get_param()
+{
+	return _param;
+}	
+clpp::CommandType clpp::Command::get_command()
+{
+	return _command;
 }
