@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ggpeg: src/clp-parser/color-commandline.hpp Source File</title>
+<title>ggpeg: clpp::Parser Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,29 +70,40 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_51c0aa0696df902462566dbe8a0d6f4d.html">clp-parser</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceclpp.html">clpp</a></li><li class="navelem"><a class="el" href="classclpp_1_1Parser.html">Parser</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">color-commandline.hpp</div></div>
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classclpp_1_1Parser-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">clpp::Parser Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// ConsoleColor</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;windows.h&gt;</span>  </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keywordtype">void</span> setConsoleColor(<span class="keywordtype">int</span> color) </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">    #ifdef _WIN32</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        HANDLE hConsole = GetStdHandle(STD_ERROR_HANDLE);</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>        SetConsoleTextAttribute(hConsole, color);</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>        std::cerr &lt;&lt; <span class="stringliteral">&quot;\033[&quot;</span> &lt;&lt; color &lt;&lt; <span class="stringliteral">&quot;m&quot;</span>;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>}</div>
-</div><!-- fragment --></div><!-- contents -->
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aa8df5c1a6ceac252eae594550537380b"><td class="memItemLeft" align="right" valign="top"><a id="aa8df5c1a6ceac252eae594550537380b" name="aa8df5c1a6ceac252eae594550537380b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Parser</b> (const std::vector&lt; std::string &gt; &amp;tokens)</td></tr>
+<tr class="separator:aa8df5c1a6ceac252eae594550537380b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afea68a30d3324074e193828491e3afc3"><td class="memItemLeft" align="right" valign="top"><a id="afea68a30d3324074e193828491e3afc3" name="afea68a30d3324074e193828491e3afc3"></a>
+std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_tokens</b> ()</td></tr>
+<tr class="separator:afea68a30d3324074e193828491e3afc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe37f0c4964b7b5422620ae31da37876"><td class="memItemLeft" align="right" valign="top"><a id="afe37f0c4964b7b5422620ae31da37876" name="afe37f0c4964b7b5422620ae31da37876"></a>
+std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_line_of_command</b> ()</td></tr>
+<tr class="separator:afe37f0c4964b7b5422620ae31da37876"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d01cc9b663bba1c032ea4248c9ead7a"><td class="memItemLeft" align="right" valign="top"><a id="a7d01cc9b663bba1c032ea4248c9ead7a" name="a7d01cc9b663bba1c032ea4248c9ead7a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>show_tokens</b> ()</td></tr>
+<tr class="separator:a7d01cc9b663bba1c032ea4248c9ead7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab21f2efcdd18c25a44075973ba59f899"><td class="memItemLeft" align="right" valign="top"><a id="ab21f2efcdd18c25a44075973ba59f899" name="ab21f2efcdd18c25a44075973ba59f899"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>show_line_of_command</b> ()</td></tr>
+<tr class="separator:ab21f2efcdd18c25a44075973ba59f899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/clp-parser/<a class="el" href="clp-parser_8hpp_source.html">clp-parser.hpp</a></li>
+<li>src/clp-parser/clp-parser.cpp</li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6

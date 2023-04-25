@@ -2,6 +2,7 @@
 #include <string>
 #include <cstddef>
 #include <vector>
+#include <string_view>
 
 // Header guard.
 #pragma once
@@ -100,6 +101,10 @@ namespace img {
         Color(int r, int g, int b);
     };
 
+    /** \brief Class representing matrix of pixels.
+     *  Provides member functions to trim and expand the matrix,
+     *  alongside default element and dimension access.
+     */
     class PixelMap {
         using pixel_map_t = std::vector<std::vector<Color>>;
         pixel_map_t _map;
@@ -165,18 +170,28 @@ namespace img {
     };
 
     class Image {
-        using status16_t = uint_least16_t;
-        PixelMap _map;
-        status16_t _status;
-        static constexpr status16_t loaded {0x0001};
-        // ...
-
+    protected:
+        PixelMap _map {0, 0};
+        bool _status {false};
+        Image() = default;
     public:
-        int load(const std::string& path);
-        int write_out(const std::string& path);
-        PixelMap& get_pixel_map();
-        bool is_loaded() const;
-        // ...
+        virtual void read(std::string_view path);
+        virtual void write(std::string_view path);
+        PixelMap& get_map();
+        bool good();
+        virtual ~Image() = default;
+    };
+
+    class PPMImage : public Image {
+    private:
+        constexpr  static std::uint_fast64_t _size_limit {5000};
+        constexpr static char _binary_magic_number[3] {"P6"};
+        constexpr static char _ascii_magic_number[3] {"P3"};
+        int _max_color {0};
+    public:
+        virtual void read(std::string_view path) override;
+        virtual void write(std::string_view path) override;
+        PPMImage() = default;
     };
 }
 

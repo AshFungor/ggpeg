@@ -76,28 +76,48 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classimg_1_1_image-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">img::Image Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+<div class="dynheader">
+Inheritance diagram for img::Image:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classimg_1_1_image.png" usemap="#img::Image_map" alt=""/>
+  <map id="img::Image_map" name="img::Image_map">
+<area href="classimg_1_1_p_p_m_image.html" alt="img::PPMImage" shape="rect" coords="0,56,97,80"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad0cca4c1ea3991e871f90b0e945dacb3"><td class="memItemLeft" align="right" valign="top"><a id="ad0cca4c1ea3991e871f90b0e945dacb3" name="ad0cca4c1ea3991e871f90b0e945dacb3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (const std::string &amp;path)</td></tr>
-<tr class="separator:ad0cca4c1ea3991e871f90b0e945dacb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac04b6b076acae082304a5f6ea79905fb"><td class="memItemLeft" align="right" valign="top"><a id="ac04b6b076acae082304a5f6ea79905fb" name="ac04b6b076acae082304a5f6ea79905fb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>write_out</b> (const std::string &amp;path)</td></tr>
-<tr class="separator:ac04b6b076acae082304a5f6ea79905fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac13fb8d1393ed8636ddf0cbea7d44d8f"><td class="memItemLeft" align="right" valign="top"><a id="ac13fb8d1393ed8636ddf0cbea7d44d8f" name="ac13fb8d1393ed8636ddf0cbea7d44d8f"></a>
-<a class="el" href="classimg_1_1_pixel_map.html">PixelMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_pixel_map</b> ()</td></tr>
-<tr class="separator:ac13fb8d1393ed8636ddf0cbea7d44d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2d02737f1e32e894dde1630bd5dacaf"><td class="memItemLeft" align="right" valign="top"><a id="ab2d02737f1e32e894dde1630bd5dacaf" name="ab2d02737f1e32e894dde1630bd5dacaf"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_loaded</b> () const</td></tr>
-<tr class="separator:ab2d02737f1e32e894dde1630bd5dacaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9676a0ee85e0bde300b8139117fd2804"><td class="memItemLeft" align="right" valign="top"><a id="a9676a0ee85e0bde300b8139117fd2804" name="a9676a0ee85e0bde300b8139117fd2804"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (std::string_view path)</td></tr>
+<tr class="separator:a9676a0ee85e0bde300b8139117fd2804"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54e06d99fceecf77e2ca105a2cb5e643"><td class="memItemLeft" align="right" valign="top"><a id="a54e06d99fceecf77e2ca105a2cb5e643" name="a54e06d99fceecf77e2ca105a2cb5e643"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (std::string_view path)</td></tr>
+<tr class="separator:a54e06d99fceecf77e2ca105a2cb5e643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91d759e9f161563d1db7e40f67108ca7"><td class="memItemLeft" align="right" valign="top"><a id="a91d759e9f161563d1db7e40f67108ca7" name="a91d759e9f161563d1db7e40f67108ca7"></a>
+<a class="el" href="classimg_1_1_pixel_map.html">PixelMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_map</b> ()</td></tr>
+<tr class="separator:a91d759e9f161563d1db7e40f67108ca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30652981b510ede90096616e6725e40e"><td class="memItemLeft" align="right" valign="top"><a id="a30652981b510ede90096616e6725e40e" name="a30652981b510ede90096616e6725e40e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>good</b> ()</td></tr>
+<tr class="separator:a30652981b510ede90096616e6725e40e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a81107298cc5cc5d92c460675dab9048f"><td class="memItemLeft" align="right" valign="top"><a id="a81107298cc5cc5d92c460675dab9048f" name="a81107298cc5cc5d92c460675dab9048f"></a>
+<a class="el" href="classimg_1_1_pixel_map.html">PixelMap</a>&#160;</td><td class="memItemRight" valign="bottom"><b>_map</b> {0, 0}</td></tr>
+<tr class="separator:a81107298cc5cc5d92c460675dab9048f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecc3e56e98689a054fa2603f2fc0a227"><td class="memItemLeft" align="right" valign="top"><a id="aecc3e56e98689a054fa2603f2fc0a227" name="aecc3e56e98689a054fa2603f2fc0a227"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>_status</b> {false}</td></tr>
+<tr class="separator:aecc3e56e98689a054fa2603f2fc0a227"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/image/<a class="el" href="image_8hpp_source.html">image.hpp</a></li>
+<li>src/image/image.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

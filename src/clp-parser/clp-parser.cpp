@@ -47,7 +47,7 @@ void clpp::Parser::_check_long_command(const std::string &long_command)
 {	
 	//std::cerr << "long " << long_command << std::endl;
 	size_t separator = long_command.find('=');
-	std::string command = long_command.substr(2, separator-2);
+    std::string command = long_command.substr(2, separator - 2);
 	//std::cerr << command << ' ' << separator << std::endl;
 
 	if (std::find(_correct_long_commands.begin(), _correct_long_commands.end(), command) == _correct_long_commands.end())
@@ -62,15 +62,15 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
-		std::cerr<< path << std::endl;
+        std::cerr << path << std::endl;
 		setConsoleColor(12);
-		std::cerr <<"There is no such file in this directory" << std::endl;
+        std::cerr << "There is no such file in this directory" << std::endl;
 		setConsoleColor(7);
 		exit(EXIT_FAILURE);
 	}
 
 	// check format
-	std::string format{path.end()-3, path.end()};
+    std::string format{path.end() - 3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
 		std::cerr<< path << std::endl;
