@@ -90,7 +90,6 @@ namespace clpp {
          * 
          * \return One of the types of commands presented in CommandType
         */
-
             CommandType get_command();
             
             
@@ -231,21 +230,21 @@ namespace clpp {
         /** \brief Retrieves tokens.
          * 
          *  \details This function retrieves tokens.
-         *  \return _tokens 
+         *  \return _tokens Vector of token Strings
         */
             std::vector<std::string> get_tokens();
 
         /** \brief Retrieves command string.
          * 
          *  \details This function retrieves command string.
-         *  \return _line_of_command
+         *  \return _line_of_command Vector of command Strings
         */
             std::vector<std::string> get_line_of_command();
 
         /** \brief Retrieves command queue.
          * 
          *  \details This function retrieves command queue.
-         *  \return _queue_of_command
+         *  \return _queue_of_command Queue of commands
         */
             std::queue<Command> get_queue_of_command();
             
@@ -267,6 +266,7 @@ namespace clpp {
          * 
         */    
             void _parse_to_string(); 
+
         /** \brief Convert short command to long.
          * 
          * \details This function convert short command to long.
@@ -293,6 +293,7 @@ namespace clpp {
          * \param combination_short_command Сombination of short commands.
         */
             void _check_combination_short_command(const std::string &combination_short_command);
+            
         /** \brief Check for token with long command
          * 
          * \details This function checks tokens containing long commands. In this case, the check is performed 

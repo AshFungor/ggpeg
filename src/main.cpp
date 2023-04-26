@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     // std::cerr<<inputTokens[0];
     clpp::Parser parser {input_Tokens};
     std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
-    /*
+
     while(!queue_of_command.empty())
     {
         clpp::Command tp_command = queue_of_command.front();
@@ -75,11 +75,6 @@ int main(int argc, char** argv)
         }
         queue_of_command.pop();
     } 
-    */
-    parser.show_correct_long_command();
-    parser.show_correct_short_command();
-    parser.show_tokens();
-    parser.show_line_of_command();
-    parser.show_queue_of_command();
+
     return 0;
 }
