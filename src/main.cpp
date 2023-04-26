@@ -1,5 +1,7 @@
+#include <rang.hpp>
 #include <iostream>
 #include <vector>
+
 
 // Local headers.
 #include <clp-parser/clp-parser.hpp>
@@ -10,6 +12,17 @@
 
 int main(int argc, char** argv)
 {   
+    if(argc == 1)
+	{
+		std::cerr << rang::bg::yellow 
+                    << "  GGPEG can only be run with pre-passed commands.  " 
+                    << rang::bg::reset << std::endl;
+		std::cerr << rang::fg::yellow 
+                    << "To view the full list of available commands and rules,"
+                    << "type -h or --help during the next program launch." 
+                    << rang::fg::reset << std::endl;
+        return 0;
+	}
     // Vector with the values of the 
     // commands given when the program starts
     std::vector<std::string> input_Tokens;
@@ -22,7 +35,7 @@ int main(int argc, char** argv)
     // std::cerr<<inputTokens[0];
     clpp::Parser parser {input_Tokens};
     std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
-
+    /*
     while(!queue_of_command.empty())
     {
         clpp::Command tp_command = queue_of_command.front();
@@ -62,7 +75,11 @@ int main(int argc, char** argv)
         }
         queue_of_command.pop();
     } 
-
-
+    */
+    parser.show_correct_long_command();
+    parser.show_correct_short_command();
+    parser.show_tokens();
+    parser.show_line_of_command();
+    parser.show_queue_of_command();
     return 0;
 }

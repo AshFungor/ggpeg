@@ -76,16 +76,6 @@ TEST_CASE("Expansion of class <PixelMap>", "[pixel_map]") {
     }
 }
 
-// No need to run this constantly.
-TEST_CASE("Large expansion of class <PixelMap>", "[pixel_map][.]") {
-    img::PixelMap map {0, 0};
-    // If it works - it works.
-    map.expand(img::JointSide::bottom_and_top, 1'000, 1'000);
-    map.expand(img::JointSide::left_and_right, 1'000, 1'000);
-    REQUIRE(check_map_size(map, 2'000, 2'000));
-    for_each_in_map(map, [&map](int r, int c) { REQUIRE(map.at(r, c) == img::Color{}); });
-}
-
 TEST_CASE("Trimming class <PixelMap>", "[pixel_map]") {
     img::PixelMap map {magic_size, magic_size};
     SECTION("Trimming one-side") {

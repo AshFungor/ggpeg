@@ -1,5 +1,6 @@
+#include <rang.hpp>
 #include "clp-parser.hpp"
-#include "color-commandline.hpp" 
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,10 +46,9 @@ void clpp::Parser::_check_combination_short_command(const std::string &combinati
 
 void clpp::Parser::_check_long_command(const std::string &long_command)
 {	
-	//std::cerr << "long " << long_command << std::endl;
+	
 	size_t separator = long_command.find('=');
     std::string command = long_command.substr(2, separator - 2);
-	//std::cerr << command << ' ' << separator << std::endl;
 
 	if (std::find(_correct_long_commands.begin(), _correct_long_commands.end(), command) == _correct_long_commands.end())
 	{
@@ -63,9 +63,12 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 	if (!check_existence.good())
 	{	
         std::cerr << path << std::endl;
-		setConsoleColor(12);
-        std::cerr << "There is no such file in this directory" << std::endl;
-		setConsoleColor(7);
+		std::cerr << rang::bg::red;
+		std::cerr << "ERROR:";
+		std::cerr << rang::bg::reset;
+		std::cerr << rang::fg::red;
+        std::cerr << " There is no such file in this directory" << std::endl;
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 
@@ -73,56 +76,72 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
     std::string format{path.end() - 3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
-		std::cerr<< path << std::endl;
-		setConsoleColor(12);
-		std::cerr <<"GGPEG does not support the format of the file that you provided. \nFor the program to work correctly, select the file with the extension:" << std::endl;
+		std::cerr << path << std::endl;
+		std::cerr << rang::bg::red;
+		std::cerr << "ERROR:";
+		std::cerr << rang::bg::reset;
+		std::cerr << rang::fg::red;
+		std::cerr <<" GGPEG does not support the format of the file that you provided."
+				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
-			std::cerr << '.' <<allowed_Format[i] << ' '; 
+			std::cerr << rang::fg::cyan << '.' <<allowed_Format[i] << ' '; 
 		}
-		std::cerr<<std::endl;
-		setConsoleColor(7);
+
+		std::cerr<< rang::fg::reset <<std::endl;
+		
 		exit(EXIT_FAILURE);
 	}
 }
 
 void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
 {	
-	std::cerr<< "--" <<  token << std::endl;
-	setConsoleColor(12);
-	std::cerr <<"Is incorrect command. \nTo view the full list of available commands and rules, type -h or --help during the next program launch." << std::endl;
-	setConsoleColor(7);
+	std::cerr << "--" <<  token << std::endl;
+	std::cerr << rang::bg::red;
+	std::cerr << "ERROR:";
+	std::cerr << rang::bg::reset;
+	std::cerr << rang::fg::red;
+	std::cerr << " Is incorrect command. \nTo view the full list of available commands and rules," 
+			  << "type -h or --help during the next program launch." << std::endl;
+	std::cerr << rang::fg::reset;
 	exit(EXIT_FAILURE);
 }
 
 void clpp::Parser::_exceptions_for_short_command(const char token)
 {
+	std::cerr << rang::bg::red;
+	std::cerr << "ERROR:";
+	std::cerr << rang::bg::reset;
 	if (token == 'c')
 	{ 	
-		setConsoleColor(12);
-		std::cerr<<"There is no short <c> command. \nPerhaps you meant --crop or --convert_to. \nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
-		setConsoleColor(7);
+		std::cerr << rang::fg::red;
+		std::cerr << " There is no short <c> command. \nPerhaps you meant --crop or --convert_to." 
+				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 	else if (token == 'r')
 	{ 
-		setConsoleColor(12);
-		std::cerr<<"There is no short <r> command. \nPerhaps you meant --rotate or --resize. \nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
-		setConsoleColor(7);
+		std::cerr << rang::fg::red;
+		std::cerr << " There is no short <r> command. \nPerhaps you meant --rotate or --resize." 
+				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 	else if (token == 'i')
 	{ 
-		setConsoleColor(12);
-		std::cerr<<"There is no short <i> command. \nPerhaps you meant --insert. \nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
-		setConsoleColor(7);
+		std::cerr << rang::fg::red;
+		std::cerr << " There is no short <i> command. \nPerhaps you meant --insert." 
+				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 	else
 	{ 
-		setConsoleColor(12);
-		std::cerr<<"There is no <" << token << "> command. \nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
-		setConsoleColor(7);
+		std::cerr << rang::fg::red;
+		std::cerr << " There is no <" << token << "> command." 
+				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -170,47 +189,83 @@ void clpp::Parser::_parse_to_queue()
 
 void clpp::Parser::show_tokens()
 {
+	std::cerr << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  TOKENS:  ";
+	std::cerr << rang::bg::reset;
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
 	for(size_t i{0}; i != _tokens.size(); ++i)
 	{
 		std::cerr << _tokens[i] << std::endl;
 	}
+	std::cerr << rang::fg::reset;
 }
 void clpp::Parser::show_line_of_command()
 {
+	std::cerr << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  COMMANDS:  ";
+	std::cerr << rang::bg::reset;
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
 	for(size_t i{0}; i != _line_of_command.size(); ++i)
 	{
 		std::cerr << _line_of_command[i] << std::endl;
 	}
+	std::cerr << rang::fg::reset;
 }
 void clpp::Parser::show_queue_of_command()
-{
-	std::cerr << "Queue elements:" << std::endl;
+{	
+	std::cerr << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  Queue elements:  ";
+	std::cerr << rang::bg::reset;
+	std::cerr << std::endl;
 	std::queue<Command> queue_of_command_for_show{_queue_of_command};
 	while(!queue_of_command_for_show.empty())
 	{
 		Command tp_command = queue_of_command_for_show.front();
-		std::cerr << "###########################" << std::endl;
+		std::cerr << rang::fg::cyan;
+		std::cerr << "--------------------------" << std::endl;
+		std::cerr << rang::fg::reset;
 		tp_command.show_command();
 		tp_command.show_param();
-		std::cerr << "###########################" << std::endl << std::endl;
+		std::cerr << rang::fg::cyan;
+		std::cerr << "--------------------------" << std::endl << std::endl;
+		std::cerr << rang::fg::reset;
 		queue_of_command_for_show.pop();
 	}
+	std::cerr << rang::fg::reset;
 
 }
 void clpp::Parser::show_correct_long_command()
-{
+{	
+	std::cerr << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  Correct long command:  ";
+	std::cerr << rang::bg::reset; 
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
 	for (size_t i{0}; i != _correct_long_commands.size(); ++i)
 	{
 		std::cerr << _correct_long_commands[i] << std::endl;
 	}
+	std::cerr << rang::fg::reset;
 }
 void clpp::Parser::show_correct_short_command()
-{
+{	
+	std::cerr << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  Correct short command:  ";
+	std::cerr << rang::bg::reset; 
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
 	for (char c : _correct_short_command)
 	{
-		std::cerr << c << ' ';
+		std::cerr << c << std::endl;
 	}
-	std::cerr << std::endl;
+	std::cerr << rang::fg::reset;
 }
 
 std::vector<std::string> clpp::Parser::get_tokens()
@@ -382,15 +437,21 @@ void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 	}
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), new_format) == allowed_Format.end())
 	{
-		std::cerr<< new_format << std::endl;
-		setConsoleColor(12);
-		std::cerr <<"GGPEG does not support the format of the file that you provided. \nFor the program to work correctly, select the file with the extension:" << std::endl;
+		std::cerr << new_format << std::endl;
+		std::cerr << rang::bg::red;
+		std::cerr << "ERROR:";
+		std::cerr << rang::bg::reset;
+		std::cerr << rang::fg::red;
+		std::cerr <<"GGPEG does not support the format of the file that you provided." 
+				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
+		std::cerr << rang::fg::reset;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
+			std::cerr << rang::fg::cyan; 
 			std::cerr << '.' <<allowed_Format[i] << ' '; 
 		}
-		std::cerr<<std::endl;
-		setConsoleColor(7);
+		std::cerr << std::endl;
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -401,10 +462,13 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
-		std::cerr<< path << std::endl;
-		setConsoleColor(12);
-		std::cerr <<"There is no such file in this directory." << std::endl;
-		setConsoleColor(7);
+		std::cerr << path << std::endl;
+		std::cerr << rang::bg::red;
+		std::cerr << "ERROR:";
+		std::cerr << rang::bg::reset;
+		std::cerr << rang::fg::red;
+		std::cerr << "There is no such file in this directory." << std::endl;
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 
@@ -412,38 +476,56 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 	std::string format{path.end()-3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
-		std::cerr<< path << std::endl;
-		setConsoleColor(12);
-		std::cerr <<"GGPEG does not support the format of the file that you provided. \nFor the program to work correctly, select the file with the extension:" << std::endl;
+		std::cerr << path << std::endl;
+		std::cerr << rang::bg::red;
+		std::cerr << "ERROR:";
+		std::cerr << rang::bg::reset;
+		std::cerr << rang::fg::red;
+		std::cerr << "GGPEG does not support the format of the file that you provided." 
+				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
-			std::cerr << '.' <<allowed_Format[i] << ' '; 
+			std::cerr << rang::fg::cyan << '.' <<allowed_Format[i] << ' '; 
 		}
-		std::cerr<<std::endl;
-		setConsoleColor(7);
+		std::cerr << std::endl;
+		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
 }
 void clpp::Command::_error_param()
-{
-	setConsoleColor(12);
-	std::cerr <<"Error entering command parameters."
+{	
+	std::cerr << rang::bg::red;
+	std::cerr << "ERROR:";
+	std::cerr << rang::bg::reset;
+	std::cerr << rang::fg::red;
+	std::cerr << " Error entering command parameters."
 			  << "\nTo view the full list of available commands and his parametrs," 
 			  << "type -h or --help during the next program launch." << std::endl;
-	setConsoleColor(7);
+	std::cerr << rang::fg::reset;
 	exit(EXIT_FAILURE);	
 }
 void clpp::Command::show_param()
 {	
-	std::cerr << "Param of this command:" << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  Param of this command:  ";
+	std::cerr << rang::bg::reset;
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
 	for (size_t i{0}; i != _param.size(); ++i)
 	{
 		std::cerr << _param[i] << std::endl;
 	}
+	std::cerr << rang::fg::reset;
 }
 void clpp::Command::show_command()
 {
-	std::cerr << "Command is " << static_cast<int>(_command) << std::endl;
+	std::cerr << rang::bg::cyan;
+	std::cerr << "  Command is:  ";
+	std::cerr << rang::bg::reset;
+	std::cerr << std::endl;
+	std::cerr << rang::fg::cyan;
+	std::cerr << static_cast<int>(_command) << std::endl;
+	std::cerr << rang::fg::reset;
 }
 
 std::vector<std::string> clpp::Command::get_param()
