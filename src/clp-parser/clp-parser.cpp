@@ -51,7 +51,8 @@ void clpp::Parser::_check_long_command(const std::string &long_command)
 	size_t separator = long_command.find('=');
     std::string command = long_command.substr(2, separator - 2);
 
-	if (std::find(_correct_long_commands.begin(), _correct_long_commands.end(), command) == _correct_long_commands.end())
+    if (std::find(_correct_long_commands.begin(), _correct_long_commands.end(), command)
+            == _correct_long_commands.end())
 	{
 		_exceptions_for_incorrect_format(command);
 	}
@@ -59,7 +60,7 @@ void clpp::Parser::_check_long_command(const std::string &long_command)
 
 void clpp::Parser::_exceptions_for_image(const std::string &path)
 {		
-	// Check exestence
+    // Check existence
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
@@ -82,11 +83,12 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 		std::cerr << "ERROR:";
 		std::cerr << rang::bg::reset;
 		std::cerr << rang::fg::red;
-		std::cerr <<" GGPEG does not support the format of the file that you provided."
-				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
+        std::cerr << " GGPEG does not support the format of the file that you provided."
+                     "\nFor the program to work correctly, select the file with the extension:"
+                  << std::endl;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
-			std::cerr << rang::fg::cyan << '.' <<allowed_Format[i] << ' '; 
+            std::cerr << rang::fg::cyan << '.' << allowed_Format[i] << ' ';
 		}
 
 		std::cerr<< rang::fg::reset <<std::endl;
@@ -103,7 +105,8 @@ void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
 	std::cerr << rang::bg::reset;
 	std::cerr << rang::fg::red;
 	std::cerr << " Is incorrect command. \nTo view the full list of available commands and rules," 
-			  << "type -h or --help during the next program launch." << std::endl;
+                 "type -h or --help during the next program launch."
+              << std::endl;
 	std::cerr << rang::fg::reset;
 	exit(EXIT_FAILURE);
 }
@@ -117,7 +120,9 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
 	{ 	
 		std::cerr << rang::fg::red;
 		std::cerr << " There is no short <c> command. \nPerhaps you meant --crop or --convert_to." 
-				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+                     "\nTo view the full list of available commands, type -h or --help during "
+                     "the next program launch."
+                  << std::endl;
 		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
@@ -125,7 +130,9 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
 	{ 
 		std::cerr << rang::fg::red;
 		std::cerr << " There is no short <r> command. \nPerhaps you meant --rotate or --resize." 
-				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+                     "\nTo view the full list of available commands, type -h or --help during "
+                     "the next program launch."
+                  << std::endl;
 		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
@@ -133,7 +140,9 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
 	{ 
 		std::cerr << rang::fg::red;
 		std::cerr << " There is no short <i> command. \nPerhaps you meant --insert." 
-				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+                     "\nTo view the full list of available commands, type -h or --help "
+                     "during the next program launch."
+                  << std::endl;
 		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
@@ -141,7 +150,9 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
 	{ 
 		std::cerr << rang::fg::red;
 		std::cerr << " There is no <" << token << "> command." 
-				  << "\nTo view the full list of available commands, type -h or --help during the next program launch."<< std::endl; 
+                     "\nTo view the full list of available commands, "
+                     "type -h or --help during the next program launch."
+                  << std::endl;
 		std::cerr << rang::fg::reset;
 		exit(EXIT_FAILURE);
 	}
@@ -154,6 +165,8 @@ std::string clpp::Parser::_convert_to_long(const char sh)
 	if (sh == 'y') { return "reflect_y"; };
 	if (sh == 'v') { return "version"; };
 	if (sh == 'h') { return "help"; };
+// Clang говорит warning: Adding 'const char' to a string does not append to the string
+// что ты хотел сделать этой строкой?
 	std::string error {"error" + sh};
 	return error;
 }
@@ -366,7 +379,8 @@ void clpp::Command::_parser_param_rotate(const std::string& second_part)
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
 	{	
-		if (isdigit(second_part[i]) || (second_part[i] == '-' && i == 0)) { str_tp_param += second_part[i]; }
+        if (isdigit(second_part[i]) || (second_part[i] == '-' && i == 0))
+        { str_tp_param += second_part[i]; }
 		else { _error_param(); }
 	}
 	if (str_tp_param.size() > 0)
@@ -383,7 +397,9 @@ void clpp::Command::_parser_param_resize(const std::string& second_part)
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
 	{
-		if (isdigit(second_part[i]) || (second_part[i] == '.' && i+1 != second_part.size() && second_part[i+1] != '.')) { str_tp_param += second_part[i]; }
+        if (isdigit(second_part[i]) ||
+                (second_part[i] == '.' && i+1 != second_part.size() && second_part[i+1] != '.'))
+        { str_tp_param += second_part[i]; }
 		else{ _error_param(); }
 	}
 	if (str_tp_param.size() > 0)
@@ -444,7 +460,8 @@ void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 		std::cerr << rang::bg::reset;
 		std::cerr << rang::fg::red;
 		std::cerr <<"GGPEG does not support the format of the file that you provided." 
-				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
+                  << "\nFor the program to work correctly, select the file with the extension:"
+                  << std::endl;
 		std::cerr << rang::fg::reset;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
@@ -483,7 +500,8 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		std::cerr << rang::bg::reset;
 		std::cerr << rang::fg::red;
 		std::cerr << "GGPEG does not support the format of the file that you provided." 
-				  << "\nFor the program to work correctly, select the file with the extension:" << std::endl;
+                  << "\nFor the program to work correctly, select the file with the extension:"
+                  << std::endl;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)
 		{
 			std::cerr << rang::fg::cyan << '.' <<allowed_Format[i] << ' '; 
