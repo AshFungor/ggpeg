@@ -154,8 +154,6 @@ std::string clpp::Parser::_convert_to_long(const char sh)
 	if (sh == 'y') { return "reflect_y"; };
 	if (sh == 'v') { return "version"; };
 	if (sh == 'h') { return "help"; };
-	std::string error {"error" + sh};
-	return error;
 }
 
 void clpp::Parser::_parse_to_string()
@@ -328,10 +326,6 @@ clpp::Command::Command(std::string& command)
 	else if (first_part == "reflect_y") { _command = clpp::CommandType::reflect_y; }
 	else if (first_part == "version")   { _command = clpp::CommandType::version;   }
 	else if (first_part == "help")      { _command = clpp::CommandType::help;      }
-
-	//show_param();
-
-	//show_command();
 }
 void clpp::Command::_parser_param_crop(const std::string& second_part)
 {	
@@ -503,6 +497,7 @@ void clpp::Command::_error_param()
 			  << "\nTo view the full list of available commands and his parametrs," 
 			  << "type -h or --help during the next program launch." << std::endl;
 	std::cerr << rang::fg::reset;
+
 	exit(EXIT_FAILURE);	
 }
 void clpp::Command::show_param()
