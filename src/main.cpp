@@ -33,48 +33,61 @@ int main(int argc, char** argv)
         input_Tokens.emplace_back(argv[i]);
     }
     // std::cerr<<inputTokens[0];
-    clpp::Parser parser {input_Tokens};
-    std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
+    try
+    {   
+        bool non_display = false;
+        clpp::Parser parser {input_Tokens, non_display};
+        
+        std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
 
-    while(!queue_of_command.empty())
-    {
-        clpp::Command tp_command = queue_of_command.front();
-        clpp::CommandType tp_command_type = tp_command.get_command();
-        switch(tp_command_type)
+        while(!queue_of_command.empty())
         {
-            case clpp::CommandType::crop:
-                std::cerr << "crop" << std::endl;
-                break;
-            case clpp::CommandType::rotate:
-                std::cerr << "rotate" << std::endl;
-                break;
-            case clpp::CommandType::resize:
-                std::cerr << "resize" << std::endl;
-                break;
-            case clpp::CommandType::negative:
-                std::cerr << "negative" << std::endl;
-                break;
-            case clpp::CommandType::insert:
-                std::cerr << "insert" << std::endl;
-                break;
-            case clpp::CommandType::convert_to:
-                std::cerr << "convert_to" << std::endl;
-                break;
-            case clpp::CommandType::reflect_x:
-                std::cerr << "reflect_x" << std::endl;
-                break;
-            case clpp::CommandType::reflect_y:
-                std::cerr << "reflect_y" << std::endl;
-                break;
-            case clpp::CommandType::version:
-                std::cerr << "version" << std::endl;
-                break;
-            case clpp::CommandType::help:
-                std::cerr << "help" << std::endl;
-                break;
-        }
-        queue_of_command.pop();
-    } 
+            clpp::Command tp_command = queue_of_command.front();
+            clpp::CommandType tp_command_type = tp_command.get_command();
+            switch(tp_command_type)
+            {
+                case clpp::CommandType::crop:
+                    std::cerr << "crop" << std::endl;
+                    break;
+                case clpp::CommandType::rotate:
+                    std::cerr << "rotate" << std::endl;
+                    break;
+                case clpp::CommandType::resize:
+                    std::cerr << "resize" << std::endl;
+                    break;
+                case clpp::CommandType::negative:
+                    std::cerr << "negative" << std::endl;
+                    break;
+                case clpp::CommandType::insert:
+                    std::cerr << "insert" << std::endl;
+                    break;
+                case clpp::CommandType::convert_to:
+                    std::cerr << "convert_to" << std::endl;
+                    break;
+                case clpp::CommandType::reflect_x:
+                    std::cerr << "reflect_x" << std::endl;
+                    break;
+                case clpp::CommandType::reflect_y:
+                    std::cerr << "reflect_y" << std::endl;
+                    break;
+                case clpp::CommandType::version:
+                    std::cerr << "version" << std::endl;
+                    break;
+                case clpp::CommandType::help:
+                    std::cerr << "help" << std::endl;
+                    break;
+            }
+            queue_of_command.pop();
+        } 
+
+    }
+    catch(const std::exception& e)
+    {
+
+        return 0;
+    }
     
+
+
     return 0;
 }

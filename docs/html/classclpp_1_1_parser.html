@@ -81,19 +81,19 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A class for parsing tokens from the command line and generating correct commands for them.  
+<p>A class for parsing tokens and generating correct commands for them.  
  <a href="classclpp_1_1_parser.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="clp-parser_8hpp_source.html">clp-parser.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa8df5c1a6ceac252eae594550537380b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classclpp_1_1_parser.html#aa8df5c1a6ceac252eae594550537380b">Parser</a> (const std::vector&lt; std::string &gt; &amp;tokens)</td></tr>
-<tr class="memdesc:aa8df5c1a6ceac252eae594550537380b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a aueue from <a class="el" href="classclpp_1_1_command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> objects from a string command.  <br /></td></tr>
-<tr class="separator:aa8df5c1a6ceac252eae594550537380b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c28c214e1c2838b94bd7da6c2f5ea08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classclpp_1_1_parser.html#a7c28c214e1c2838b94bd7da6c2f5ea08">Parser</a> (const std::vector&lt; std::string &gt; &amp;tokens, const bool display)</td></tr>
+<tr class="memdesc:a7c28c214e1c2838b94bd7da6c2f5ea08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a queue from <a class="el" href="classclpp_1_1_command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> objects from a string command.  <br /></td></tr>
+<tr class="separator:a7c28c214e1c2838b94bd7da6c2f5ea08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed85df23aadbc44534d7a1dfbf5ac308"><td class="memItemLeft" align="right" valign="top"><a id="aed85df23aadbc44534d7a1dfbf5ac308" name="aed85df23aadbc44534d7a1dfbf5ac308"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~Parser</b> ()</td></tr>
-<tr class="memdesc:aed85df23aadbc44534d7a1dfbf5ac308"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="classclpp_1_1_parser.html" title="A class for parsing tokens from the command line and generating correct commands for them.">Parser</a> class. <br /></td></tr>
+<tr class="memdesc:aed85df23aadbc44534d7a1dfbf5ac308"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="classclpp_1_1_parser.html" title="A class for parsing tokens and generating correct commands for them.">Parser</a> class. <br /></td></tr>
 <tr class="separator:aed85df23aadbc44534d7a1dfbf5ac308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d01cc9b663bba1c032ea4248c9ead7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classclpp_1_1_parser.html#a7d01cc9b663bba1c032ea4248c9ead7a">show_tokens</a> ()</td></tr>
 <tr class="memdesc:a7d01cc9b663bba1c032ea4248c9ead7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Displays tokens.  <br /></td></tr>
@@ -121,13 +121,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9adb27871fe2736d95497522d0fef32a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A class for parsing tokens from the command line and generating correct commands for them. </p>
+<div class="textblock"><p>A class for parsing tokens and generating correct commands for them. </p>
 <p>Token - A set of strings taken from the command line. A token is not synonymous with a command, because unlike a command, a token may contain abbreviated formats, incorrect command names, or incorrectly passed parameters. <a class="el" href="classclpp_1_1_command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> - A completely correct task for the program.</p>
-<p>This class contains five private fields describing the string of tokens, string of commands, queue of commands and two consant field for contain correct short commands and long commands.</p>
-<p>It also has functions to retrive and display all filds. </p>
+<p>This class contains five private fields describing the string of tokens, string of commands, queue of commands and two constant field for contain correct short commands and long commands.</p>
+<p>It also has functions to retrieve and display all fields. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa8df5c1a6ceac252eae594550537380b" name="aa8df5c1a6ceac252eae594550537380b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8df5c1a6ceac252eae594550537380b">&#9670;&#160;</a></span>Parser()</h2>
+<a id="a7c28c214e1c2838b94bd7da6c2f5ea08" name="a7c28c214e1c2838b94bd7da6c2f5ea08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c28c214e1c2838b94bd7da6c2f5ea08">&#9670;&#160;</a></span>Parser()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -136,14 +136,24 @@ Public Member Functions</h2></td></tr>
           <td class="memname">clpp::Parser::Parser </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>tokens</em></td><td>)</td>
+          <td class="paramname"><em>tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>display</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Constructs a aueue from <a class="el" href="classclpp_1_1_command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> objects from a string command. </p>
-<p>The constructor takes in a string of tokens and parses it to extract the command. the constructor accepts a string of tokens, then looks for errors in it, if errors are found, a message about this is displayed and the program stops, if there are no errors, the _parse _to_string method is called. In the called method, tokens that are a set of short and long commands are reduced to a single format of long commands. After that, the _parse_to_queue method is called, in which commands that are strings are converted into a command class and a queue is created.</p>
+<p>Constructs a queue from <a class="el" href="classclpp_1_1_command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> objects from a string command. </p>
+<p>The constructor takes in a string of tokens and parses it to extract the command. The constructor accepts a string of tokens, then looks for errors in it, if errors are found, a message about this is displayed and the program stops, if there are no errors, the _parse _to_string method is called. In the called method, tokens that are a set of short and long commands are reduced to a single format of long commands. After that, the _parse_to_queue method is called, in which commands that are strings are converted into a command class and a queue is created.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">token</td><td>string with token from commandline </td></tr>
@@ -170,7 +180,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Retrieves command string. </p>
-<p>This function retrieves command string. </p><dl class="section return"><dt>Returns</dt><dd>_line_of_command </dd></dl>
+<p>This function retrieves command string. </p><dl class="section return"><dt>Returns</dt><dd>_line_of_command Vector of command Strings </dd></dl>
 
 </div>
 </div>
@@ -190,7 +200,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Retrieves command queue. </p>
-<p>This function retrieves command queue. </p><dl class="section return"><dt>Returns</dt><dd>_queue_of_command </dd></dl>
+<p>This function retrieves command queue. </p><dl class="section return"><dt>Returns</dt><dd>_queue_of_command Queue of commands </dd></dl>
 
 </div>
 </div>
@@ -210,7 +220,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Retrieves tokens. </p>
-<p>This function retrieves tokens. </p><dl class="section return"><dt>Returns</dt><dd>_tokens </dd></dl>
+<p>This function retrieves tokens. </p><dl class="section return"><dt>Returns</dt><dd>_tokens Vector of token Strings </dd></dl>
 
 </div>
 </div>
