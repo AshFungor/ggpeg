@@ -80,6 +80,7 @@ int main(int argc, char** argv)
             queue_of_command.pop();
         } 
 
+        parser.show_queue_of_command();
     }
     catch(const std::exception& e)
     {

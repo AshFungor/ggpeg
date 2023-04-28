@@ -344,6 +344,7 @@ clpp::Command::Command(std::string& command)
 }
 void clpp::Command::_parser_param_crop(const std::string& second_part)
 {	
+	if (second_part.size() == 0) { _error_param(); }
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
 	{	
@@ -374,6 +375,7 @@ void clpp::Command::_parser_param_crop(const std::string& second_part)
 
 void clpp::Command::_parser_param_rotate(const std::string& second_part)
 {
+	if (second_part.size() == 0) { _error_param(); }
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
 	{	
@@ -392,6 +394,7 @@ void clpp::Command::_parser_param_rotate(const std::string& second_part)
 }
 void clpp::Command::_parser_param_resize(const std::string& second_part)
 {
+	if (second_part.size() == 0) { _error_param(); }
 	std::string str_tp_param;
 	for (size_t i{0}; i != second_part.size(); ++i)
 	{
@@ -408,24 +411,29 @@ void clpp::Command::_parser_param_resize(const std::string& second_part)
 }
 void clpp::Command::_parser_param_insert(const std::string& second_part)
 {
+	if (second_part.size() == 0) { _error_param(); }
 	std::string str_tp_x_y;
 	std::string path_to_new;
 
 	size_t i = 0;
-	while (second_part[i] != '#')
-	{
-		if (isdigit(second_part[i])) { str_tp_x_y += second_part[i]; }
-		else if (second_part[i] == '/' && i+1 != second_part.size() && second_part[i+1] != '/') 
-		{ 
-			if (str_tp_x_y.size() > 0)
-			{
-				int int_tp_x_y{std::stoi(str_tp_x_y)};
-				_param.emplace_back(str_tp_x_y);
-				str_tp_x_y = "";
-			}
+	if (second_part.find("#") < second_part.size()) 
+	{	
+		while (second_part[i] != '#')
+		{
+			if (isdigit(second_part[i])) { str_tp_x_y += second_part[i]; }
+			else if (second_part[i] == '/' && i+1 != second_part.size() && second_part[i+1] != '/') 
+			{ 
+				if (str_tp_x_y.size() > 0)
+				{
+					int int_tp_x_y{std::stoi(str_tp_x_y)};
+					_param.emplace_back(str_tp_x_y);
+					str_tp_x_y = "";
+				}
+				else { _error_param(); }
+			}	
 			else { _error_param(); }
-		}		
-		++i;
+			++i;
+		}
 	}
 	if (str_tp_x_y.size() > 0)
 	{
@@ -444,6 +452,7 @@ void clpp::Command::_parser_param_insert(const std::string& second_part)
 }
 void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 {
+	if (second_part.size() == 0) { _error_param(); }
 	std::string new_format;
 
 	for (size_t i{0}; i != second_part.size(); ++i)
@@ -471,6 +480,7 @@ void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 		throw std::runtime_error("");
 		// exit(EXIT_FAILURE);
 	}
+	_param.emplace_back(new_format);
 }
 
 void clpp::Command::_exceptions_for_new_image(const std::string &path)
