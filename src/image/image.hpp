@@ -1,8 +1,14 @@
+// logging
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
 // std headers.
 #include <string>
 #include <cstddef>
 #include <vector>
 #include <string_view>
+#include <fstream>
+#include <memory>
 
 // Header guard.
 #pragma once
@@ -169,15 +175,32 @@ namespace img {
         PixelMap(size_t width, size_t height);
     };
 
+    /** \brief Base image class.
+     *  Provides basic interface for image class usage.
+     */
     class Image {
     protected:
         PixelMap _map {0, 0};
         bool _status {false};
         Image() = default;
     public:
+        /** \brief Read map of pixels from a file.
+         * \param path location of the file
+         */
         virtual void read(std::string_view path);
+        /** \brief Write map of pixels to new file.
+         * \param path location of the new file
+         * \details Note, full name of the new file should be
+         * provided.
+         */
         virtual void write(std::string_view path);
+        /** \brief Get direct access to pixel map.
+         * \return Reference to underlying pixel map object.
+         */
         PixelMap& get_map();
+        /** \brief Check if the last read/write operation was successful.
+         * \return Status of the last operation.
+         */
         bool good();
         virtual ~Image() = default;
     };
@@ -203,12 +226,30 @@ namespace img {
          */
         constexpr static char _signature[9]
         {-119, 80, 78, 71, 13, 10, 26, 10, 0};
-        constexpr static char _upper_flag {0b00100000};
+        // logger
+        std::shared_ptr<spdlog::logger> logger
+            {spdlog::basic_logger_mt("basic_logger", "read_log.txt")};
+        // chunk names
+        constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
+        constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
         constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
+        // buffers
+        static char _chunk_1b[1];
+        static char _chunk_4b[4];
+        static char _chunk_8b[8];
+        // fields of PNG header
+        int bit_depth;
+        int color_type;
+        int compression_method;
+        int filter_method;
+        int interlace_method;
         // helper functions
-        bool _cmp_chunks(const char* chunk_1, size_t size_1,
+        static bool _cmp_chunks(const char* chunk_1, size_t size_1,
                         const char* chunk_2, size_t size_2);
-        std::uint64_t _parse_bytes(char* bytes, size_t size);
+        static std::uint64_t _parse_bytes(char* bytes, size_t size);
+        // parse functions
+        void read_ihdr(std::ifstream& file);
+        void read_idat(std::ifstream& file);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

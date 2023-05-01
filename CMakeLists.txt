@@ -17,25 +17,35 @@ set(image_test_dir "${testing_dir}/test-data")
 # For external libraries
 Include(FetchContent)
 
-# Catch2 fetching from remote
+# Catch2 (tests)
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
   GIT_TAG        v3.3.2
 )
 
+# spdlog (logging)
 FetchContent_Declare(
   spdlog
   GIT_REPOSITORY https://github.com/gabime/spdlog
   GIT_TAG        v1.11.0
 )
 
+# rang (console colors)
 FetchContent_Declare(
     rang
     GIT_REPOSITORY  https://github.com/agauniyal/rang
     GIT_TAG         v3.2
+    # Since library is header-only, build and configure
+    # commands are not required.
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
+)
+
+FetchContent_Declare(
+  zlib
+  GIT_REPOSITORY https://github.com/madler/zlib
+  GIT_TAG        v1.2.13
 )
 
 
@@ -62,14 +72,15 @@ endforeach()
 
 include_directories(${source_dir})
 
-FetchContent_MakeAvailable(Catch2 spdlog rang)
+FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
 include_directories("${rang_SOURCE_DIR}/include")
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
     # link libs to targets
-    target_link_libraries(${lib} spdlog::spdlog)
+    target_link_libraries(${lib} spdlog)
+    target_link_libraries(${lib} zlib)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp
@@ -87,11 +98,13 @@ foreach(lib IN ITEMS ${modules})
     endif()
 endforeach()
 
+# Search for test data
 file(GLOB test_images
     RELATIVE "${image_test_dir}"
     CONFIGURE_DEPENDS
     "${image_test_dir}/*")
 
+# Copy all test data (images) to <resources> directory
 foreach(image_file IN ITEMS ${test_images})
     message(STATUS "copying ${image_file} to resources directory...")
     configure_file("${image_test_dir}/${image_file}"

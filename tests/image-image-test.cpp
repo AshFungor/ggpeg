@@ -1,7 +1,8 @@
 #include <catch2/catch_all.hpp>
-#include <image/image.hpp>
 #include <string>
 #include <memory>
+#define private public
+#include <image/image.hpp>
 
 TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
     using img_t = img::PPMImage;
@@ -37,3 +38,26 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
     }
 
 }
+
+TEST_CASE("PNG helper functions", "[base]") {
+    // compare_chunks test
+    char byte_array[4] {'H', 'I', 'H', 'I'};
+    char byte_array_eq[4] {'H', 'I', 'H', 'I'};
+    char byte_array_diff[4] {'H', 'I', 'H', 'O'};
+    char byte_array_long[5] {'H', 'I', 'H', 'I', 'I'};
+    bool check = true;
+    check &= img::PNGImage::_cmp_chunks(byte_array, 4, byte_array_eq, 4);
+    check &= !img::PNGImage::_cmp_chunks(byte_array, 4, byte_array_diff, 4);
+    check &= img::PNGImage::_cmp_chunks(byte_array_eq, 4, byte_array, 4);
+    check &= !img::PNGImage::_cmp_chunks(byte_array_diff, 4, byte_array, 4);
+    check &= !img::PNGImage::_cmp_chunks(byte_array_diff, 4, byte_array_long, 5);
+    REQUIRE(check);
+    // parse_bytes test
+    char number_255[2] {0, ~0};
+    REQUIRE(img::PNGImage::_parse_bytes(number_255, 2) == 255);
+    char number_255_0[2] {~0, 0};
+    REQUIRE(img::PNGImage::_parse_bytes(number_255_0, 2) == 255 << 8);
+    char number_255_255_255[3] {~0, ~0, ~0};
+    REQUIRE(img::PNGImage::_parse_bytes(number_255_255_255, 3) == (255 << 16) + (255 << 8) + 255);
+}
+
