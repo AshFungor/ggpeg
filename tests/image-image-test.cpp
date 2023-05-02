@@ -1,6 +1,8 @@
+// std
 #include <catch2/catch_all.hpp>
 #include <string>
 #include <memory>
+
 #define private public
 #include <image/image.hpp>
 
@@ -54,10 +56,10 @@ TEST_CASE("PNG helper functions", "[base]") {
     REQUIRE(check);
     // parse_bytes test
     char number_255[2] {0, ~0};
-    REQUIRE(img::PNGImage::_parse_bytes(number_255, 2) == 255);
+    REQUIRE(img::PNGImage::_parse_chunk(number_255, 2) == 255);
     char number_255_0[2] {~0, 0};
-    REQUIRE(img::PNGImage::_parse_bytes(number_255_0, 2) == 255 << 8);
+    REQUIRE(img::PNGImage::_parse_chunk(number_255_0, 2) == 255 << 8);
     char number_255_255_255[3] {~0, ~0, ~0};
-    REQUIRE(img::PNGImage::_parse_bytes(number_255_255_255, 3) == (255 << 16) + (255 << 8) + 255);
+    REQUIRE(img::PNGImage::_parse_chunk(number_255_255_255, 3) == (255 << 16) + (255 << 8) + 255);
 }
 

@@ -42,12 +42,12 @@ FetchContent_Declare(
     BUILD_COMMAND ""
 )
 
+# compession for PNG scanline
 FetchContent_Declare(
   zlib
   GIT_REPOSITORY https://github.com/madler/zlib
   GIT_TAG        v1.2.13
 )
-
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -92,7 +92,9 @@ foreach(lib IN ITEMS ${modules})
         message(STATUS "found tests, making target: ${lib}-test")
         add_executable(${lib}-test ${test_files})
         target_link_libraries(${lib}-test PRIVATE Catch2::Catch2WithMain)
-        target_link_libraries(${lib}-test PRIVATE ${lib})
+        foreach(_lib IN ITEMS ${modules})
+            target_link_libraries(${lib}-test PRIVATE ${_lib})
+        endforeach()
     else()
         message(STATUS "tests are not found, skipping...")
     endif()

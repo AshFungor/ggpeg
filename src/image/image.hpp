@@ -228,15 +228,19 @@ namespace img {
         {-119, 80, 78, 71, 13, 10, 26, 10, 0};
         // logger
         std::shared_ptr<spdlog::logger> logger
-            {spdlog::basic_logger_mt("basic_logger", "read_log.txt")};
+            {spdlog::basic_logger_mt("basic_logger", "log.txt")};
         // chunk names
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
         constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
         constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
+        // chunk types
+        enum class Chunk {
+            IHDR, IDAT, IEND
+        };
         // buffers
-        static char _chunk_1b[1];
-        static char _chunk_4b[4];
-        static char _chunk_8b[8];
+        char _chunk_1b[1];
+        char _chunk_4b[4];
+        char _chunk_8b[8];
         // fields of PNG header
         int bit_depth;
         int color_type;
@@ -244,12 +248,17 @@ namespace img {
         int filter_method;
         int interlace_method;
         // helper functions
-        static bool _cmp_chunks(const char* chunk_1, size_t size_1,
-                        const char* chunk_2, size_t size_2);
-        static std::uint64_t _parse_bytes(char* bytes, size_t size);
+        static bool _cmp_chunks(const char* chunk_1,
+                                size_t size_1,
+                                const char* chunk_2,
+                                size_t size_2);
+        static std::uint64_t _parse_chunk(char* bytes, size_t size);
+        static char* _extr_chunk(char* buffer, char* chunk, size_t size);
         // parse functions
-        void read_ihdr(std::ifstream& file);
-        void read_idat(std::ifstream& file);
+        bool read_crc(char* chunk, size_t size);
+        void read_chunk_header(char* buffer, Chunk& chunk, size_t& size);
+        void read_ihdr(char* buffer);
+        void read_idat(char* buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

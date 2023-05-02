@@ -14,6 +14,11 @@
 #include <memory>
 #include <cmath>
 
+// logging macros
+#define LOG_CRITICAL(msg, fmt_args)  \
+    logger->critical(msg, fmt_args); \
+    return
+
 // Definitions for image class and its supportive structures.
 
 img::PixelMap& img::Image::get_map() { return _map; }
@@ -98,7 +103,7 @@ bool img::PNGImage::_cmp_chunks(const char* chunk_1, size_t size_1,
     return res;
 }
 
-std::uint64_t img::PNGImage::_parse_bytes(char* bytes, size_t size) {
+std::uint64_t img::PNGImage::_parse_chunk(char* bytes, size_t size) {
 
     std::uint8_t mask {0x80}, curr_byte {};
     size_t iter {0};
@@ -118,51 +123,68 @@ std::uint64_t img::PNGImage::_parse_bytes(char* bytes, size_t size) {
     return result;
 }
 
-void img::PNGImage::read_ihdr(std::ifstream& file) {
-    file.read(_chunk_4b, 4);
-    int width = _parse_bytes(_chunk_4b, 4);
-    file.read(_chunk_4b, 4);
-    int height = _parse_bytes(_chunk_4b, 4);
+void img::PNGImage::read_chunk_header(char* buffer,
+                                      img::PNGImage::Chunk& chunk,
+                                      size_t& size) {
+    // first 4-byte chunk is length
+    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    size = _parse_chunk(_chunk_4b, 4);
+    // second 4-byte chunk is name
+    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    if (_cmp_chunks(_chunk_4b, 4, _ihdr_name, 4)) {
+        chunk = img::PNGImage::Chunk::IHDR;
+    } else if (_cmp_chunks(_chunk_4b, 4, _idat_name, 4)) {
+        chunk = img::PNGImage::Chunk::IDAT;
+    } else if (_cmp_chunks(_chunk_4b, 4, _iend_name, 4)) {
+        chunk = img::PNGImage::Chunk::IEND;
+    }
+}
+
+void img::PNGImage::read_ihdr(char* buffer) {
+    size_t buff_pos = 0;
+    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    int width = _parse_chunk(_chunk_4b, 4);
+    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    int height = _parse_chunk(_chunk_4b, 4);
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
 
-    file.read(_chunk_4b, 1);
-    bit_depth = _parse_bytes(_chunk_4b, 1);
-    file.read(_chunk_4b, 1);
-    color_type = _parse_bytes(_chunk_4b, 1);
+    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    bit_depth = _parse_chunk(_chunk_1b, 1);
+    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    color_type = _parse_chunk(_chunk_1b, 1);
     if (color_type == 2) {
         if (bit_depth != 8 || bit_depth != 16) {
-            logger->critical("bit depth for true color must be 8 or 16, received: {}",
-                             bit_depth);
-            return;
+            LOG_CRITICAL("bit depth for true color must be 8 or 16, received: {}",
+                                    bit_depth);
         }
     } else if (color_type == 6) {
         if (bit_depth != 8 || bit_depth != 16) {
-            logger->critical("bit depth for true color with alpha must be 8 or 16, received: {}",
-                             bit_depth);
-            return;
+            LOG_CRITICAL("bit depth for true color with alpha must be "
+                                    "8 or 16, received: {}",
+                                    bit_depth);
         }
     } else {
-        logger->critical("unsupported color type: {}", color_type);
-        return;
+        LOG_CRITICAL("unsupported color type: {}",
+                                color_type);
     }
-    file.read(_chunk_1b, 1);
-    compression_method = _parse_bytes(_chunk_1b, 1);
+    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    compression_method = _parse_chunk(_chunk_1b, 1);
     if (compression_method) {
-        logger->critical("compression method must be 0, received: {}",
-                         compression_method);
+        LOG_CRITICAL("compression method must be 0, received: {}",
+                                compression_method);
     }
-    file.read(_chunk_1b, 1);
-    filter_method = _parse_bytes(_chunk_1b, 1);
+    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    filter_method = _parse_chunk(_chunk_1b, 1);
     if (filter_method) {
-        logger->critical("filter method must be 0, received: {}",
-                         filter_method);
+        LOG_CRITICAL("filter method must be 0, received: {}",
+                                filter_method);
     }
-    file.read(_chunk_1b, 1);
-    interlace_method = _parse_bytes(_chunk_1b, 1);
+    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    interlace_method = _parse_chunk(_chunk_1b, 1);
     if (interlace_method) {
-        logger->critical("only <no interlace> is supported, received: {}",
-                         interlace_method);
+        LOG_CRITICAL("only <no interlace> is supported, received: {}",
+                                interlace_method);
     }
 }
 
@@ -172,35 +194,33 @@ void img::PNGImage::read(std::string_view path) {
     logger->debug("beginning to parse PNG file \'{}\'", path);
 
     std::ifstream file {path.data(), std::ios::in | std::ios::binary};
+    img::PNGImage::Chunk chunk;
+    size_t chunk_size;
 
     // parse 8-bit header
     file.read(_chunk_8b, 8);
     if (!_cmp_chunks(_chunk_8b, 8, _signature, 8)) {
         logger->critical("signature of PNG file is not met, received: <{}>",
-                         _parse_bytes(_chunk_8b, 8));
+                         _parse_chunk(_chunk_8b, 8));
         return;
     }
     logger->debug("successfully verified header, reading IHDR");
 
     // parse IHDR
-    file.read(_chunk_4b, 4);
-    if (_parse_bytes(_chunk_4b, 4) != 13) {
-        logger->critical("first chunk must be size 13, received: <{}>",
-                         _parse_bytes(_chunk_4b, 4));
-        return;
+    file.read(_chunk_8b, 8);
+    read_chunk_header(_chunk_8b, chunk, chunk_size);
+    if (chunk_size != 13) {
+        LOG_CRITICAL("IHDR size should be 13, received: {}", chunk_size);
+    }
+    if (chunk != img::PNGImage::Chunk::IHDR) {
+        LOG_CRITICAL("first chunk type must be IHDR, received: {}", static_cast<int>(chunk));
     }
 
-    file.read(_chunk_4b, 4);
-    if (!_cmp_chunks(_chunk_4b, 4, _ihdr_name, 4)) {
-        logger->critical("first chunk must be IHDR, received: <{}>",
-                         _parse_bytes(_chunk_4b, 4));
-        return;
-    }
-    read_ihdr(file);
 
-    bool not_iend = true;
-    while (not_iend) {
 
+    while (chunk != img::PNGImage::Chunk::IEND) {
+        file.read(_chunk_8b, 8);
+        read_chunk_header(_chunk_8b, chunk, chunk_size);
     }
 
 
