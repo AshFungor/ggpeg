@@ -3,7 +3,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 // compression
-#include <zlib.h>
+// #include <zlib.h>
 
 // std headers
 #include "image.hpp"
@@ -236,3 +236,4 @@ void img::PNGImage::read(std::string_view path) {
 
 void img::PNGImage::write(std::string_view path) {}
 
+char* img::PNGImage::_extr_chunk(char* buffer, char* chunk, size_t size) {return nullptr;}

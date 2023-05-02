@@ -4,10 +4,9 @@
 #include <processing/processing.hpp>
 
 TEST_CASE("test"){
-    std::cout << "1"; 
     using img_t = img::PPMImage;
-    img_t image;
-    image.read("resoures/house_1.ppm");
-
-
+    img_t image{};
+    image.read("resources/house_1.ppm");
+    proc::negative(image);
+    image.write("resources/negative.ppm");
 }
