@@ -19,3 +19,13 @@ TEST_CASE("test crop"){
     image.write("resources/cropped.ppm");
 }
 
+TEST_CASE("test insert"){
+    using img_t = img::PPMImage;
+    img_t image;
+    img_t other;
+    image.read("resources/west_2.ppm");
+    other.read("resources/tree_2.ppm");
+    proc::insert(image, other, 60, 60);
+    image.write("resources/inserted.ppm");
+}
+

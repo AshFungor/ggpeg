@@ -35,7 +35,7 @@ void proc::insert(img::Image &img, img::Image &other, int x, int y){
 
     for(int i = x; i < rows; ++i){
         for(int j = y; j < columns; ++j){
-            
+            pixel_map.at(i, j) = pixel_map_other.at(i - x, j - y);
         }
     }
 }
