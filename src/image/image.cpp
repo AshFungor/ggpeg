@@ -199,18 +199,23 @@ void img::PNGImage::read(std::string_view path) {
     img::PNGImage::Chunk chunk;
     size_t chunk_size;
 
+    // buffer
+    auto buffer_8b = std::make_unique<char[]>(8);
+    auto ghost_buffer_8b = buffer_8b.get();
+
     // parse 8-bit header
-    file.read(_chunk_8b, 8);
-    if (!_cmp_chunks(_chunk_8b, 8, _signature, 8)) {
+    file.read(buffer_8b.get(), 8);
+    if (!_cmp_chunks(buffer_8b.get(), 8, _signature, 8)) {
         logger->critical("signature of PNG file is not met, received: <{}>",
-                         _parse_chunk(_chunk_8b, 8));
+                         _parse_chunk(buffer_8b.get(), 8));
         return;
     }
     logger->debug("successfully verified header, reading IHDR");
 
     // parse IHDR
-    file.read(_chunk_8b, 8);
-    read_chunk_header(_chunk_8b, chunk, chunk_size);
+    file.read(buffer_8b.get(), 8);
+    read_chunk_header(ghost_buffer_8b, chunk, chunk_size);
+    ghost_buffer_8b -= 8;
     if (chunk_size != 13) {
         LOG_CRITICAL("IHDR size should be 13, received: {}", chunk_size);
     }
@@ -221,8 +226,9 @@ void img::PNGImage::read(std::string_view path) {
 
 
     while (chunk != img::PNGImage::Chunk::IEND) {
-        file.read(_chunk_8b, 8);
-        read_chunk_header(_chunk_8b, chunk, chunk_size);
+        file.read(buffer_8b.get(), 8);
+        read_chunk_header(ghost_buffer_8b, chunk, chunk_size);
+        ghost_buffer_8b -= 8;
     }
 
 

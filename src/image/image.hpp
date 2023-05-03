@@ -237,10 +237,6 @@ namespace img {
         enum class Chunk {
             IHDR, IDAT, IEND
         };
-        // buffers
-        char _chunk_1b[1];
-        char _chunk_4b[4];
-        char _chunk_8b[8];
         // fields of PNG header
         int bit_depth;
         int color_type;
