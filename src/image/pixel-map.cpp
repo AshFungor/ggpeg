@@ -115,8 +115,8 @@ void img::PixelMap::trim(JointSide sides, int count_1, int count_2) {
         _map.erase(_map.end() - bottom, _map.end());
     }
     else if (sides == JointSide::left_and_right) {
-        int& left = count_2;
-        int& right = count_1;
+        int& left = count_1;
+        int& right = count_2;
         _width -= left + right;
         for (std::vector<Color>& row : _map) {
             row.erase(row.begin(), row.begin() + left);
