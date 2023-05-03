@@ -77,7 +77,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classimg_1_1Image.html">Image</a> processing namespace. This namespace provides access to <a class="el" href="classimg_1_1Color.html" title="Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color sto...">Color</a>, <a class="el" href="classimg_1_1PixelMap.html" title="Class representing matrix of pixels. Provides member functions to trim and expand the matrix,...">PixelMap</a> and <a class="el" href="classimg_1_1Image.html">Image</a> classes to supply the user with simple and fast image-manipulation interface.  
+<p><a class="el" href="classimg_1_1Image.html" title="Base image class. Provides basic interface for image class usage.">Image</a> processing namespace. This namespace provides access to <a class="el" href="classimg_1_1Color.html" title="Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color sto...">Color</a>, <a class="el" href="classimg_1_1PixelMap.html" title="Class representing matrix of pixels. Provides member functions to trim and expand the matrix,...">PixelMap</a> and <a class="el" href="classimg_1_1Image.html" title="Base image class. Provides basic interface for image class usage.">Image</a> classes to supply the user with simple and fast image-manipulation interface.  
 <a href="namespaceimg.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -86,30 +86,33 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color storing supplied with cheap member functions to operate RGB palette.  <a href="classimg_1_1Color.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1Image.html">Image</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base image class. Provides basic interface for image class usage.  <a href="classimg_1_1Image.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1PixelMap.html">PixelMap</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class representing matrix of pixels. Provides member functions to trim and expand the matrix, alongside default element and dimension access.  <a href="classimg_1_1PixelMap.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1PNGImage.html">PNGImage</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1PPMImage.html">PPMImage</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a4e09e4cefc1807e4250a6ca52e43bda2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2">Side</a> { <b>left</b>
+<tr class="memitem:a4e09e4cefc1807e4250a6ca52e43bda2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2">Side</a> { <a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2a811882fecd5c7618d7099ebbd39ea254">left</a>
 , <a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2ab28354b543375bfa94dabaeda722927f">top</a>
 , <a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2a7c4f29407893c334a6cb7a87bf045c0d">right</a>
 , <a class="el" href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2a71f262d796bed1ab30e8a2d5a8ddee6f">bottom</a>
  }</td></tr>
 <tr class="memdesc:a4e09e4cefc1807e4250a6ca52e43bda2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration that represents sides of the matrix. Used in expanding and trimming functions to specify the direction of these operations.  <a href="namespaceimg.html#a4e09e4cefc1807e4250a6ca52e43bda2">More...</a><br /></td></tr>
 <tr class="separator:a4e09e4cefc1807e4250a6ca52e43bda2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57d0d1740b24d6951a1a5dc36df97d56"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceimg.html#a57d0d1740b24d6951a1a5dc36df97d56">JointSide</a> { <b>bottom_and_top</b>
+<tr class="memitem:a57d0d1740b24d6951a1a5dc36df97d56"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceimg.html#a57d0d1740b24d6951a1a5dc36df97d56">JointSide</a> { <a class="el" href="namespaceimg.html#a57d0d1740b24d6951a1a5dc36df97d56a1a3ef133197127810123ca6036393b05">bottom_and_top</a>
 , <a class="el" href="namespaceimg.html#a57d0d1740b24d6951a1a5dc36df97d56a5d27e598af661422c6f6ac5108d71ffb">left_and_right</a>
  }</td></tr>
 <tr class="memdesc:a57d0d1740b24d6951a1a5dc36df97d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration that represents joint sides of the matrix. Used in more efficient variants of expanding and trimming functions to specify the axis of these operations, rather than just one side.  <a href="namespaceimg.html#a57d0d1740b24d6951a1a5dc36df97d56">More...</a><br /></td></tr>
 <tr class="separator:a57d0d1740b24d6951a1a5dc36df97d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classimg_1_1Image.html">Image</a> processing namespace. This namespace provides access to <a class="el" href="classimg_1_1Color.html" title="Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color sto...">Color</a>, <a class="el" href="classimg_1_1PixelMap.html" title="Class representing matrix of pixels. Provides member functions to trim and expand the matrix,...">PixelMap</a> and <a class="el" href="classimg_1_1Image.html">Image</a> classes to supply the user with simple and fast image-manipulation interface. </p>
+<div class="textblock"><p><a class="el" href="classimg_1_1Image.html" title="Base image class. Provides basic interface for image class usage.">Image</a> processing namespace. This namespace provides access to <a class="el" href="classimg_1_1Color.html" title="Class for storing colors with RGB palette. Provides memory-efficient (4-8 bytes per object) color sto...">Color</a>, <a class="el" href="classimg_1_1PixelMap.html" title="Class representing matrix of pixels. Provides member functions to trim and expand the matrix,...">PixelMap</a> and <a class="el" href="classimg_1_1Image.html" title="Base image class. Provides basic interface for image class usage.">Image</a> classes to supply the user with simple and fast image-manipulation interface. </p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a57d0d1740b24d6951a1a5dc36df97d56" name="a57d0d1740b24d6951a1a5dc36df97d56"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57d0d1740b24d6951a1a5dc36df97d56">&#9670;&#160;</a></span>JointSide</h2>
@@ -133,12 +136,9 @@ Enumerations</h2></td></tr>
 
 <p>Enumeration that represents joint sides of the matrix. Used in more efficient variants of expanding and trimming functions to specify the axis of these operations, rather than just one side. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57d0d1740b24d6951a1a5dc36df97d56a5d27e598af661422c6f6ac5108d71ffb" name="a57d0d1740b24d6951a1a5dc36df97d56a5d27e598af661422c6f6ac5108d71ffb"></a>left_and_right&#160;</td><td class="fielddoc"><blockquote class="doxtable">
-<p>&zwj;vertical (Y) axis. </p>
-</blockquote>
-<blockquote class="doxtable">
-<p>&zwj;horizontal (X) axis. </p>
-</blockquote>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57d0d1740b24d6951a1a5dc36df97d56a1a3ef133197127810123ca6036393b05" name="a57d0d1740b24d6951a1a5dc36df97d56a1a3ef133197127810123ca6036393b05"></a>bottom_and_top&#160;</td><td class="fielddoc"><p>vertical (Y) axis. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57d0d1740b24d6951a1a5dc36df97d56a5d27e598af661422c6f6ac5108d71ffb" name="a57d0d1740b24d6951a1a5dc36df97d56a5d27e598af661422c6f6ac5108d71ffb"></a>left_and_right&#160;</td><td class="fielddoc"><p>horizontal (X) axis. </p>
 </td></tr>
 </table>
 
@@ -166,17 +166,13 @@ Enumerations</h2></td></tr>
 
 <p>Enumeration that represents sides of the matrix. Used in expanding and trimming functions to specify the direction of these operations. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2ab28354b543375bfa94dabaeda722927f" name="a4e09e4cefc1807e4250a6ca52e43bda2ab28354b543375bfa94dabaeda722927f"></a>top&#160;</td><td class="fielddoc"><blockquote class="doxtable">
-<p>&zwj;Left side of the matrix. </p>
-</blockquote>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2a811882fecd5c7618d7099ebbd39ea254" name="a4e09e4cefc1807e4250a6ca52e43bda2a811882fecd5c7618d7099ebbd39ea254"></a>left&#160;</td><td class="fielddoc"><p>Left side of the matrix. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2a7c4f29407893c334a6cb7a87bf045c0d" name="a4e09e4cefc1807e4250a6ca52e43bda2a7c4f29407893c334a6cb7a87bf045c0d"></a>right&#160;</td><td class="fielddoc"><blockquote class="doxtable">
-<p>&zwj;Top side of the matrix. </p>
-</blockquote>
+<tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2ab28354b543375bfa94dabaeda722927f" name="a4e09e4cefc1807e4250a6ca52e43bda2ab28354b543375bfa94dabaeda722927f"></a>top&#160;</td><td class="fielddoc"><p>Top side of the matrix. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2a71f262d796bed1ab30e8a2d5a8ddee6f" name="a4e09e4cefc1807e4250a6ca52e43bda2a71f262d796bed1ab30e8a2d5a8ddee6f"></a>bottom&#160;</td><td class="fielddoc"><blockquote class="doxtable">
-<p>&zwj;Right side of the matrix. </p>
-</blockquote>
+<tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2a7c4f29407893c334a6cb7a87bf045c0d" name="a4e09e4cefc1807e4250a6ca52e43bda2a7c4f29407893c334a6cb7a87bf045c0d"></a>right&#160;</td><td class="fielddoc"><p>Right side of the matrix. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a4e09e4cefc1807e4250a6ca52e43bda2a71f262d796bed1ab30e8a2d5a8ddee6f" name="a4e09e4cefc1807e4250a6ca52e43bda2a71f262d796bed1ab30e8a2d5a8ddee6f"></a>bottom&#160;</td><td class="fielddoc"><p>Bottom side of the matrix. </p>
 </td></tr>
 </table>
 

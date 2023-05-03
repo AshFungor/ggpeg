@@ -27,10 +27,10 @@ namespace img {
      * of these operations.
      */
     enum class Side {
-        left,   ///> Left side of the matrix.
-        top,    ///> Top side of the matrix.
-        right,  ///> Right side of the matrix.
-        bottom, ///> Bottom side of the matrix.
+        left,   ///< Left side of the matrix.
+        top,    ///< Top side of the matrix.
+        right,  ///< Right side of the matrix.
+        bottom, ///< Bottom side of the matrix.
     };
 
     /** \brief Enumeration that represents joint sides of the matrix.
@@ -38,8 +38,8 @@ namespace img {
      * specify the axis of these operations, rather than just one side.
      */
     enum class JointSide {
-        bottom_and_top, ///> vertical (Y) axis.
-        left_and_right  ///> horizontal (X) axis.
+        bottom_and_top, ///< vertical (Y) axis.
+        left_and_right  ///< horizontal (X) axis.
     };
 
     /** \brief Class for storing colors with RGB palette.

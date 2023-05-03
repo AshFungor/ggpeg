@@ -81,29 +81,35 @@ $(function() {
   <div class="headertitle"><div class="title">img::Image Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Base image class. Provides basic interface for image class usage.  
+ <a href="classimg_1_1Image.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="image_8hpp_source.html">image.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for img::Image:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classimg_1_1Image.png" usemap="#img::Image_map" alt=""/>
   <map id="img::Image_map" name="img::Image_map">
-<area href="classimg_1_1PPMImage.html" alt="img::PPMImage" shape="rect" coords="0,56,97,80"/>
+<area href="classimg_1_1PNGImage.html" alt="img::PNGImage" shape="rect" coords="0,56,97,80"/>
+<area href="classimg_1_1PPMImage.html" alt="img::PPMImage" shape="rect" coords="107,56,204,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9676a0ee85e0bde300b8139117fd2804"><td class="memItemLeft" align="right" valign="top"><a id="a9676a0ee85e0bde300b8139117fd2804" name="a9676a0ee85e0bde300b8139117fd2804"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (std::string_view path)</td></tr>
+<tr class="memitem:a9676a0ee85e0bde300b8139117fd2804"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1Image.html#a9676a0ee85e0bde300b8139117fd2804">read</a> (std::string_view path)</td></tr>
+<tr class="memdesc:a9676a0ee85e0bde300b8139117fd2804"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read map of pixels from a file.  <br /></td></tr>
 <tr class="separator:a9676a0ee85e0bde300b8139117fd2804"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54e06d99fceecf77e2ca105a2cb5e643"><td class="memItemLeft" align="right" valign="top"><a id="a54e06d99fceecf77e2ca105a2cb5e643" name="a54e06d99fceecf77e2ca105a2cb5e643"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (std::string_view path)</td></tr>
+<tr class="memitem:a54e06d99fceecf77e2ca105a2cb5e643"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1Image.html#a54e06d99fceecf77e2ca105a2cb5e643">write</a> (std::string_view path)</td></tr>
+<tr class="memdesc:a54e06d99fceecf77e2ca105a2cb5e643"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write map of pixels to new file.  <br /></td></tr>
 <tr class="separator:a54e06d99fceecf77e2ca105a2cb5e643"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91d759e9f161563d1db7e40f67108ca7"><td class="memItemLeft" align="right" valign="top"><a id="a91d759e9f161563d1db7e40f67108ca7" name="a91d759e9f161563d1db7e40f67108ca7"></a>
-<a class="el" href="classimg_1_1PixelMap.html">PixelMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_map</b> ()</td></tr>
+<tr class="memitem:a91d759e9f161563d1db7e40f67108ca7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classimg_1_1PixelMap.html">PixelMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1Image.html#a91d759e9f161563d1db7e40f67108ca7">get_map</a> ()</td></tr>
+<tr class="memdesc:a91d759e9f161563d1db7e40f67108ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get direct access to pixel map.  <br /></td></tr>
 <tr class="separator:a91d759e9f161563d1db7e40f67108ca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30652981b510ede90096616e6725e40e"><td class="memItemLeft" align="right" valign="top"><a id="a30652981b510ede90096616e6725e40e" name="a30652981b510ede90096616e6725e40e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>good</b> ()</td></tr>
+<tr class="memitem:a30652981b510ede90096616e6725e40e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classimg_1_1Image.html#a30652981b510ede90096616e6725e40e">good</a> ()</td></tr>
+<tr class="memdesc:a30652981b510ede90096616e6725e40e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the last read/write operation was successful.  <br /></td></tr>
 <tr class="separator:a30652981b510ede90096616e6725e40e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -115,6 +121,122 @@ Protected Attributes</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_status</b> {false}</td></tr>
 <tr class="separator:aecc3e56e98689a054fa2603f2fc0a227"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base image class. Provides basic interface for image class usage. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a91d759e9f161563d1db7e40f67108ca7" name="a91d759e9f161563d1db7e40f67108ca7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91d759e9f161563d1db7e40f67108ca7">&#9670;&#160;</a></span>get_map()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classimg_1_1PixelMap.html">img::PixelMap</a> &amp; img::Image::get_map </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get direct access to pixel map. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to underlying pixel map object. </dd></dl>
+
+</div>
+</div>
+<a id="a30652981b510ede90096616e6725e40e" name="a30652981b510ede90096616e6725e40e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30652981b510ede90096616e6725e40e">&#9670;&#160;</a></span>good()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool img::Image::good </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the last read/write operation was successful. </p>
+<dl class="section return"><dt>Returns</dt><dd>Status of the last operation. </dd></dl>
+
+</div>
+</div>
+<a id="a9676a0ee85e0bde300b8139117fd2804" name="a9676a0ee85e0bde300b8139117fd2804"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9676a0ee85e0bde300b8139117fd2804">&#9670;&#160;</a></span>read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void img::Image::read </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Read map of pixels from a file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>location of the file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented in <a class="el" href="classimg_1_1PPMImage.html#aa98396a002bcf0440136dd70d20aea0d">img::PPMImage</a>, and <a class="el" href="classimg_1_1PNGImage.html#a107d2af39550f6300411ff44a05a6e7a">img::PNGImage</a>.</p>
+
+</div>
+</div>
+<a id="a54e06d99fceecf77e2ca105a2cb5e643" name="a54e06d99fceecf77e2ca105a2cb5e643"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54e06d99fceecf77e2ca105a2cb5e643">&#9670;&#160;</a></span>write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void img::Image::write </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write map of pixels to new file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>location of the new file</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Note, full name of the new file should be provided. </p>
+
+<p>Reimplemented in <a class="el" href="classimg_1_1PPMImage.html#a94dc9b4cf2bcb54bddc439ad6967ca07">img::PPMImage</a>, and <a class="el" href="classimg_1_1PNGImage.html#a36e2529ba4020eb204f0cafce40e2e0f">img::PNGImage</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/image/<a class="el" href="image_8hpp_source.html">image.hpp</a></li>
 <li>src/image/image.cpp</li>

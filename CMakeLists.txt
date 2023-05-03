@@ -42,12 +42,12 @@ FetchContent_Declare(
     BUILD_COMMAND ""
 )
 
-# # compession for PNG scanline
-# FetchContent_Declare(
-#   zlib
-#   GIT_REPOSITORY https://github.com/madler/zlib
-#   GIT_TAG        v1.2.13
-# )
+ # Compession for PNG scanline
+ FetchContent_Declare(
+   zlib
+   GIT_REPOSITORY https://github.com/madler/zlib
+   GIT_TAG        v1.2.13
+ )
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -73,14 +73,19 @@ endforeach()
 include_directories(${source_dir})
 
 FetchContent_MakeAvailable(Catch2 spdlog rang)
+# For header-only rang
 include_directories("${rang_SOURCE_DIR}/include")
+# For zlib (won't compile without it)
+include_directories(${zlib_SOURCE_DIR})
+include_directories(${zlib_BINARY_DIR})
+
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
-    # link libs to targets
+    # Link libs to targets
     target_link_libraries(${lib} spdlog)
-    # target_link_libraries(${lib} zlib)
+    # Target_link_libraries(${lib} zlib)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp
@@ -92,8 +97,8 @@ foreach(lib IN ITEMS ${modules})
         message(STATUS "found tests, making target: ${lib}-test")
         add_executable(${lib}-test ${test_files})
         target_link_libraries(${lib}-test PRIVATE Catch2::Catch2WithMain)
-        foreach(_lib IN ITEMS ${modules})
-            target_link_libraries(${lib}-test PRIVATE ${_lib})
+        foreach(module IN ITEMS ${modules})
+            target_link_libraries(${lib}-test PRIVATE ${module})
         endforeach()
     else()
         message(STATUS "tests are not found, skipping...")
