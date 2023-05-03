@@ -25,7 +25,38 @@ TEST_CASE("test insert"){
     img_t other;
     image.read("resources/west_2.ppm");
     other.read("resources/tree_2.ppm");
-    proc::insert(image, other, 60, 60);
+    proc::insert(image, other, -100, 40);
     image.write("resources/inserted.ppm");
 }
 
+TEST_CASE("test reflex_x"){
+    using img_t = img::PPMImage;
+    img_t image;
+    image.read("resources/west_2.ppm");
+    proc::reflex_x(image);
+    image.write("resources/reflexed_x.ppm");
+}
+
+TEST_CASE("test reflex_y"){
+    using img_t = img::PPMImage;
+    img_t image;
+    image.read("resources/west_2.ppm");
+    proc::reflex_y(image);
+    image.write("resources/reflexed_y.ppm");
+}
+
+TEST_CASE("test resize"){
+    using img_t = img::PPMImage;
+    img_t image;
+    image.read("resources/stop_1.ppm");
+    proc::resize(image, 0.1);
+    image.write("resources/resized.ppm");
+}
+
+TEST_CASE("test rotate"){
+    using img_t = img::PPMImage;
+    img_t image;
+    image.read("resources/sign_1.ppm");
+    proc::rotate(image, -45);
+    image.write("resources/rotated.ppm");
+}
