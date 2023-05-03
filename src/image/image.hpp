@@ -253,7 +253,7 @@ namespace img {
                                 const char* chunk_2,
                                 size_t size_2);
         static std::uint64_t _parse_chunk(char* bytes, size_t size);
-        static char* _extr_chunk(char* buffer, char* chunk, size_t size);
+        static void _extr_chunk(char*& buffer, char* chunk, size_t size);
         // parse functions
         bool read_crc(char* chunk, size_t size);
         void read_chunk_header(char* buffer, Chunk& chunk, size_t& size);

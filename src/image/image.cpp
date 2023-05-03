@@ -123,14 +123,22 @@ std::uint64_t img::PNGImage::_parse_chunk(char* bytes, size_t size) {
     return result;
 }
 
+void img::PNGImage::_extr_chunk(char*& buffer, char* chunk, size_t size) {
+    while (size--) {
+        *chunk = *buffer;
+        ++chunk;
+        ++buffer;
+    }
+}
+
 void img::PNGImage::read_chunk_header(char* buffer,
                                       img::PNGImage::Chunk& chunk,
                                       size_t& size) {
     // first 4-byte chunk is length
-    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    _extr_chunk(buffer, _chunk_4b, 4);
     size = _parse_chunk(_chunk_4b, 4);
     // second 4-byte chunk is name
-    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    _extr_chunk(buffer, _chunk_4b, 4);
     if (_cmp_chunks(_chunk_4b, 4, _ihdr_name, 4)) {
         chunk = img::PNGImage::Chunk::IHDR;
     } else if (_cmp_chunks(_chunk_4b, 4, _idat_name, 4)) {
@@ -142,49 +150,43 @@ void img::PNGImage::read_chunk_header(char* buffer,
 
 void img::PNGImage::read_ihdr(char* buffer) {
     size_t buff_pos = 0;
-    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    _extr_chunk(buffer, _chunk_4b, 4);
     int width = _parse_chunk(_chunk_4b, 4);
-    buffer = _extr_chunk(buffer, _chunk_4b, 4);
+    _extr_chunk(buffer, _chunk_4b, 4);
     int height = _parse_chunk(_chunk_4b, 4);
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
 
-    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    _extr_chunk(buffer, _chunk_1b, 1);
     bit_depth = _parse_chunk(_chunk_1b, 1);
-    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    _extr_chunk(buffer, _chunk_1b, 1);
     color_type = _parse_chunk(_chunk_1b, 1);
     if (color_type == 2) {
         if (bit_depth != 8 || bit_depth != 16) {
-            LOG_CRITICAL("bit depth for true color must be 8 or 16, received: {}",
-                                    bit_depth);
+            LOG_CRITICAL("bit depth for true color must be 8 or 16, received: {}", bit_depth);
         }
     } else if (color_type == 6) {
         if (bit_depth != 8 || bit_depth != 16) {
-            LOG_CRITICAL("bit depth for true color with alpha must be "
-                                    "8 or 16, received: {}",
+            LOG_CRITICAL("bit depth for true color with alpha must be 8 or 16, received: {}",
                                     bit_depth);
         }
     } else {
-        LOG_CRITICAL("unsupported color type: {}",
-                                color_type);
+        LOG_CRITICAL("unsupported color type: {}", color_type);
     }
-    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    _extr_chunk(buffer, _chunk_1b, 1);
     compression_method = _parse_chunk(_chunk_1b, 1);
     if (compression_method) {
-        LOG_CRITICAL("compression method must be 0, received: {}",
-                                compression_method);
+        LOG_CRITICAL("compression method must be 0, received: {}", compression_method);
     }
-    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    _extr_chunk(buffer, _chunk_1b, 1);
     filter_method = _parse_chunk(_chunk_1b, 1);
     if (filter_method) {
-        LOG_CRITICAL("filter method must be 0, received: {}",
-                                filter_method);
+        LOG_CRITICAL("filter method must be 0, received: {}", filter_method);
     }
-    buffer = _extr_chunk(buffer, _chunk_1b, 1);
+    _extr_chunk(buffer, _chunk_1b, 1);
     interlace_method = _parse_chunk(_chunk_1b, 1);
     if (interlace_method) {
-        LOG_CRITICAL("only <no interlace> is supported, received: {}",
-                                interlace_method);
+        LOG_CRITICAL("only <no interlace> is supported, received: {}", interlace_method);
     }
 }
 
@@ -236,4 +238,3 @@ void img::PNGImage::read(std::string_view path) {
 
 void img::PNGImage::write(std::string_view path) {}
 
-char* img::PNGImage::_extr_chunk(char* buffer, char* chunk, size_t size) {return nullptr;}

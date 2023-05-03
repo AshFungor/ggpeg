@@ -54,12 +54,29 @@ TEST_CASE("PNG helper functions", "[base]") {
     check &= !img::PNGImage::_cmp_chunks(byte_array_diff, 4, byte_array, 4);
     check &= !img::PNGImage::_cmp_chunks(byte_array_diff, 4, byte_array_long, 5);
     REQUIRE(check);
-    // parse_bytes test
+    // parse_chunk test
     char number_255[2] {0, ~0};
     REQUIRE(img::PNGImage::_parse_chunk(number_255, 2) == 255);
     char number_255_0[2] {~0, 0};
     REQUIRE(img::PNGImage::_parse_chunk(number_255_0, 2) == 255 << 8);
     char number_255_255_255[3] {~0, ~0, ~0};
     REQUIRE(img::PNGImage::_parse_chunk(number_255_255_255, 3) == (255 << 16) + (255 << 8) + 255);
+    // extract_chunk test
+    auto bytes = std::make_unique<char[]>(10);
+    for (int i {0}; i < 10; ++i) { bytes[i] = i; }
+    char chunk_1b[1], chunk_2b[2], chunk_3b[3], chunk_4b[4];
+    char c_chunk_1b[1]  {0},
+         c_chunk_2b[2]  {1, 2},
+         c_chunk_3b[3]  {3, 4, 5},
+         c_chunk_4b[4]  {6, 7, 8, 9};
+    auto buffer = bytes.get();
+    img::PNGImage::_extr_chunk(buffer, chunk_1b, 1);
+    REQUIRE(img::PNGImage::_cmp_chunks(chunk_1b, 1, c_chunk_1b, 1));
+    img::PNGImage::_extr_chunk(buffer, chunk_2b, 2);
+    REQUIRE(img::PNGImage::_cmp_chunks(chunk_2b, 2, c_chunk_2b, 2));
+    img::PNGImage::_extr_chunk(buffer, chunk_3b, 3);
+    REQUIRE(img::PNGImage::_cmp_chunks(chunk_3b, 3, c_chunk_3b, 3));
+    img::PNGImage::_extr_chunk(buffer, chunk_4b, 4);
+    REQUIRE(img::PNGImage::_cmp_chunks(chunk_4b, 4, c_chunk_4b, 4));
 }
 
