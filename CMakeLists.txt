@@ -47,6 +47,8 @@ FetchContent_Declare(
     zlib
     GIT_REPOSITORY https://github.com/madler/zlib
     GIT_TAG        v1.2.13
+    CONFIGURE_COMMAND "cmake .."
+    BUILD_COMMAND "cmake --build . --target zlib zlibstatic"
 )
 
 # Each folder in root source directory is build as a standalone library.
@@ -72,12 +74,11 @@ endforeach()
 
 include_directories(${source_dir})
 
-# FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
-FetchContent_MakeAvailable(Catch2 spdlog rang)
+FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
 # For header-only rang
 include_directories("${rang_SOURCE_DIR}/include")
 # For zlib (won't compile without it)
-#include_directories(${zlib_SOURCE_DIR})
+include_directories(${zlib_SOURCE_DIR})
 #include_directories(${zlib_BINARY_DIR})
 
 
@@ -86,7 +87,7 @@ add_executable(ggpeg "${source_dir}/main.cpp")
 foreach(lib IN ITEMS ${modules})
     # Link libs to targets
     target_link_libraries(${lib} spdlog)
-    # target_link_libraries(${lib} zlib)
+    target_link_libraries(${lib} zlib)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp
