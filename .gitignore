@@ -101,3 +101,6 @@ fabric.properties
 
 # VS Code
 .vscode/
+
+# Json conan config
+CMakeUserPresets.json

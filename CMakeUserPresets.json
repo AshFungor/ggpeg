@@ -1,9 +1,0 @@
-{
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "/home/fungor/extended-hard-drive/projects/cplusplus-projects/ggpeg/build/CMakePresets.json"
-    ]
-}
