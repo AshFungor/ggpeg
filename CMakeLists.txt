@@ -79,7 +79,7 @@ FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
 include_directories("${rang_SOURCE_DIR}/include")
 # For zlib (won't compile without it)
 include_directories(${zlib_SOURCE_DIR})
-#include_directories(${zlib_BINARY_DIR})
+include_directories(${zlib_BINARY_DIR})
 
 
 add_executable(ggpeg "${source_dir}/main.cpp")
