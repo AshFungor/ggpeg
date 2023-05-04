@@ -3,7 +3,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 // compression
-#include <zlib.h>
+//#include <zlib.h>
 
 // std headers
 #include "image.hpp"

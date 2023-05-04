@@ -228,8 +228,62 @@ void proc::rotate(img::Image &img, double degrees){
                 }
 
                 clear_pixel_map.at(i, j) = img::Color (round(R/sides), round(G/sides), round(B/sides));
-
             }
+        }
+    }
+
+    int find_color = 0;
+    while(find_color == 0){
+        for(int i = 0; i < columns; ++i){
+            find_color += clear_pixel_map.at(0, i).R();
+            find_color += clear_pixel_map.at(0, i).G();
+            find_color += clear_pixel_map.at(0, i).B();
+        }
+        if(find_color == 0){
+            clear_pixel_map.trim(img::Side::top, 1);
+            rows = clear_pixel_map.rows();
+        } 
+    }
+
+    find_color = 0;
+
+    while(find_color == 0){
+        for(int i = 0; i < columns; ++i){
+            find_color += clear_pixel_map.at(rows - 1, i).R();
+            find_color += clear_pixel_map.at(rows - 1, i).G();
+            find_color += clear_pixel_map.at(rows - 1, i).B();
+        }
+        if(find_color == 0){
+            clear_pixel_map.trim(img::Side::bottom, 1);
+            rows = clear_pixel_map.rows();
+        } 
+    }
+
+    find_color = 0;
+
+    while(find_color == 0){
+        for(int i = 0; i < rows; ++i){
+            find_color += clear_pixel_map.at(i, 0).R();
+            find_color += clear_pixel_map.at(i, 0).G();
+            find_color += clear_pixel_map.at(i, 0).B();
+        }
+        if(find_color == 0){
+            clear_pixel_map.trim(img::Side::left, 1);
+            columns = clear_pixel_map.columns();
+        }
+    }
+
+    find_color = 0;
+
+    while(find_color == 0){
+        for(int i = 0; i < rows; ++i){
+            find_color += clear_pixel_map.at(i, columns - 1).R();
+            find_color += clear_pixel_map.at(i, columns - 1).G();
+            find_color += clear_pixel_map.at(i, columns - 1).B();
+        }
+        if(find_color == 0){
+            clear_pixel_map.trim(img::Side::right, 1);
+            columns = clear_pixel_map.columns();
         }
     }
     pixel_map = clear_pixel_map;
