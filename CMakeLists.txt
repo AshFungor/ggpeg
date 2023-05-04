@@ -8,48 +8,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Source directory for this project.
 set(source_dir "${CMAKE_SOURCE_DIR}/src")
 # Static libraries (modules) to be built.
+set(build_dir "${CMAKE_SOURCE_DIR}/build")
 set(modules "")
 # Unit tests directory.
 set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
 # Image test files directory.
 set(image_test_dir "${testing_dir}/test-data")
 
-# For external libraries
-Include(FetchContent)
+set(CMAKE_TOOLCHAIN_FILE "${build_dir}/conan_toolchain.cmake")
 
 # Catch2 (tests)
-FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.3.2
-)
+find_package(Catch2 REQUIRED)
 
 # spdlog (logging)
-FetchContent_Declare(
-  spdlog
-  GIT_REPOSITORY https://github.com/gabime/spdlog
-  GIT_TAG        v1.11.0
-)
+find_package(spdlog REQUIRED)
 
 # rang (console colors)
-FetchContent_Declare(
-    rang
-    GIT_REPOSITORY  https://github.com/agauniyal/rang
-    GIT_TAG         v3.2
-    # Since library is header-only, build and configure
-    # commands are not required.
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-)
+find_package(rang REQUIRED)
 
 # Compession for PNG scanline
-FetchContent_Declare(
-    zlib
-    GIT_REPOSITORY https://github.com/madler/zlib
-    GIT_TAG        v1.2.13
-    CONFIGURE_COMMAND "cmake .."
-    BUILD_COMMAND "cmake --build . --target zlib zlibstatic"
-)
+find_package(ZLIB REQUIRED)
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -73,21 +51,17 @@ foreach(child IN ITEMS ${children})
 endforeach()
 
 include_directories(${source_dir})
-
-FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
-# For header-only rang
-include_directories("${rang_SOURCE_DIR}/include")
-# For zlib (won't compile without it)
-include_directories(${zlib_SOURCE_DIR})
-include_directories(${zlib_BINARY_DIR})
-
+include_directories(${rang_INCLUDE_DIR})
+include_directories(${Catch2_INCLUDE_DIR})
+include_directories(${spdlog_INCLUDE_DIR})
+include_directories(${ZLIB_INCLUDE_DIR})
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
     # Link libs to targets
-    target_link_libraries(${lib} spdlog)
-    target_link_libraries(${lib} zlib)
+    target_link_libraries(${lib} spdlog::spdlog)
+    target_link_libraries(${lib} ZLIB::ZLIB)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp

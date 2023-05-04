@@ -231,4 +231,6 @@ TEST_CASE("test rotate"){
     //         }
     //     }
     // }
+
+    image.write("resources/negative.ppm");
 }
