@@ -3,7 +3,7 @@
 int img::Color::R() const { return (_data & red) >> red_shift; }
 int img::Color::G() const { return (_data & green) >> green_shift; }
 int img::Color::B() const { return (_data & blue) >> blue_shift; }
-img::Color::Color() : _data{0x00ffffff} {}
+img::Color::Color() : _data{0x00000000} {}
 
 bool img::Color::operator==(Color other) const { return other._data == _data; }
 

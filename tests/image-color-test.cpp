@@ -14,7 +14,7 @@ bool colors_match(int r, int g, int b, img::Color color) {
 TEST_CASE("Construction of <Color> class and basic usage", "[base]") {
     // Base constructor must initialize white color.
     img::Color test_color{};
-    REQUIRE(colors_match(255, 255, 255, test_color));
+    REQUIRE(colors_match(0, 0, 0, test_color));
     // Constructor with three colors.
     std::mt19937 rd { std::random_device{}() };
     for (int times {0}; times < 20; ++times) {
