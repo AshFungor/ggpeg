@@ -42,12 +42,12 @@ FetchContent_Declare(
     BUILD_COMMAND ""
 )
 
- # Compession for PNG scanline
- FetchContent_Declare(
-   zlib
-   GIT_REPOSITORY https://github.com/madler/zlib
-   GIT_TAG        v1.2.13
- )
+# Compession for PNG scanline
+FetchContent_Declare(
+    zlib
+    GIT_REPOSITORY https://github.com/madler/zlib
+    GIT_TAG        v1.2.13
+)
 
 # Each folder in root source directory is build as a standalone library.
 file(GLOB children
@@ -72,7 +72,7 @@ endforeach()
 
 include_directories(${source_dir})
 
-FetchContent_MakeAvailable(Catch2 spdlog rang)
+FetchContent_MakeAvailable(Catch2 spdlog rang zlib)
 # For header-only rang
 include_directories("${rang_SOURCE_DIR}/include")
 # For zlib (won't compile without it)
@@ -85,7 +85,7 @@ add_executable(ggpeg "${source_dir}/main.cpp")
 foreach(lib IN ITEMS ${modules})
     # Link libs to targets
     target_link_libraries(${lib} spdlog)
-    # Target_link_libraries(${lib} zlib)
+    target_link_libraries(${lib} zlib)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp

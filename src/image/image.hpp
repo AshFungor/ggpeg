@@ -180,6 +180,34 @@ namespace img {
      */
     class Image {
     protected:
+        enum class ScanMode {
+            read, write
+        };
+        class Scanline {
+            std::fstream _str {};
+            std::unique_ptr<char[]> _buffer {nullptr};
+            size_t _buffer_size {0};
+            ScanMode _mode;
+            // CRC table
+            static std::unique_ptr<std::uint32_t[]> _crc_lookup_table;
+        public:
+            void reset_buffer(size_t number);
+            void expand_buffer(size_t number);
+            size_t size();
+            std::unique_ptr<char[]> get_chunk(size_t start, size_t end);
+            void set_chunk(size_t start, size_t end, std::unique_ptr<char[]> chunk);
+            void call_read(size_t number);
+            void call_write(size_t number);
+            char& operator[](size_t index);
+            Scanline(std::string_view path, ScanMode mode);
+            ~Scanline();
+            // helper methods
+            static bool _cmp_chunks(const char* chunk_1, size_t size_1,
+                                    const char* chunk_2, size_t size_2);
+            static std::uint64_t _parse_chunk(char* bytes, size_t size);
+            static void _extr_chunk(char** buffer, char* chunk, size_t size);
+            static std::uint32_t _crc(char* buffer, size_t size);
+        };
         PixelMap _map {0, 0};
         bool _status {false};
         Image() = default;
@@ -227,7 +255,7 @@ namespace img {
         constexpr static char _signature[9]
         {-119, 80, 78, 71, 13, 10, 26, 10, 0};
         // logger
-        std::shared_ptr<spdlog::logger> logger
+        std::shared_ptr<spdlog::logger> _logger
             {spdlog::basic_logger_mt("basic_logger", "log.txt")};
         // chunk names
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
@@ -237,24 +265,21 @@ namespace img {
         enum class Chunk {
             IHDR, IDAT, IEND
         };
+        // buffers
+        static char _chunk_1b[1];
+        static char _chunk_4b[4];
+        static char _chunk_8b[8];
         // fields of PNG header
         int bit_depth;
         int color_type;
         int compression_method;
         int filter_method;
         int interlace_method;
-        // helper functions
-        static bool _cmp_chunks(const char* chunk_1,
-                                size_t size_1,
-                                const char* chunk_2,
-                                size_t size_2);
-        static std::uint64_t _parse_chunk(char* bytes, size_t size);
-        static void _extr_chunk(char*& buffer, char* chunk, size_t size);
         // parse functions
-        bool read_crc(char* chunk, size_t size);
-        void read_chunk_header(char* buffer, Chunk& chunk, size_t& size);
-        void read_ihdr(char* buffer);
-        void read_idat(char* buffer, size_t size);
+        bool read_crc(char* buffer, size_t size);
+        void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
+        void read_ihdr(char*& buffer);
+        void read_idat(char*& buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
