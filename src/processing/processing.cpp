@@ -143,14 +143,20 @@ void proc::rotate(img::Image &img, double degrees){
     degrees = -degrees*2*M_PI/360;
 
     img::PixelMap &pixel_map = img.get_map();
-    size_t rows = pixel_map.rows();
-    size_t columns = pixel_map.columns();
+    int rows = pixel_map.rows();
+    int columns = pixel_map.columns();
+    int diagonal = sqrt(columns*columns + rows*rows);
+    pixel_map.expand(img::JointSide::bottom_and_top, (diagonal - rows)/2 + 1, (diagonal - rows)/2 + 1);
+    pixel_map.expand(img::JointSide::left_and_right, (diagonal - columns)/2 + 1, (diagonal - columns)/2 + 1);
+    rows = pixel_map.rows();
+    columns = pixel_map.columns();
+
     img::PixelMap clear_pixel_map(columns, rows);
 
     std::vector<std::vector<std::array<double, 4>>> pixels;
     pixels.resize(rows);
-    for(auto& row: pixels){
-        row.resize(columns);
+    for(int i = 0; i < rows; ++i){
+        pixels[i].resize(columns);
     }
 
     double middle_x = columns / 2.0;
