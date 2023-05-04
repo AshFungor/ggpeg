@@ -49,14 +49,14 @@ TEST_CASE("test resize"){
     using img_t = img::PPMImage;
     img_t image;
     image.read("resources/stop_1.ppm");
-    proc::resize(image, 0.1);
+    proc::resize(image, 5.54);
     image.write("resources/resized.ppm");
 }
 
 TEST_CASE("test rotate"){
     using img_t = img::PPMImage;
     img_t image;
-    image.read("resources/sign_1.ppm");
-    proc::rotate(image, -45);
+    image.read("resources/house_1.ppm");
+    proc::rotate(image, 70);
     image.write("resources/rotated.ppm");
 }
