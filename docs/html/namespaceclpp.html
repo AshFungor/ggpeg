@@ -79,19 +79,21 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Namespaceclpp.  
+<p>Commandline parameters parser.  
 <a href="namespaceclpp.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classclpp_1_1Command.html">Command</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class for storing information about the command that can be executed on an image.  <a href="classclpp_1_1Command.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classclpp_1_1Parser.html">Parser</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class for parsing tokens and generating correct commands for them.  <a href="classclpp_1_1Parser.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a1406096e002dba3b00642780ee2aed92"><td class="memItemLeft" align="right" valign="top"><a id="a1406096e002dba3b00642780ee2aed92" name="a1406096e002dba3b00642780ee2aed92"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>CommandType</b> { <br />
+<tr class="memitem:a1406096e002dba3b00642780ee2aed92"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">CommandType</a> { <br />
 &#160;&#160;<b>crop</b> = 0
 , <b>rotate</b> = 1
 , <b>resize</b> = 2
@@ -106,6 +108,7 @@ Enumerations</h2></td></tr>
 , <b>help</b> = 9
 <br />
  }</td></tr>
+<tr class="memdesc:a1406096e002dba3b00642780ee2aed92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration specifying the type of command.  <a href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">More...</a><br /></td></tr>
 <tr class="separator:a1406096e002dba3b00642780ee2aed92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -118,14 +121,46 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>helppp</b> ()</td></t
 Variables</h2></td></tr>
 <tr class="memitem:a2a575ba136dd7f5620b63a1980631faa"><td class="memItemLeft" align="right" valign="top"><a id="a2a575ba136dd7f5620b63a1980631faa" name="a2a575ba136dd7f5620b63a1980631faa"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>global_Path</b></td></tr>
+<tr class="memdesc:a2a575ba136dd7f5620b63a1980631faa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to main image. <br /></td></tr>
 <tr class="separator:a2a575ba136dd7f5620b63a1980631faa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5d6e90eddf2d334666c4597b7a9c0cb"><td class="memItemLeft" align="right" valign="top"><a id="ad5d6e90eddf2d334666c4597b7a9c0cb" name="ad5d6e90eddf2d334666c4597b7a9c0cb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>cerr_disabled</b></td></tr>
+<tr class="separator:ad5d6e90eddf2d334666c4597b7a9c0cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71ae455c147991d6e8b06e2fb6718b0f"><td class="memItemLeft" align="right" valign="top"><a id="a71ae455c147991d6e8b06e2fb6718b0f" name="a71ae455c147991d6e8b06e2fb6718b0f"></a>
 std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>allowed_Format</b> = {&quot;ppm&quot;, &quot;tga&quot;, &quot;png&quot;}</td></tr>
+<tr class="memdesc:a71ae455c147991d6e8b06e2fb6718b0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allowed file formats. <br /></td></tr>
 <tr class="separator:a71ae455c147991d6e8b06e2fb6718b0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Namespaceclpp. </p>
-</div></div><!-- contents -->
+<div class="textblock"><p>Commandline parameters parser. </p>
+<p>This namespace provides access to <a class="el" href="classclpp_1_1Command.html" title="A class for storing information about the command that can be executed on an image.">Command</a> and <a class="el" href="classclpp_1_1Parser.html" title="A class for parsing tokens and generating correct commands for them.">Parser</a> classes these classes process a string of tokens received by the program at startup </p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a1406096e002dba3b00642780ee2aed92" name="a1406096e002dba3b00642780ee2aed92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1406096e002dba3b00642780ee2aed92">&#9670;&#160;</a></span>CommandType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">clpp::CommandType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enumeration specifying the type of command. </p>
+<p>Used to set the type of command in the Сommand class. </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6

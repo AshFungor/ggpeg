@@ -80,109 +80,148 @@ $(function() {
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;queue&gt;</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceclpp.html">   16</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceclpp.html">clpp</a> {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="comment">// Code for CLI parser.</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="comment">// Path to image</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keyword">inline</span> std::string global_Path;</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="comment">// Allowed formats</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">inline</span> std::vector&lt;std::string&gt; allowed_Format = {<span class="stringliteral">&quot;ppm&quot;</span>, <span class="stringliteral">&quot;tga&quot;</span>, <span class="stringliteral">&quot;png&quot;</span>};</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;queue&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="namespaceclpp.html">   19</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceclpp.html">clpp</a> {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="comment">// Code for CLI parser.</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="namespaceclpp.html#a2a575ba136dd7f5620b63a1980631faa">   22</a></span>    <span class="keyword">inline</span> std::string <a class="code hl_variable" href="namespaceclpp.html#a2a575ba136dd7f5620b63a1980631faa">global_Path</a>; </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">inline</span> <span class="keywordtype">bool</span> cerr_disabled;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="namespaceclpp.html#a71ae455c147991d6e8b06e2fb6718b0f">   24</a></span>    <span class="keyword">inline</span> std::vector&lt;std::string&gt; <a class="code hl_variable" href="namespaceclpp.html#a71ae455c147991d6e8b06e2fb6718b0f">allowed_Format</a> = {<span class="stringliteral">&quot;ppm&quot;</span>, <span class="stringliteral">&quot;tga&quot;</span>, <span class="stringliteral">&quot;png&quot;</span>}; </div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="comment">// Enum with command</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keyword">enum class</span> CommandType</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    {</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        crop = 0, </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        rotate = 1, </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        resize = 2,</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        negative = 3, <span class="comment">// n</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        insert = 4,</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        convert_to = 5,</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        reflect_x = 6, <span class="comment">// x</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        reflect_y = 7, <span class="comment">// y</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        version = 8, <span class="comment">// v</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        help = 9 <span class="comment">// h</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    };</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="comment">// Command class</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="comment">// Store type and arguments for command</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classclpp_1_1Command.html">   43</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classclpp_1_1Command.html">Command</a></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            <a class="code hl_class" href="classclpp_1_1Command.html">Command</a>(std::string&amp; command);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            <span class="keywordtype">void</span> show_param();</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            CommandType _command;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            std::vector&lt;std::string&gt; _param;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">   30</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">CommandType</a></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        crop = 0, </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        rotate = 1, </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        resize = 2,</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        negative = 3, <span class="comment">// n</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        insert = 4,</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        convert_to = 5,</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        reflect_x = 6, <span class="comment">// x</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        reflect_y = 7, <span class="comment">// y</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        version = 8, <span class="comment">// v</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        help = 9 <span class="comment">// h</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    };</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classclpp_1_1Command.html">   51</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classclpp_1_1Command.html">Command</a></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            <span class="keywordtype">void</span> _parser_param_crop(std::string&amp; second_part);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            <span class="keywordtype">void</span> _parser_param_rotate(std::string&amp; second_part);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            <span class="keywordtype">void</span> _parser_param_resize(std::string&amp; second_part);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            <span class="keywordtype">void</span> _parser_param_insert(std::string&amp; second_part);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="keywordtype">void</span> _parser_param_convert_to(std::string&amp; second_part);</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="keywordtype">void</span> _exceptions_for_new_image(<span class="keyword">const</span> std::string &amp;path);</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <span class="keywordtype">void</span> _error_param();</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    };</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <a class="code hl_class" href="classclpp_1_1Command.html">Command</a>(std::string&amp; command);</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> helppp(){</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        std::cerr&lt;&lt;<span class="stringliteral">&quot;help..&quot;</span>&lt;&lt;std::endl;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="comment">// Parser class</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="comment">// Accepts vector and returns a queue of commands</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classclpp_1_1Parser.html">   71</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classclpp_1_1Parser.html">Parser</a></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <a class="code hl_class" href="classclpp_1_1Parser.html">Parser</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;tokens);</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <a class="code hl_class" href="classclpp_1_1Parser.html">~Parser</a>();</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            std::vector&lt;std::string&gt; get_tokens();</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            std::vector&lt;std::string&gt; get_line_of_command();</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>            <span class="keywordtype">void</span> show_tokens();</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            <span class="keywordtype">void</span> show_line_of_command();</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            std::vector&lt;std::string&gt; _tokens;</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            std::vector&lt;std::string&gt; _line_of_command;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            std::queue&lt;Command&gt; _queue_of_command;</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <span class="comment">// Parsing tokens in a suitable vector format</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            <span class="keywordtype">void</span> _parse_to_string(); </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            std::string _convert_to_long(<span class="keyword">const</span> <span class="keywordtype">char</span> sh);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            <span class="keywordtype">void</span> _parse_to_queue();</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            <span class="comment">// Check commands</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            <span class="keywordtype">void</span> _check_combination_short_command(<span class="keyword">const</span> std::string &amp;combination_short_command);</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            <span class="keywordtype">void</span> _check_long_command(<span class="keyword">const</span> std::string &amp;long_command);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="comment">// Handling exceptions</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <span class="keywordtype">void</span> _exceptions_for_image(<span class="keyword">const</span> std::string &amp;path);</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            <span class="keywordtype">void</span> _exceptions_for_short_command(<span class="keyword">const</span> <span class="keywordtype">char</span> token);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordtype">void</span> _exceptions_for_incorrect_format(<span class="keyword">const</span> std::string &amp;token);</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    };</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>}</div>
-<div class="ttc" id="aclassclpp_1_1Command_html"><div class="ttname"><a href="classclpp_1_1Command.html">clpp::Command</a></div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:44</div></div>
-<div class="ttc" id="aclassclpp_1_1Parser_html"><div class="ttname"><a href="classclpp_1_1Parser.html">clpp::Parser</a></div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:72</div></div>
-<div class="ttc" id="anamespaceclpp_html"><div class="ttname"><a href="namespaceclpp.html">clpp</a></div><div class="ttdoc">Namespaceclpp.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:16</div></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Command.html#ae2091c1dda775a49417e88f875cdfd99">show_param</a>();</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Command.html#a45e0dec5da92220c774b701a42be8151">show_command</a>();</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            std::vector&lt;std::string&gt; <a class="code hl_function" href="classclpp_1_1Command.html#aea0bf15549643c0cefae6b36d245f2cb">get_param</a>();</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>            <a class="code hl_enumeration" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">CommandType</a> <a class="code hl_function" href="classclpp_1_1Command.html#a48c20a764a243d6d876a9b26d76b8622">get_command</a>();</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            </div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <a class="code hl_enumeration" href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">CommandType</a> _command; </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            std::vector&lt;std::string&gt; _param; </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            <span class="keywordtype">void</span> _parser_param_crop(<span class="keyword">const</span> std::string&amp; second_part);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <span class="keywordtype">void</span> _parser_param_rotate(<span class="keyword">const</span> std::string&amp; second_part);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordtype">void</span> _parser_param_resize(<span class="keyword">const</span> std::string&amp; second_part);</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            <span class="keywordtype">void</span> _parser_param_insert(<span class="keyword">const</span> std::string&amp; second_part);</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>            <span class="keywordtype">void</span> _parser_param_convert_to(<span class="keyword">const</span> std::string&amp; second_part);</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            </div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>            <span class="keywordtype">void</span> _exceptions_for_new_image(<span class="keyword">const</span> std::string &amp;path);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>            <span class="keywordtype">void</span> _error_param();</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    };</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> helppp(){</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        std::cerr&lt;&lt;<span class="stringliteral">&quot;help..&quot;</span>&lt;&lt;std::endl;</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    }</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno"><a class="line" href="classclpp_1_1Parser.html">  176</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classclpp_1_1Parser.html">Parser</a></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    {</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        <a class="code hl_class" href="classclpp_1_1Parser.html">Parser</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;tokens, <span class="keyword">const</span> <span class="keywordtype">bool</span> display);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        <a class="code hl_function" href="classclpp_1_1Parser.html#aed85df23aadbc44534d7a1dfbf5ac308">~Parser</a>();</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Parser.html#a7d01cc9b663bba1c032ea4248c9ead7a">show_tokens</a>();</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Parser.html#ab21f2efcdd18c25a44075973ba59f899">show_line_of_command</a>();</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Parser.html#aba8464c3e0e92d90fc89818b962816d3">show_queue_of_command</a>();</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Parser.html#a0ff5a61273dd16ae2771be0dddf6931a">show_correct_short_command</a>();</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classclpp_1_1Parser.html#a492fe658e60f49a6f63ddc5bd35f0ebf">show_correct_long_command</a>();</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        std::vector&lt;std::string&gt; <a class="code hl_function" href="classclpp_1_1Parser.html#afea68a30d3324074e193828491e3afc3">get_tokens</a>();</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        std::vector&lt;std::string&gt; <a class="code hl_function" href="classclpp_1_1Parser.html#afe37f0c4964b7b5422620ae31da37876">get_line_of_command</a>();</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        std::queue&lt;Command&gt; <a class="code hl_function" href="classclpp_1_1Parser.html#a9adb27871fe2736d95497522d0fef32a">get_queue_of_command</a>();</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keyword">const</span> std::string _correct_short_command{<span class="stringliteral">&quot;nxyvh&quot;</span>}; </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keyword">const</span> std::vector&lt;std::string&gt; _correct_long_commands = {<span class="stringliteral">&quot;crop&quot;</span>, <span class="stringliteral">&quot;rotate&quot;</span>, <span class="stringliteral">&quot;resize&quot;</span>,</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                                                     <span class="stringliteral">&quot;negative&quot;</span>, <span class="stringliteral">&quot;insert&quot;</span>, <span class="stringliteral">&quot;convert_to&quot;</span>,</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                                                     <span class="stringliteral">&quot;reflect_x&quot;</span>, <span class="stringliteral">&quot;reflect_y&quot;</span>, <span class="stringliteral">&quot;version&quot;</span>,</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                                                     <span class="stringliteral">&quot;help&quot;</span>}; </div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        std::vector&lt;std::string&gt; _tokens; </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        std::vector&lt;std::string&gt; _line_of_command; </div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        std::queue&lt;Command&gt; _queue_of_command; </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keywordtype">void</span> _parse_to_string();</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        std::string _convert_to_long(<span class="keyword">const</span> <span class="keywordtype">char</span> sh);</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        <span class="keywordtype">void</span> _parse_to_queue();</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>        <span class="keywordtype">void</span> _check_combination_short_command(<span class="keyword">const</span> std::string &amp;combination_short_command);</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordtype">void</span> _check_long_command(<span class="keyword">const</span> std::string &amp;long_command);</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <span class="keywordtype">void</span> _exceptions_for_image(<span class="keyword">const</span> std::string &amp;path);</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="keywordtype">void</span> _exceptions_for_short_command(<span class="keyword">const</span> <span class="keywordtype">char</span> token);</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keywordtype">void</span> _exceptions_for_incorrect_format(<span class="keyword">const</span> std::string &amp;token);</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>    };</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>}</div>
+<div class="ttc" id="aclassclpp_1_1Command_html"><div class="ttname"><a href="classclpp_1_1Command.html">clpp::Command</a></div><div class="ttdoc">A class for storing information about the command that can be executed on an image.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:52</div></div>
+<div class="ttc" id="aclassclpp_1_1Command_html_a45e0dec5da92220c774b701a42be8151"><div class="ttname"><a href="classclpp_1_1Command.html#a45e0dec5da92220c774b701a42be8151">clpp::Command::show_command</a></div><div class="ttdeci">void show_command()</div><div class="ttdoc">Displays the command type.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:553</div></div>
+<div class="ttc" id="aclassclpp_1_1Command_html_a48c20a764a243d6d876a9b26d76b8622"><div class="ttname"><a href="classclpp_1_1Command.html#a48c20a764a243d6d876a9b26d76b8622">clpp::Command::get_command</a></div><div class="ttdeci">CommandType get_command()</div><div class="ttdoc">Retrieves command type.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:568</div></div>
+<div class="ttc" id="aclassclpp_1_1Command_html_ae2091c1dda775a49417e88f875cdfd99"><div class="ttname"><a href="classclpp_1_1Command.html#ae2091c1dda775a49417e88f875cdfd99">clpp::Command::show_param</a></div><div class="ttdeci">void show_param()</div><div class="ttdoc">Displays the command parameters.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:540</div></div>
+<div class="ttc" id="aclassclpp_1_1Command_html_aea0bf15549643c0cefae6b36d245f2cb"><div class="ttname"><a href="classclpp_1_1Command.html#aea0bf15549643c0cefae6b36d245f2cb">clpp::Command::get_param</a></div><div class="ttdeci">std::vector&lt; std::string &gt; get_param()</div><div class="ttdoc">Retrieves parameter values.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:564</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html"><div class="ttname"><a href="classclpp_1_1Parser.html">clpp::Parser</a></div><div class="ttdoc">A class for parsing tokens and generating correct commands for them.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:177</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_a0ff5a61273dd16ae2771be0dddf6931a"><div class="ttname"><a href="classclpp_1_1Parser.html#a0ff5a61273dd16ae2771be0dddf6931a">clpp::Parser::show_correct_short_command</a></div><div class="ttdeci">void show_correct_short_command()</div><div class="ttdoc">Displays set of correct short command.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:270</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_a492fe658e60f49a6f63ddc5bd35f0ebf"><div class="ttname"><a href="classclpp_1_1Parser.html#a492fe658e60f49a6f63ddc5bd35f0ebf">clpp::Parser::show_correct_long_command</a></div><div class="ttdeci">void show_correct_long_command()</div><div class="ttdoc">Displays set of correct long command.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:256</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_a7d01cc9b663bba1c032ea4248c9ead7a"><div class="ttname"><a href="classclpp_1_1Parser.html#a7d01cc9b663bba1c032ea4248c9ead7a">clpp::Parser::show_tokens</a></div><div class="ttdeci">void show_tokens()</div><div class="ttdoc">Displays tokens.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:204</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_a9adb27871fe2736d95497522d0fef32a"><div class="ttname"><a href="classclpp_1_1Parser.html#a9adb27871fe2736d95497522d0fef32a">clpp::Parser::get_queue_of_command</a></div><div class="ttdeci">std::queue&lt; Command &gt; get_queue_of_command()</div><div class="ttdoc">Retrieves command queue.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:293</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_ab21f2efcdd18c25a44075973ba59f899"><div class="ttname"><a href="classclpp_1_1Parser.html#ab21f2efcdd18c25a44075973ba59f899">clpp::Parser::show_line_of_command</a></div><div class="ttdeci">void show_line_of_command()</div><div class="ttdoc">Displays string of commands.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:218</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_aba8464c3e0e92d90fc89818b962816d3"><div class="ttname"><a href="classclpp_1_1Parser.html#aba8464c3e0e92d90fc89818b962816d3">clpp::Parser::show_queue_of_command</a></div><div class="ttdeci">void show_queue_of_command()</div><div class="ttdoc">Displays queue of commands.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:232</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_aed85df23aadbc44534d7a1dfbf5ac308"><div class="ttname"><a href="classclpp_1_1Parser.html#aed85df23aadbc44534d7a1dfbf5ac308">clpp::Parser::~Parser</a></div><div class="ttdeci">~Parser()</div><div class="ttdoc">Destructor for Parser class.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:37</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_afe37f0c4964b7b5422620ae31da37876"><div class="ttname"><a href="classclpp_1_1Parser.html#afe37f0c4964b7b5422620ae31da37876">clpp::Parser::get_line_of_command</a></div><div class="ttdeci">std::vector&lt; std::string &gt; get_line_of_command()</div><div class="ttdoc">Retrieves command string.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:289</div></div>
+<div class="ttc" id="aclassclpp_1_1Parser_html_afea68a30d3324074e193828491e3afc3"><div class="ttname"><a href="classclpp_1_1Parser.html#afea68a30d3324074e193828491e3afc3">clpp::Parser::get_tokens</a></div><div class="ttdeci">std::vector&lt; std::string &gt; get_tokens()</div><div class="ttdoc">Retrieves tokens.</div><div class="ttdef"><b>Definition:</b> clp-parser.cpp:285</div></div>
+<div class="ttc" id="anamespaceclpp_html"><div class="ttname"><a href="namespaceclpp.html">clpp</a></div><div class="ttdoc">Commandline parameters parser.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:19</div></div>
+<div class="ttc" id="anamespaceclpp_html_a1406096e002dba3b00642780ee2aed92"><div class="ttname"><a href="namespaceclpp.html#a1406096e002dba3b00642780ee2aed92">clpp::CommandType</a></div><div class="ttdeci">CommandType</div><div class="ttdoc">Enumeration specifying the type of command.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:31</div></div>
+<div class="ttc" id="anamespaceclpp_html_a2a575ba136dd7f5620b63a1980631faa"><div class="ttname"><a href="namespaceclpp.html#a2a575ba136dd7f5620b63a1980631faa">clpp::global_Path</a></div><div class="ttdeci">std::string global_Path</div><div class="ttdoc">Path to main image.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:22</div></div>
+<div class="ttc" id="anamespaceclpp_html_a71ae455c147991d6e8b06e2fb6718b0f"><div class="ttname"><a href="namespaceclpp.html#a71ae455c147991d6e8b06e2fb6718b0f">clpp::allowed_Format</a></div><div class="ttdeci">std::vector&lt; std::string &gt; allowed_Format</div><div class="ttdoc">Allowed file formats.</div><div class="ttdef"><b>Definition:</b> clp-parser.hpp:24</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

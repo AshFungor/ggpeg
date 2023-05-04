@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['write_0',['write',['../classimg_1_1Image.html#a54e06d99fceecf77e2ca105a2cb5e643',1,'img::Image::write()'],['../classimg_1_1PPMImage.html#a94dc9b4cf2bcb54bddc439ad6967ca07',1,'img::PPMImage::write()'],['../classimg_1_1PNGImage.html#a36e2529ba4020eb204f0cafce40e2e0f',1,'img::PNGImage::write()']]]
+  ['trim_0',['trim',['../classimg_1_1PixelMap.html#ae0c8184c8de8e2c44ec5e806ceeed763',1,'img::PixelMap::trim(Side side, int count)'],['../classimg_1_1PixelMap.html#a92451061a303e0cbcf665cadc549d302',1,'img::PixelMap::trim(JointSide sides, int count_1, int count_2)']]]
 ];
