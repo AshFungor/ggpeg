@@ -36,6 +36,11 @@ void img::Image::Scanline::expand_buffer(size_t number) {
 }
 
 void img::Image::Scanline::reset_buffer(size_t number) {
+    if (_buffer_size == number) {
+        _buffer_size = 0;
+        _buffer.reset(nullptr);
+        return;
+    }
     auto new_buff = std::make_unique<char[]>(_buffer_size - number);
     for (size_t i {number}; i < _buffer_size; ++i) {
         new_buff[i - number] = _buffer[i];

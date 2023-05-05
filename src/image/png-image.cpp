@@ -104,45 +104,47 @@ void img::PNGImage::read(std::string_view path) {
     _status = false;
     _logger->debug("beginning to parse PNG file \'{}\'", path);
 
-    std::ifstream file {path.data(), std::ios::in | std::ios::binary};
+    Scanline scline {path.data(), ScanMode::read};
     img::PNGImage::Chunk chunk;
     size_t chunk_size;
 
-    // buffer for IHDR
-    auto buffer_25b = std::make_unique<char[]>(25);
-    auto ptr_buffer_25b {buffer_25b.get()};
-
     // parse 8-bit header
-    file.read(_chunk_8b, 8);
-    if (!Scanline::_cmp_chunks(_chunk_8b, 8, _signature, 8)) {
+
+    scline.call_read(8);
+    if (!Scanline::_cmp_chunks(scline.get_chunk(0, 8).get(), 8, _signature, 8)) {
         _logger->critical("signature of PNG file is not met, received: <{}>",
                          Scanline::_parse_chunk(_chunk_8b, 8));
         return;
     }
     _logger->debug("successfully verified header, reading IHDR");
+    scline.reset_buffer(8);
 
     // parse IHDR
-    file.read(ptr_buffer_25b, 25);
-    read_chunk_header(ptr_buffer_25b, chunk, chunk_size);
+    scline.call_read(25);
+    auto buffer = scline.get_chunk(0, 8).get();
+    read_chunk_header(buffer, chunk, chunk_size);
     if (chunk_size != 13) {
         LOG_CRITICAL_FMT("IHDR size should be 13, received: {}", chunk_size);
     }
     if (chunk != img::PNGImage::Chunk::IHDR) {
         LOG_CRITICAL_FMT("first chunk type must be IHDR, received: {}", static_cast<int>(chunk));
     }
-
-    read_ihdr(ptr_buffer_25b);
-    if (ptr_buffer_25b - 13 - 8 != buffer_25b.get()) {
+    buffer = scline.get_chunk(8, 21).get();
+    read_ihdr(buffer);
+    if (buffer - 13 - 8 != &scline[8]) {
         LOG_CRITICAL("error occurred, aborting");
     }
-    if (!read_crc(ptr_buffer_25b - 17, 21)) {
+    buffer = scline.get_chunk(4, 25).get();
+    if (!read_crc(buffer, 21)) {
         LOG_CRITICAL("CRC failed");
     }
+    scline.reset_buffer(25);
 
     while (chunk != img::PNGImage::Chunk::IEND) {
-        ptr_buffer_25b = buffer_25b.get();
-        file.read(ptr_buffer_25b, 8);
-        read_chunk_header(ptr_buffer_25b, chunk, chunk_size);
+
+        scline.call_read(8);
+        buffer = scline.get_chunk(0, 8).get();
+        read_chunk_header(buffer, chunk, chunk_size);
 
         if (chunk == img::PNGImage::Chunk::IDAT) {
 

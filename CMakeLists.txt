@@ -16,6 +16,8 @@ set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
 set(image_test_dir "${testing_dir}/test-data")
 
 set(CMAKE_TOOLCHAIN_FILE "${build_dir}/conan_toolchain.cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
+set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
 
 # Catch2 (tests)
 find_package(Catch2 REQUIRED)
