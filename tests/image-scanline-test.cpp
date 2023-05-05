@@ -16,7 +16,7 @@ TEST_CASE("Scanline functionality", "[base]") {
         REQUIRE(file.size() == 15);
         auto data_ptr = std::make_unique<char[]>(sizeof(data));
         for (int i {0}; i < sizeof(data); ++i) {data_ptr[i] = data[i]; }
-        file.set_chunk(0, 14, std::move(data_ptr));
+        file.set_chunk(0, 15, std::move(data_ptr));
         file.call_write(15);
         REQUIRE(file.size() == 0);
     }
@@ -62,13 +62,13 @@ TEST_CASE("Scanline helper functions", "[base]") {
          c_chunk_3b[3]  {3, 4, 5},
          c_chunk_4b[4]  {6, 7, 8, 9};
     auto buffer = bytes.get();
-    img::Image::Scanline::_extr_chunk(&buffer, chunk_1b, 1);
+    img::Image::Scanline::_extr_chunk(buffer, chunk_1b, 1);
     REQUIRE(img::Image::Scanline::_cmp_chunks(chunk_1b, 1, c_chunk_1b, 1));
-    img::Image::Scanline::_extr_chunk(&buffer, chunk_2b, 2);
+    img::Image::Scanline::_extr_chunk(buffer, chunk_2b, 2);
     REQUIRE(img::Image::Scanline::_cmp_chunks(chunk_2b, 2, c_chunk_2b, 2));
-    img::Image::Scanline::_extr_chunk(&buffer, chunk_3b, 3);
+    img::Image::Scanline::_extr_chunk(buffer, chunk_3b, 3);
     REQUIRE(img::Image::Scanline::_cmp_chunks(chunk_3b, 3, c_chunk_3b, 3));
-    img::Image::Scanline::_extr_chunk(&buffer, chunk_4b, 4);
+    img::Image::Scanline::_extr_chunk(buffer, chunk_4b, 4);
     REQUIRE(img::Image::Scanline::_cmp_chunks(chunk_4b, 4, c_chunk_4b, 4));
     // CRC test
     char sample_input[] = { 0x49,0x48,0x44,0x52,0x00,0x00,0x01,0x77,0x00,

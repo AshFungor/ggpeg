@@ -16,14 +16,12 @@ set(testing_dir "${CMAKE_SOURCE_DIR}/tests")
 set(image_test_dir "${testing_dir}/test-data")
 
 set(CMAKE_TOOLCHAIN_FILE "${build_dir}/conan_toolchain.cmake")
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+set(CMAKE_BUILD_TYPE "Debug")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 # Catch2 (tests)
 find_package(Catch2 REQUIRED)
-
-# spdlog (logging)
-find_package(spdlog REQUIRED)
 
 # rang (console colors)
 find_package(rang REQUIRED)
@@ -48,6 +46,8 @@ foreach(child IN ITEMS ${children})
             CONFIGURE_DEPENDS
             "${current}/*.cpp" "${current}/*.hpp")
         add_library(${child} ${sources})
+        # Link libs to targets
+        target_link_libraries(${child} ZLIB::ZLIB)
         list(APPEND modules ${child})
     endif()
 endforeach()
@@ -55,15 +55,11 @@ endforeach()
 include_directories(${source_dir})
 include_directories(${rang_INCLUDE_DIR})
 include_directories(${Catch2_INCLUDE_DIR})
-include_directories(${spdlog_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIR})
 
 add_executable(ggpeg "${source_dir}/main.cpp")
 
 foreach(lib IN ITEMS ${modules})
-    # Link libs to targets
-    target_link_libraries(${lib} spdlog::spdlog)
-    target_link_libraries(${lib} ZLIB::ZLIB)
     message(STATUS "linking library: ${lib}")
     target_link_libraries(ggpeg PRIVATE ${lib})
     # All tests must be called <lib-target-name>-*-test.cpp
@@ -75,6 +71,7 @@ foreach(lib IN ITEMS ${modules})
         message(STATUS "found tests, making target: ${lib}-test")
         add_executable(${lib}-test ${test_files})
         target_link_libraries(${lib}-test PRIVATE Catch2::Catch2WithMain)
+        target_link_libraries(${lib}-test PRIVATE Catch2::Catch2)
         foreach(module IN ITEMS ${modules})
             target_link_libraries(${lib}-test PRIVATE ${module})
         endforeach()
