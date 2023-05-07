@@ -79,6 +79,10 @@ void proc::reflex_y(img::Image &img){
 }
 
 void proc::resize(img::Image &img, double k){
+    if(k <= 0){
+        k = 1;
+    }
+
     img::PixelMap &pixel_map = img.get_map();
     size_t rows = pixel_map.rows();
     size_t columns = pixel_map.columns();
@@ -140,151 +144,189 @@ void proc::resize(img::Image &img, double k){
 }
 
 void proc::rotate(img::Image &img, double degrees){
-    degrees = -degrees*2*M_PI/360;
+
+    while(degrees >= 0){
+        degrees -= 360;
+    }
+    while(degrees < 0){
+        degrees += 360;
+    }
+
+    double rotate_value = -degrees*2*M_PI/360;
 
     img::PixelMap &pixel_map = img.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
-    int diagonal = sqrt(columns*columns + rows*rows);
-    pixel_map.expand(img::JointSide::bottom_and_top, (diagonal - rows)/2 + 1, (diagonal - rows)/2 + 1);
-    pixel_map.expand(img::JointSide::left_and_right, (diagonal - columns)/2 + 1, (diagonal - columns)/2 + 1);
-    rows = pixel_map.rows();
-    columns = pixel_map.columns();
-
-    img::PixelMap clear_pixel_map(columns, rows);
-
-    std::vector<std::vector<std::array<double, 4>>> pixels;
-    pixels.resize(rows);
-    for(int i = 0; i < rows; ++i){
-        pixels[i].resize(columns);
+    if(degrees == 0){
+        //well done
     }
-
-    double middle_x = columns / 2.0;
-    double middle_y = rows / 2.0;
-
-    for(int i = 0; i < rows; ++i){
-        for(int j = 0; j < columns; ++j){
-            double x = j - middle_x + 0.5;
-            double y = i - middle_y + 0.5;
-            double new_x = x * cos(degrees) - y * sin(degrees);
-            double new_y = x * sin(degrees) + y * cos(degrees);
-            new_x += round(middle_x - 0.5);
-            new_y += round(middle_y - 0.5);
-
-            int y_index = new_y;
-            int x_index = new_x;
-
-            if(new_x < columns && new_x >= 0 && new_y < rows && new_y >=0){
-                auto pixel_color = pixel_map.at(i, j);
-                int R = pixel_color.R();
-                int G = pixel_color.G();
-                int B = pixel_color.B();
-
-                pixels[y_index][x_index][0] += 1;
-                pixels[y_index][x_index][1] = (pixels[y_index][x_index][1]*(pixels[y_index][x_index][0] - 1) + R)/pixels[y_index][x_index][0];
-                pixels[y_index][x_index][2] = (pixels[y_index][x_index][2]*(pixels[y_index][x_index][0] - 1) + G)/pixels[y_index][x_index][0];
-                pixels[y_index][x_index][3] = (pixels[y_index][x_index][3]*(pixels[y_index][x_index][0] - 1) + B)/pixels[y_index][x_index][0];
-            }
-        }
-    }
-
-    for(int i = 0; i < rows; ++i){
-        for(int j = 0; j < columns; ++j){
-            int R = pixels[i][j][1];
-            int G = pixels[i][j][2];
-            int B = pixels[i][j][3];
-            if(pixels[i][j][0] != 0){
-                clear_pixel_map.at(i, j) = img::Color (round(R), round(G), round(B));
-            }
-            else{
-                double sides = 0.0;
-                //find top pixel
-                if(i - 1 >= 0){
-                    R += pixels[i - 1][j][1];
-                    G += pixels[i - 1][j][2];
-                    B += pixels[i - 1][j][3];
-                    ++sides;
-                }
-                //find bottom pixel
-                if(i + 1 < rows){
-                    R += pixels[i + 1][j][1];
-                    G += pixels[i + 1][j][2];
-                    B += pixels[i + 1][j][3];
-                    ++sides;
-                }
-                //find left pixel
-                if(j - 1 >= 0){
-                    R += pixels[i][j - 1][1];
-                    G += pixels[i][j - 1][2];
-                    B += pixels[i][j - 1][3];
-                    ++sides;
-                }
-                //find right pixel
-                if(i + 1 < columns){
-                    R += pixels[i][j + 1][1];
-                    G += pixels[i][j + 1][2];
-                    B += pixels[i][j + 1][3];
-                    ++sides;
-                }
-
-                clear_pixel_map.at(i, j) = img::Color (round(R/sides), round(G/sides), round(B/sides));
-            }
-        }
-    }
-
-    int find_color = 0;
-    while(find_color == 0){
-        for(int i = 0; i < columns; ++i){
-            find_color += clear_pixel_map.at(0, i).R();
-            find_color += clear_pixel_map.at(0, i).G();
-            find_color += clear_pixel_map.at(0, i).B();
-        }
-        if(find_color == 0){
-            clear_pixel_map.trim(img::Side::top, 1);
-            rows = clear_pixel_map.rows();
-        } 
-    }
-
-    find_color = 0;
-
-    while(find_color == 0){
-        for(int i = 0; i < columns; ++i){
-            find_color += clear_pixel_map.at(rows - 1, i).R();
-            find_color += clear_pixel_map.at(rows - 1, i).G();
-            find_color += clear_pixel_map.at(rows - 1, i).B();
-        }
-        if(find_color == 0){
-            clear_pixel_map.trim(img::Side::bottom, 1);
-            rows = clear_pixel_map.rows();
-        } 
-    }
-
-    find_color = 0;
-
-    while(find_color == 0){
+    else if(degrees == 90){
+        img::PixelMap clear_pixel_map(rows, columns);
         for(int i = 0; i < rows; ++i){
-            find_color += clear_pixel_map.at(i, 0).R();
-            find_color += clear_pixel_map.at(i, 0).G();
-            find_color += clear_pixel_map.at(i, 0).B();
+            for(int j = 0; j < columns; ++j){
+                clear_pixel_map.at(columns - j - 1, i) = pixel_map.at(i, j);
+            }
         }
-        if(find_color == 0){
-            clear_pixel_map.trim(img::Side::left, 1);
-            columns = clear_pixel_map.columns();
-        }
+        pixel_map = clear_pixel_map;
     }
-
-    find_color = 0;
-
-    while(find_color == 0){
+    else if(degrees == 180){
+        img::PixelMap clear_pixel_map(columns, rows);
         for(int i = 0; i < rows; ++i){
-            find_color += clear_pixel_map.at(i, columns - 1).R();
-            find_color += clear_pixel_map.at(i, columns - 1).G();
-            find_color += clear_pixel_map.at(i, columns - 1).B();
+            for(int j = 0; j < columns; ++j){
+                clear_pixel_map.at(rows - i - 1, columns - j - 1) = pixel_map.at(i, j);
+            }
         }
-        if(find_color == 0){
-            clear_pixel_map.trim(img::Side::right, 1);
-            columns = clear_pixel_map.columns();
-        }
+        pixel_map = clear_pixel_map;
     }
-    pixel_map = clear_pixel_map;
+    else if(degrees == 270){
+        img::PixelMap clear_pixel_map(rows, columns);
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < columns; ++j){
+                clear_pixel_map.at(j, rows - i - 1) = pixel_map.at(i, j);
+            }
+        }
+        pixel_map = clear_pixel_map;
+    }
+    else{
+        int diagonal = sqrt(columns*columns + rows*rows);
+        pixel_map.expand(img::JointSide::bottom_and_top, (diagonal - rows)/2 + 1, (diagonal - rows)/2 + 1);
+        pixel_map.expand(img::JointSide::left_and_right, (diagonal - columns)/2 + 1, (diagonal - columns)/2 + 1);
+        rows = pixel_map.rows();
+        columns = pixel_map.columns();
+        img::PixelMap clear_pixel_map(columns, rows);
+        std::vector<std::vector<std::array<double, 4>>> pixels;
+        pixels.resize(rows);
+        for(int i = 0; i < rows; ++i){
+            pixels[i].resize(columns);
+        }
+
+        double middle_x = columns / 2.0;
+        double middle_y = rows / 2.0;
+
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < columns; ++j){
+                double x = j - middle_x + 0.5;
+                double y = i - middle_y + 0.5;
+                double new_x = x * cos(rotate_value) - y * sin(rotate_value);
+                double new_y = x * sin(rotate_value) + y * cos(rotate_value);
+                new_x += round(middle_x - 0.5);
+                new_y += round(middle_y - 0.5);
+
+                int y_index = new_y;
+                int x_index = new_x;
+
+                if(new_x < columns && new_x >= 0 && new_y < rows && new_y >=0){
+                    auto pixel_color = pixel_map.at(i, j);
+                    int R = pixel_color.R();
+                    int G = pixel_color.G();
+                    int B = pixel_color.B();
+
+                    pixels[y_index][x_index][0] += 1;
+                    pixels[y_index][x_index][1] = (pixels[y_index][x_index][1]*(pixels[y_index][x_index][0] - 1) + R)/pixels[y_index][x_index][0];
+                    pixels[y_index][x_index][2] = (pixels[y_index][x_index][2]*(pixels[y_index][x_index][0] - 1) + G)/pixels[y_index][x_index][0];
+                    pixels[y_index][x_index][3] = (pixels[y_index][x_index][3]*(pixels[y_index][x_index][0] - 1) + B)/pixels[y_index][x_index][0];
+                }
+            }
+        }
+
+        for(int i = 0; i < rows; ++i){
+            for(int j = 0; j < columns; ++j){
+                int R = pixels[i][j][1];
+                int G = pixels[i][j][2];
+                int B = pixels[i][j][3];
+                if(pixels[i][j][0] != 0){
+                    clear_pixel_map.at(i, j) = img::Color (round(R), round(G), round(B));
+                }
+                else{
+                    double sides = 0.0;
+                    //find top pixel
+                    if(i - 1 >= 0){
+                        R += pixels[i - 1][j][1];
+                        G += pixels[i - 1][j][2];
+                        B += pixels[i - 1][j][3];
+                        ++sides;
+                    }
+                    //find bottom pixel
+                    if(i + 1 < rows){
+                        R += pixels[i + 1][j][1];
+                        G += pixels[i + 1][j][2];
+                        B += pixels[i + 1][j][3];
+                        ++sides;
+                    }
+                    //find left pixel
+                    if(j - 1 >= 0){
+                        R += pixels[i][j - 1][1];
+                        G += pixels[i][j - 1][2];
+                        B += pixels[i][j - 1][3];
+                        ++sides;
+                    }
+                    //find right pixel
+                    if(i + 1 < columns){
+                        R += pixels[i][j + 1][1];
+                        G += pixels[i][j + 1][2];
+                        B += pixels[i][j + 1][3];
+                        ++sides;
+                    }
+
+                    clear_pixel_map.at(i, j) = img::Color (round(R/sides), round(G/sides), round(B/sides));
+                }
+            }
+        }
+
+        int find_color = 0;
+        while(find_color == 0){
+            for(int i = 0; i < columns; ++i){
+                find_color += clear_pixel_map.at(0, i).R();
+                find_color += clear_pixel_map.at(0, i).G();
+                find_color += clear_pixel_map.at(0, i).B();
+            }
+            if(find_color == 0){
+                clear_pixel_map.trim(img::Side::top, 1);
+                rows = clear_pixel_map.rows();
+            } 
+        }
+
+        find_color = 0;
+
+        while(find_color == 0){
+            for(int i = 0; i < columns; ++i){
+                find_color += clear_pixel_map.at(rows - 1, i).R();
+                find_color += clear_pixel_map.at(rows - 1, i).G();
+                find_color += clear_pixel_map.at(rows - 1, i).B();
+            }
+            if(find_color == 0){
+                clear_pixel_map.trim(img::Side::bottom, 1);
+                rows = clear_pixel_map.rows();
+            } 
+        }
+
+        find_color = 0;
+
+        while(find_color == 0){
+            for(int i = 0; i < rows; ++i){
+                find_color += clear_pixel_map.at(i, 0).R();
+                find_color += clear_pixel_map.at(i, 0).G();
+                find_color += clear_pixel_map.at(i, 0).B();
+            }
+            if(find_color == 0){
+                clear_pixel_map.trim(img::Side::left, 1);
+                columns = clear_pixel_map.columns();
+            }
+        }
+
+        find_color = 0;
+
+        while(find_color == 0){
+            for(int i = 0; i < rows; ++i){
+                find_color += clear_pixel_map.at(i, columns - 1).R();
+                find_color += clear_pixel_map.at(i, columns - 1).G();
+                find_color += clear_pixel_map.at(i, columns - 1).B();
+            }
+            if(find_color == 0){
+                clear_pixel_map.trim(img::Side::right, 1);
+                columns = clear_pixel_map.columns();
+            }
+        }
+        pixel_map = clear_pixel_map;
+    }
 }
