@@ -11,16 +11,6 @@
 #include <memory>
 #include <cmath>
 
-// logging macros
-#define LOG_CRITICAL_FMT(msg, fmt_args)     \
-    _logger->critical(msg, fmt_args);        \
-    return
-
-#define LOG_CRITICAL(msg)   \
-    _logger->critical(msg);   \
-    return
-
-
 char img::PNGImage::_chunk_1b[1] {};
 char img::PNGImage::_chunk_4b[4] {};
 char img::PNGImage::_chunk_8b[8] {};

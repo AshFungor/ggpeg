@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eparser_0',['~Parser',['../classclpp_1_1Parser.html#aed85df23aadbc44534d7a1dfbf5ac308',1,'clpp::Parser']]]
+  ['trim_0',['trim',['../classimg_1_1PixelMap.html#ae0c8184c8de8e2c44ec5e806ceeed763',1,'img::PixelMap::trim(Side side, int count)'],['../classimg_1_1PixelMap.html#a92451061a303e0cbcf665cadc549d302',1,'img::PixelMap::trim(JointSide sides, int count_1, int count_2)']]]
 ];

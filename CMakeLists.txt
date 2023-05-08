@@ -2,23 +2,23 @@ cmake_minimum_required(VERSION 3.5)
 
 # Always specify cmake toolchain file.
 
-project(ggpeg LANGUAGES CXX VERSION 0.0.0)
+project(ggpeg LANGUAGES CXX VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Source directory for this project.
-set(GGPEG_SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
+set(GGPEG_SRC_DIR "${CMAKE_SOURCE_DIR}/src")
 # Building directory.
 set(GGPEG_BUILD_DIR "${CMAKE_SOURCE_DIR}/build")
 # Static libraries (GGPEG_MODULES) to be built.
-set(GGPEG_GGPEG_MODULES "")
+set(GGPEG_MODULES "")
 # Unit tests directory.
-set(GGPEG_TESTS_DIR "${CMAKE_SOURCE_DIR}/tests")
+set(GGPEG_TEST_DIR "${CMAKE_SOURCE_DIR}/tests")
 # Image test files directory.
-set(GGPEG_TEST_DATA_DIR "${GGPEG_TESTS_DIR}/test-data")
+set(GGPEG_TEST_DATA_DIR "${GGPEG_TEST_DIR}/test-data")
 # Include directories.
-set(GGPEG_INCLUDE_DIR "${GGPEG_SOURCES_DIR}")
+set(GGPEG_INC_DIRS "${GGPEG_SRC_DIR}")
 
 # Catch2 (tests)
 find_package(Catch2 REQUIRED)
@@ -30,31 +30,31 @@ find_package(rang REQUIRED)
 find_package(ZLIB REQUIRED)
 
 # Each folder in root source directory is build as a standalone library.
-file(GLOB children
-    RELATIVE "${GGPEG_SOURCES_DIR}/"
+file(GLOB found
     CONFIGURE_DEPENDS
-    "${GGPEG_SOURCES_DIR}/*")
+    RELATIVE "${GGPEG_SRC_DIR}"
+    "${GGPEG_SRC_DIR}/*")
 
 # Search trough all entities (folders/files) in source directory.
-foreach(child IN ITEMS ${children})
+foreach(entity IN ITEMS ${found})
     message(STATUS "Looking through possible target: ${child}")
-    set(current "${GGPEG_SOURCES_DIR}/${child}")
-    # Only directories can be represanted as GGPEG_MODULES.
-    if(IS_DIRECTORY ${current})
-        message(STATUS "Target <${child}> is a directory, setting library...")
+    # Only directories can be represanted as modules.
+    set(entity-abs "${GGPEG_SRC_DIR}/${entity}")
+    if(IS_DIRECTORY ${entity-abs})
+        message(STATUS "Target <${entity}> is a directory, setting library...")
         file(GLOB sources
             CONFIGURE_DEPENDS
-            "${current}/*.cpp" "${current}/*.hpp")
-        add_library(${child} ${sources})
+            "${entity-abs}/*.cpp" "${entity-abs}/*.hpp")
+        add_library(${entity} ${sources})
         # Link libs to targets
-        target_link_libraries(${child} ZLIB::ZLIB)
-        target_include_directories(${child} PRIVATE ${GGPEG_INCLUDE_DIR})
-        list(APPEND GGPEG_MODULES ${child})
+        target_link_libraries(${entity} ZLIB::ZLIB)
+        target_include_directories(${entity} PRIVATE ${GGPEG_INC_DIRS})
+        list(APPEND GGPEG_MODULES ${entity})
     endif()
 endforeach()
 
-add_executable(ggpeg "${GGPEG_SOURCES_DIR}/main.cpp")
-target_include_directories(ggpeg PRIVATE ${GGPEG_INCLUDE_DIR})
+add_executable(ggpeg "${GGPEG_SRC_DIR}/main.cpp")
+target_include_directories(ggpeg PRIVATE ${GGPEG_INC_DIRS})
 
 foreach(lib IN ITEMS ${GGPEG_MODULES})
     message(STATUS "linking library: ${lib}")
@@ -63,12 +63,12 @@ foreach(lib IN ITEMS ${GGPEG_MODULES})
     message(STATUS "making tests for library: ${lib}")
     file(GLOB test_files
         CONFIGURE_DEPENDS
-        "${GGPEG_TESTS_DIR}/${lib}-*-test.cpp")
+        "${GGPEG_TEST_DIR}/${lib}-*-test.cpp")
     if(test_files)
         message(STATUS "found tests, making target: ${lib}-test")
         add_executable(${lib}-test ${test_files})
         target_link_libraries(${lib}-test PRIVATE Catch2::Catch2WithMain)
-        target_include_directories(${lib}-test PRIVATE ${GGPEG_INCLUDE_DIR})
+        target_include_directories(${lib}-test PRIVATE ${GGPEG_INC_DIRS})
         foreach(module IN ITEMS ${GGPEG_MODULES})
             target_link_libraries(${lib}-test PRIVATE ${module})
         endforeach()
