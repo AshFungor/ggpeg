@@ -15,6 +15,9 @@ char img::PNGImage::_chunk_1b[1] {};
 char img::PNGImage::_chunk_4b[4] {};
 char img::PNGImage::_chunk_8b[8] {};
 
+#define GET_BUFF(start, end)                \
+    smart_buffer = scline.get_chunk(0, 8);  \
+    ptr_buffer = smart_buffer.get();
 
 void img::PNGImage::read_chunk_header(char*& buffer,
                                       img::PNGImage::Chunk& chunk,
@@ -54,11 +57,15 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     bit_depth = Scanline::_parse_chunk(_chunk_1b, 1);
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     color_type = Scanline::_parse_chunk(_chunk_1b, 1);
+    // true color
     if (color_type == 2) {
-        if (bit_depth != 8 && bit_depth != 16) {
+        sample_size = 3;
+        if (bit_depth != 8 || bit_depth != 16) {
             return;
         }
+    // true color & alpha channel
     } else if (color_type == 6) {
+        sample_size = 4;
         if (bit_depth != 8 && bit_depth != 16) {
             return;
         }
@@ -82,7 +89,9 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     }
 }
 
-void img::PNGImage::read_idat(char*& buffer, size_t size) {}
+void img::PNGImage::read_idat(char*& buffer, size_t size) {
+
+}
 
 void img::PNGImage::read(std::string_view path) {
 
@@ -105,8 +114,7 @@ void img::PNGImage::read(std::string_view path) {
 
     // parse IHDR
     scline.call_read(25);
-    smart_buffer = scline.get_chunk(0, 8);
-    ptr_buffer = smart_buffer.get();
+    GET_BUFF(0, 8);
     read_chunk_header(ptr_buffer, chunk, chunk_size);
     if (chunk_size != 13) {
         return;
@@ -114,15 +122,13 @@ void img::PNGImage::read(std::string_view path) {
     if (chunk != img::PNGImage::Chunk::IHDR) {
         return;
     }
-    smart_buffer = scline.get_chunk(8, 21);
-    ptr_buffer = smart_buffer.get();
+    GET_BUFF(8, 21);
     auto start_ptr = ptr_buffer;
     read_ihdr(ptr_buffer);
     if (ptr_buffer - 13 != start_ptr) {
         return;
     }
-    smart_buffer = scline.get_chunk(4, 25);
-    ptr_buffer = smart_buffer.get();
+    GET_BUFF(4, 25);
     if (!read_crc(ptr_buffer, 21)) {
         return;
     }
@@ -131,12 +137,18 @@ void img::PNGImage::read(std::string_view path) {
     while (chunk != img::PNGImage::Chunk::IEND) {
 
         scline.call_read(8);
-        smart_buffer = scline.get_chunk(0, 8);
-        ptr_buffer = smart_buffer.get();
+        GET_BUFF(0, 8);
         read_chunk_header(ptr_buffer, chunk, chunk_size);
 
         if (chunk == img::PNGImage::Chunk::IDAT) {
+            scline.call_read(chunk_size - 4);
+            GET_BUFF(4, chunk_size);
+            read_idat(ptr_buffer, chunk_size - 8);
+        } else if (chunk == img::PNGImage::Chunk::IEND) {
 
+        } else {
+            scline.call_read(chunk_size - 4);
+            scline.reset_buffer(scline.size());
         }
 
 

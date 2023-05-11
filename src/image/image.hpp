@@ -248,8 +248,8 @@ namespace img {
          * Then CR + LF
          * Then ^Z + LF
          */
-        constexpr static char _signature[9]
-        {-119, 80, 78, 71, 13, 10, 26, 10, 0};
+        constexpr static char _signature[8]
+        {-119, 80, 78, 71, 13, 10, 26, 10};
         // chunk names
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
         constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
@@ -268,11 +268,21 @@ namespace img {
         int compression_method;
         int filter_method;
         int interlace_method;
+        int sample_size;
         // parse functions
         bool read_crc(char* buffer, size_t size);
         void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
         void read_ihdr(char*& buffer);
         void read_idat(char*& buffer, size_t size);
+        // filters
+        void apply_sub(char* raw_buffer, size_t size);
+        void apply_up(char* raw_buffer, size_t size);
+        void apply_avg(char* raw_buffer, size_t size);
+        void apply_paeth(char* raw_buffer, size_t size);
+        void reverse_sub(char* processed_buffer, size_t size);
+        void reverse_up(char* processed_buffer, size_t size);
+        void revesrse_paeth(char* processed_buffer, size_t size);
+        void reverse_avg(char* processed_buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
