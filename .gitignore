@@ -99,8 +99,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# VS Code
+# VS Code and VS
 .vscode/
+.vs/
 
 # Json conan config
 CMakeUserPresets.json
