@@ -7,7 +7,7 @@ bool non_display = true;
 TEST_CASE("The parser returns correct tokens", "[parser]")
 {
 	
-	std::vector<std::string> correct_tokens = {"resources/test_png.png", "--rotate=90", "-hxy", "--insert=23/23#resources/test_ppm.ppm", "--negative"};
+	std::vector<std::string> correct_tokens = {"resources/house_1.ppm", "--rotate=90", "-hxy", "--insert=23/23#resources/house_2.ppm", "--negative"};
 
 	SECTION("All good", "[parser]")
 	{
@@ -27,37 +27,37 @@ TEST_CASE("The parser returns correct tokens", "[parser]")
 
 	SECTION("Incorrect short commands", "[parser]")
 	{
-		std::vector<std::string> incorrect_short_token_1 = {"resources/test_png.png", "-q"};
+		std::vector<std::string> incorrect_short_token_1 = {"resources/house_1.ppm", "-q"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_1, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_2 = {"resources/test_png.png", "-p"};
+		std::vector<std::string> incorrect_short_token_2 = {"resources/house_1.ppm", "-p"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_2, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_3 = {"resources/test_png.png", "-g"};
+		std::vector<std::string> incorrect_short_token_3 = {"resources/house_1.ppm", "-g"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_3, non_display), std::runtime_error);
 	}
 
 	SECTION("Incorrect long commands", "[parser]")
 	{
-		std::vector<std::string> incorrect_short_token_1 = {"resources/test_png.png", "--rtate=54"};
+		std::vector<std::string> incorrect_short_token_1 = {"resources/house_1.ppm", "--rtate=54"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_1, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_2 = {"resources/test_png.png", "--qwerty"};
+		std::vector<std::string> incorrect_short_token_2 = {"resources/house_1.ppm", "--qwerty"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_2, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_3 = {"resources/test_png.png", "--x"};
+		std::vector<std::string> incorrect_short_token_3 = {"resources/house_1.ppm", "--x"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_3, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_4 = {"resources/test_png.png", "--crop=54"};
+		std::vector<std::string> incorrect_short_token_4 = {"resources/house_1.ppm", "--crop=54"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_4, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_5 = {"resources/test_png.png", "--insert=54/34#12.ppm"};
+		std::vector<std::string> incorrect_short_token_5 = {"resources/house_1.ppm", "--insert=54/34#12.ppm"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_5, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_6 = {"resources/test_png.png", "--insert=54/34/test_png.png"};
+		std::vector<std::string> incorrect_short_token_6 = {"resources/house_1.ppm", "--insert=54/34/house_1.ppm"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_6, non_display), std::runtime_error);
 
-		std::vector<std::string> incorrect_short_token_7 = {"resources/test_png.png", "--insert=54/34#error.ppm"};
+		std::vector<std::string> incorrect_short_token_7 = {"resources/house_1.ppm", "--insert=54/34#error.ppm"};
         CHECK_THROWS_AS(clpp::Parser(incorrect_short_token_7, non_display), std::runtime_error);
 	}
 
@@ -65,10 +65,10 @@ TEST_CASE("The parser returns correct tokens", "[parser]")
 
 TEST_CASE("The parser returns correct line of commands", "[parse]")
 {
-	std::vector<std::string> correct_tokens = {"resources/test_png.png", "--crop=45/45/6/2", "--rotate=32", "--resize=0.2", 
-									"--insert=23/23#resources/test_ppm.ppm", "--convert_to=ppm", "-nxyvh"};
+	std::vector<std::string> correct_tokens = {"resources/house_1.ppm", "--crop=45/45/6/2", "--rotate=32", "--resize=0.2", 
+									"--insert=23/23#resources/house_2.ppm", "--convert_to=ppm", "-nxyvh"};
 
-	std::vector<std::string> correct_commands= {"crop=45/45/6/2", "rotate=32", "resize=0.2", "insert=23/23#resources/test_ppm.ppm", 
+	std::vector<std::string> correct_commands= {"crop=45/45/6/2", "rotate=32", "resize=0.2", "insert=23/23#resources/house_2.ppm", 
 									"convert_to=ppm", "negative", "reflect_x", "reflect_y", "version", "help"};
 	std::vector<std::string> empty = {""};
 
@@ -80,8 +80,8 @@ TEST_CASE("The parser returns correct line of commands", "[parse]")
 
 TEST_CASE("The parser returns correct queue of commands", "[parse]")
 {
-	std::vector<std::string> correct_tokens = {"resources/test_png.png", "--rotate=90", "-y", "--insert=23/32#resources/test_ppm.ppm", "--crop=45/67/52/90"};
-	std::vector<std::string> correct_commands= {"rotate=90", "reflect_y", "insert=23/32#resources/test_ppm.ppm", "crop=45/67/52/90"};
+	std::vector<std::string> correct_tokens = {"resources/house_1.ppm", "--rotate=90", "-y", "--insert=23/32#resources/house_2.ppm", "--crop=45/67/52/90"};
+	std::vector<std::string> correct_commands= {"rotate=90", "reflect_y", "insert=23/32#resources/house_2.ppm", "crop=45/67/52/90"};
 
 	std::queue<clpp::Command> test_queue;
 
@@ -107,7 +107,7 @@ TEST_CASE("The parser returns correct queue of commands", "[parse]")
 		test_queue.pop();
 
 		CHECK(test_queue.front().get_command() == clpp::CommandType::insert);
-		std::vector<std::string> test_param_3 = {"23", "32", "resources/test_ppm.ppm"};
+		std::vector<std::string> test_param_3 = {"23", "32", "resources/house_2.ppm"};
 		CHECK(test_queue.front().get_param() == test_param_3);
 		test_queue.pop();
 

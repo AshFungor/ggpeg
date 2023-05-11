@@ -450,6 +450,12 @@ void clpp::Command::_parser_param_insert(const std::string& second_part)
 	{
 		path_to_new += second_part[j];
 	}
+	if (global_Path.size() > 0)
+	{
+		std::string main_img_format{global_Path.end() - 3, global_Path.end()};
+		std::string ins_img_format{path_to_new.end() - 3, path_to_new.end()};
+		if (main_img_format != ins_img_format) { _error_param(); }
+	}
 	_exceptions_for_new_image(path_to_new);
 	_param.emplace_back(path_to_new);
 }

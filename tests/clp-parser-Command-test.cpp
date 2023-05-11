@@ -1,6 +1,6 @@
 #include <catch2/catch_all.hpp>
 #include <clp-parser/clp-parser.hpp>
-
+#include <iostream>
 
 
 TEST_CASE("Class Command return correct type and param of commands", "[command]")
@@ -39,8 +39,8 @@ TEST_CASE("Class Command return correct type and param of commands", "[command]"
 	}
 	SECTION("insert")
 	{
-		std::string insert{ "insert=12/34#resources/test_png.png" }; 
-		std::vector<std::string> param_insert{"12", "34", "resources/test_png.png"};
+		std::string insert{ "insert=56/43#resources/boxes_1.ppm" }; 
+		std::vector<std::string> param_insert{"56", "43", "resources/boxes_1.ppm"};
 		clpp::Command test_Command{insert};
 		CHECK(test_Command.get_command() == clpp::CommandType::insert);
 		CHECK(test_Command.get_param() == param_insert);
@@ -118,16 +118,16 @@ TEST_CASE("Class Command return incorrect param of commands", "[command]")
 	}
 	SECTION("insert")
 	{
-		std::string insert_1{ "insert=12/34?test_png.png" }; 
+		std::string insert_1{ "insert=12/34?house_1.ppm" }; 
 		CHECK_THROWS_AS(clpp::Command(insert_1), std::runtime_error);
 
-		std::string insert_2{ "insert=12/#test_png.png" }; 
+		std::string insert_2{ "insert=12/#house_1.ppm" }; 
 		CHECK_THROWS_AS(clpp::Command(insert_2), std::runtime_error);
 
-		std::string insert_3{ "insert=12%23#test_png.png" }; 
+		std::string insert_3{ "insert=12%23#house_1.ppm" }; 
 		CHECK_THROWS_AS(clpp::Command(insert_3), std::runtime_error);
 
-		std::string insert_4{ "insert=/23#test_png.png" }; 
+		std::string insert_4{ "insert=/23#house_1.ppm" }; 
 		CHECK_THROWS_AS(clpp::Command(insert_4), std::runtime_error);
 
 		std::string insert_5{ "insert=23/23#test_p.png" }; 

@@ -114,7 +114,7 @@ int main(int argc, char** argv)
                         double x_ins{std::stod(tp_param[0])};
                         double y_ins{std::stod(tp_param[1])};
                         std::string new_imag{tp_param[2]};
-
+                        
                         if (format(new_imag) == "ppm")
                         {
                             img::PPMImage tp_new_image;
