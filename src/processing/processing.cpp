@@ -48,7 +48,7 @@ void proc::insert(img::Image &img, img::Image &other, int x, int y){
     }
 }
 
-void proc::reflex_x(img::Image &img){
+void proc::reflect_x(img::Image &img){
     img::PixelMap &pixel_map = img.get_map();
     size_t rows = pixel_map.rows();
     size_t columns = pixel_map.columns();
@@ -63,7 +63,7 @@ void proc::reflex_x(img::Image &img){
     pixel_map = clear_pixel_map;
 }
 
-void proc::reflex_y(img::Image &img){
+void proc::reflect_y(img::Image &img){
     img::PixelMap &pixel_map = img.get_map();
     size_t rows = pixel_map.rows();
     size_t columns = pixel_map.columns();

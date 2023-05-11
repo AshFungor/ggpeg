@@ -36,11 +36,11 @@ namespace proc {
     /** \brief Reflects the image relative to the x axis.
      * \param img The image that will be reflected relative to the x axis.
      */
-    void reflex_x(img::Image &img);
+    void reflect_x(img::Image &img);
     /** \brief Reflects the image relative to the y axis.
      * \param img The image that will be reflected relative to the y axis.
      */
-    void reflex_y(img::Image &img);
+    void reflect_y(img::Image &img);
     /** \brief Сhanges the image resolution.
      * \param img The image whose resolution is being changed.
      * \param k Multiplicity of resolution changes.
