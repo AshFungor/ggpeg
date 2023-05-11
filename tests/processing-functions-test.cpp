@@ -130,68 +130,68 @@ TEST_CASE("Using insert"){
 
 }
 
-TEST_CASE("Using reflexion by x"){
+TEST_CASE("Using reflection by x"){
     using img_t = img::PPMImage;
     img_t image;
     image.read("resources/west_1.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
-    proc::reflex_x(image);
-    img::PixelMap reflexed_pixel_map = image.get_map();
+    proc::reflect_x(image);
+    img::PixelMap reflected_pixel_map = image.get_map();
 
-    SECTION("checking reflexion (x)"){
-        bool check_reflexion_x = true;
+    SECTION("checking reflection (x)"){
+        bool check_reflection_x = true;
         for(int i = 0; i < rows; ++i){
             for(int j = 0; j < columns; ++j){
-                check_reflexion_x &= reflexed_pixel_map.at(i, j) == pixel_map.at(rows - i - 1, j);
+                check_reflection_x &= reflected_pixel_map.at(i, j) == pixel_map.at(rows - i - 1, j);
             }
         }
-        REQUIRE(check_reflexion_x);
+        REQUIRE(check_reflection_x);
 
     }
-    SECTION("double reflexion"){
-        proc::reflex_x(image);
-        img::PixelMap reflexed_pixel_map = image.get_map();
-        bool check_double_reflexion_x = true;
+    SECTION("double reflection"){
+        proc::reflect_x(image);
+        img::PixelMap reflected_pixel_map = image.get_map();
+        bool check_double_reflection_x = true;
         for(int i = 0; i < rows; ++i){
             for(int j = 0; j < columns; ++j){
-                check_double_reflexion_x &= reflexed_pixel_map.at(i, j) == pixel_map.at(i, j);
+                check_double_reflection_x &= reflected_pixel_map.at(i, j) == pixel_map.at(i, j);
             }
         }
-        REQUIRE(check_double_reflexion_x);
+        REQUIRE(check_double_reflection_x);
     }
 }
 
-TEST_CASE("Using reflexion by y"){
+TEST_CASE("Using reflection by y"){
     using img_t = img::PPMImage;
     img_t image;
     image.read("resources/west_1.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
-    proc::reflex_y(image);
-    img::PixelMap reflexed_pixel_map = image.get_map();
+    proc::reflect_y(image);
+    img::PixelMap reflected_pixel_map = image.get_map();
 
-    SECTION("checking reflexion (y)"){
-        bool check_reflexion_y = true;
+    SECTION("checking reflection (y)"){
+        bool check_reflection_y = true;
         for(int i = 0; i < rows; ++i){
             for(int j = 0; j < columns; ++j){
-                check_reflexion_y &= reflexed_pixel_map.at(i, j) == pixel_map.at(i, columns - j - 1);
+                check_reflection_y &= reflected_pixel_map.at(i, j) == pixel_map.at(i, columns - j - 1);
             }
         }
-        REQUIRE(check_reflexion_y);
+        REQUIRE(check_reflection_y);
     }
-    SECTION("double reflexion"){
-        proc::reflex_y(image);
-        img::PixelMap reflexed_pixel_map = image.get_map();
-        bool check_double_reflexion_y = true;
+    SECTION("double reflection"){
+        proc::reflect_y(image);
+        img::PixelMap reflected_pixel_map = image.get_map();
+        bool check_double_reflection_y = true;
         for(int i = 0; i < rows; ++i){
             for(int j = 0; j < columns; ++j){
-                check_double_reflexion_y &= reflexed_pixel_map.at(i, j) == pixel_map.at(i, j);
+                check_double_reflection_y &= reflected_pixel_map.at(i, j) == pixel_map.at(i, j);
             }
         }
-        REQUIRE(check_double_reflexion_y);
+        REQUIRE(check_double_reflection_y);
     }
 }
 
