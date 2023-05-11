@@ -276,13 +276,13 @@ namespace img {
         void read_idat(char*& buffer, size_t size);
         // filters
         void apply_sub(char* raw_buffer, size_t size);
-        void apply_up(char* raw_buffer, size_t size);
-        void apply_avg(char* raw_buffer, size_t size);
-        void apply_paeth(char* raw_buffer, size_t size);
+        void apply_up(char* current_buffer, char* upper_buffer, size_t size);
+        void apply_avg(char* current_buffer, char* upper_buffer, size_t size);
+        void apply_paeth(char* current_buffer, char* upper_buffer, size_t size);
         void reverse_sub(char* processed_buffer, size_t size);
-        void reverse_up(char* processed_buffer, size_t size);
-        void revesrse_paeth(char* processed_buffer, size_t size);
-        void reverse_avg(char* processed_buffer, size_t size);
+        void reverse_up(char* processed_buffer, char* upper_buffer, size_t size);
+        void reverse_paeth(char* processed_buffer, char* upper_buffer, size_t size);
+        void reverse_avg(char* processed_buffer, char* upper_buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

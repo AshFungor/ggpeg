@@ -2,15 +2,16 @@
 #include <algorithm>
 #include <cstddef>
 #include <memory>
+#include <cmath>
 
 namespace {
 int raw(char* buffer, int index) {
     if (index < 0) { return 0; }
     return reinterpret_cast<std::uint8_t&>(buffer[index]);
 }
-int prior(char* buffer, int index, size_t window) {
+int prior(char* buffer, int index) {
     if (index < 0) { return 0; }
-    return reinterpret_cast<std::uint8_t&>((buffer - window)[index]);
+    return reinterpret_cast<std::uint8_t&>(buffer[index]);
 }
 std::uint8_t mod256(int value) {
     while (value < 0) value += 256;
@@ -18,8 +19,22 @@ std::uint8_t mod256(int value) {
     std::uint8_t out {static_cast<std::uint8_t>(value)};
     return out;
 }
+std::uint8_t paeth_predictor(std::uint8_t left, std::uint8_t up, std::uint8_t up_left) {
+    auto p = left +up - up_left;
+    auto p_left = abs(p - left);
+    auto p_up = abs(p - up);
+    auto p_up_left = abs(p - up_left);
+    if (p_left <= p_up && p_left <= p_up_left) {
+        return left;
+    }
+    if (p_up < p_up_left) {
+        return up;
+    }
+    return up_left;
+}
 }
 
+// works for one scanline
 void img::PNGImage::apply_sub(char* raw_buffer, size_t size) {
     int bpp {std::max(sample_size * bit_depth / 8, 1)};
     char waiting_byte {0};
@@ -31,6 +46,7 @@ void img::PNGImage::apply_sub(char* raw_buffer, size_t size) {
     raw_buffer[size - 1] = waiting_byte;
 }
 
+// works for one scanline
 void img::PNGImage::reverse_sub(char* processed_buffer, size_t size) {
     int bpp {std::max(sample_size * bit_depth / 8, 1)};
     for (int i{0}; i < size; ++i) {
@@ -39,20 +55,60 @@ void img::PNGImage::reverse_sub(char* processed_buffer, size_t size) {
     }
 }
 
-void img::PNGImage::apply_up(char* raw_buffer, size_t size) {
-    size_t window {_map.columns()};
-    auto waiting_line = std::make_unique<char[]>(window);
-    for (int row {0}; row < _map.columns(); ++row) {
-        if (row > 0) {
-            for (int column {0}; column < _map.columns(); ++ column) {
-                (raw_buffer - window)[column] = waiting_line[column];
-            }
-        }
-        auto current_line = raw_buffer + window * row;
-        for (int column {0}; column < _map.columns(); ++column) {
-            auto result = mod256(raw(current_line, column) - prior(current_line, column, window));
-            waiting_line[column] = reinterpret_cast<char&>(result);
-        }
+void img::PNGImage::apply_up(char* current_buffer, char* upper_buffer, size_t size) {
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(current_buffer, i) - prior(upper_buffer, i));
+        current_buffer[i] = reinterpret_cast<char&>(result);
     }
 }
 
+void img::PNGImage::reverse_up(char* processed_buffer, char* upper_buffer, size_t size) {
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(processed_buffer, i) + prior(upper_buffer, i));
+        processed_buffer[i] = reinterpret_cast<char&>(result);
+    }
+}
+
+void img::PNGImage::apply_avg(char* current_buffer, char* upper_buffer, size_t size) {
+    int bpp {std::max(sample_size * bit_depth / 8, 1)};
+    char waiting_byte {0};
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(current_buffer, i) -
+                             floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i))));
+        waiting_byte = reinterpret_cast<char&>(result);
+        if (i > 0) { current_buffer[i - 1] = waiting_byte; }
+    }
+}
+
+void img::PNGImage::reverse_avg(char* current_buffer, char* upper_buffer, size_t size) {
+    int bpp {std::max(sample_size * bit_depth / 8, 1)};
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(current_buffer, i) +
+                             floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i))));
+        current_buffer[i] = reinterpret_cast<char&>(result);
+    }
+}
+
+void img::PNGImage::apply_paeth(char* current_buffer, char* upper_buffer, size_t size) {
+    int bpp {std::max(sample_size * bit_depth / 8, 1)};
+    char waiting_byte {0};
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(current_buffer, i) -
+                             paeth_predictor(raw(current_buffer, i - bpp),
+                                             prior(upper_buffer, i),
+                                             prior(upper_buffer, i - bpp)));
+        waiting_byte = reinterpret_cast<char&>(result);
+        if (i > 0) { current_buffer[i - 1] = waiting_byte; }
+    }
+}
+
+void img::PNGImage::reverse_paeth(char* current_buffer, char* upper_buffer, size_t size) {
+    int bpp {std::max(sample_size * bit_depth / 8, 1)};
+    for (int i {0}; i < size; ++i) {
+        auto result = mod256(raw(current_buffer, i) +
+                             paeth_predictor(raw(current_buffer, i - bpp),
+                                             prior(upper_buffer, i),
+                                             prior(upper_buffer, i - bpp)));
+        current_buffer[i] = reinterpret_cast<char&>(result);
+    }
+}

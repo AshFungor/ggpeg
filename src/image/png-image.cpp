@@ -90,7 +90,15 @@ void img::PNGImage::read_ihdr(char*& buffer) {
 }
 
 void img::PNGImage::read_idat(char*& buffer, size_t size) {
-
+    switch(color_type) {
+    case 2:
+        size_t dest_len {_map.rows() * (_map.columns() + 1) * 3 * bit_depth};
+        auto dest = std::make_unique<std::uint8_t[]>(dest_len);
+        auto result = uncompress(dest.get(),
+                                 &dest_len,
+                                 reinterpret_cast<std::uint8_t*>(buffer),
+                                 size);
+    }
 }
 
 void img::PNGImage::read(std::string_view path) {
@@ -109,7 +117,6 @@ void img::PNGImage::read(std::string_view path) {
     if (!Scanline::_cmp_chunks(ptr_buffer, 8, _signature, 8)) {
         return;
     }
-    return;
     scline.reset_buffer(8);
 
     // parse IHDR
@@ -141,9 +148,9 @@ void img::PNGImage::read(std::string_view path) {
         read_chunk_header(ptr_buffer, chunk, chunk_size);
 
         if (chunk == img::PNGImage::Chunk::IDAT) {
-            scline.call_read(chunk_size - 4);
-            GET_BUFF(4, chunk_size);
-            read_idat(ptr_buffer, chunk_size - 8);
+            scline.call_read(chunk_size);
+            GET_BUFF(8, chunk_size + 8);
+            read_idat(ptr_buffer, chunk_size);
         } else if (chunk == img::PNGImage::Chunk::IEND) {
 
         } else {
