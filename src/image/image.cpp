@@ -1,10 +1,3 @@
-// logging
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
-
-// compression
-//#include <zlib.h>
-
 // std headers
 #include "image.hpp"
 #include <fstream>

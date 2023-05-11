@@ -1,6 +1,10 @@
 #pragma once
 #include <image/image.hpp>
 
+/** \brief namespace with image processing functions
+ * \details This namespace provides various filters and operations
+ * to be performed with images.
+ */
 namespace proc {
     // Code for processing functions.
     /** \brief Imposes a negative filter on the image.

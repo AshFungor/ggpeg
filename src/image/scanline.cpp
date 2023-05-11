@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <memory>
 #include <cmath>
+#include <cassert>
+#include <string_view>
 
 std::unique_ptr<std::uint32_t[]> img::Image::Scanline::_crc_lookup_table {nullptr};
 char& img::Image::Scanline::operator[](size_t index) { return _buffer[index]; }
@@ -22,7 +24,7 @@ img::Image::Scanline::Scanline(std::string_view path, img::Image::ScanMode mode)
 
 void img::Image::Scanline::expand_buffer(size_t number) {
     auto new_buff = std::make_unique<char[]>(_buffer_size + number);
-    if (_buffer) {
+    if (_buffer_size) {
         for (size_t i {0}; i < _buffer_size; ++i) {
             new_buff[i] = _buffer[i];
         }
@@ -36,9 +38,9 @@ void img::Image::Scanline::expand_buffer(size_t number) {
 }
 
 void img::Image::Scanline::reset_buffer(size_t number) {
-    if (_buffer_size == number) {
+    if (_buffer_size <= number) {
+        _buffer.reset();
         _buffer_size = 0;
-        _buffer.reset(nullptr);
         return;
     }
     auto new_buff = std::make_unique<char[]>(_buffer_size - number);
@@ -51,9 +53,10 @@ void img::Image::Scanline::reset_buffer(size_t number) {
 }
 
 std::unique_ptr<char[]> img::Image::Scanline::get_chunk(size_t start, size_t end) {
+    assert(end <= _buffer_size && end > start);
     auto new_buff = std::make_unique<char[]>(end - start);
-    for (size_t i {start}; i < end; ++i) {
-        new_buff[i - start] = _buffer[i];
+    for (size_t i {0}; i < end - start; ++i) {
+        new_buff[i] = _buffer[i + start];
     }
     return std::move(new_buff);
 }
@@ -135,10 +138,10 @@ std::uint32_t img::Image::Scanline::_crc(char* buffer, size_t size) {
     return curr ^ 0xffffffffL;
 }
 
-void img::Image::Scanline::_extr_chunk(char** buffer, char* chunk, size_t size) {
+void img::Image::Scanline::_extr_chunk(char*& buffer, char* chunk, size_t size) {
     while (size--) {
-        *chunk = **buffer;
+        *chunk = *buffer;
         ++chunk;
-        ++(*buffer);
+        ++buffer;
     }
 }

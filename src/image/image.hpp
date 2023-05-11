@@ -1,10 +1,6 @@
-// logging
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
-
 // std headers.
 #include <string>
-#include <cstddef>
+#include <cstdint>
 #include <vector>
 #include <string_view>
 #include <fstream>
@@ -205,7 +201,7 @@ namespace img {
             static bool _cmp_chunks(const char* chunk_1, size_t size_1,
                                     const char* chunk_2, size_t size_2);
             static std::uint64_t _parse_chunk(char* bytes, size_t size);
-            static void _extr_chunk(char** buffer, char* chunk, size_t size);
+            static void _extr_chunk(char*& buffer, char* chunk, size_t size);
             static std::uint32_t _crc(char* buffer, size_t size);
         };
         PixelMap _map {0, 0};
@@ -254,9 +250,6 @@ namespace img {
          */
         constexpr static char _signature[9]
         {-119, 80, 78, 71, 13, 10, 26, 10, 0};
-        // logger
-        std::shared_ptr<spdlog::logger> _logger
-            {spdlog::basic_logger_mt("basic_logger", "log.txt")};
         // chunk names
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
         constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
