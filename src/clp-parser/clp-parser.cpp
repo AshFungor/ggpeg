@@ -1,6 +1,8 @@
 #include <rang.hpp>
 #include "clp-parser.hpp"
 
+
+
 #define CERR if (cerr_disabled) {} else std::cerr
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,6 +305,7 @@ std::queue<clpp::Command> clpp::Parser::get_queue_of_command()
 
 clpp::Command::Command(std::string& command)
 {	
+	
 	size_t separator = command.find('=');
 	std::string first_part = command.substr(0, separator);
 	if (first_part == "crop") 
@@ -509,7 +512,7 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		CERR << "ERROR:";
 		CERR << rang::bg::reset;
 		CERR << rang::fg::red;
-		CERR << "GGPEG does not support the format of the file that you provided." 
+		CERR << " GGPEG does not support the format of the file that you provided." 
                      "\nFor the program to work correctly, select the file with the extension:"
                   << std::endl;
 		for (size_t i{0}; i != allowed_Format.size(); ++i)

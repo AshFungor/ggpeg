@@ -2,6 +2,7 @@
 #include <clp-parser/clp-parser.hpp>
 
 
+
 TEST_CASE("Class Command return correct type and param of commands", "[command]")
 {
 	SECTION("crop")
@@ -38,8 +39,8 @@ TEST_CASE("Class Command return correct type and param of commands", "[command]"
 	}
 	SECTION("insert")
 	{
-		std::string insert{ "insert=12/34#test_png.png" }; 
-		std::vector<std::string> param_insert{"12", "34", "test_png.png"};
+		std::string insert{ "insert=12/34#resources/test_png.png" }; 
+		std::vector<std::string> param_insert{"12", "34", "resources/test_png.png"};
 		clpp::Command test_Command{insert};
 		CHECK(test_Command.get_command() == clpp::CommandType::insert);
 		CHECK(test_Command.get_param() == param_insert);

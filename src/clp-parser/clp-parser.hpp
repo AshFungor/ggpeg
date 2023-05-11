@@ -20,8 +20,8 @@ namespace clpp {
     
     // Code for CLI parser.
     inline std::string global_Path; ///< Path to main image
-    inline bool cerr_disabled;
-    inline std::vector<std::string> allowed_Format = {"ppm", "tga", "png"}; ///< Allowed file formats
+    inline bool cerr_disabled = true;
+    inline std::vector<std::string> allowed_Format = {"ppm", "png"}; ///< Allowed file formats
 
     
     /** \brief Enumeration specifying the type of command.
@@ -59,6 +59,7 @@ namespace clpp {
              * parameters.
              * 
              * \param command command consisting of a string 
+             * \param display command consisting of a string 
             */
             Command(std::string& command);
 
