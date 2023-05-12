@@ -15,8 +15,8 @@ char img::PNGImage::_chunk_1b[1] {};
 char img::PNGImage::_chunk_4b[4] {};
 char img::PNGImage::_chunk_8b[8] {};
 
-#define GET_BUFF(start, end)                \
-    smart_buffer = scline.get_chunk(0, 8);  \
+#define GET_BUFF(start, end)                        \
+    smart_buffer = scline.get_chunk(start, end);    \
     ptr_buffer = smart_buffer.get();
 
 void img::PNGImage::read_chunk_header(char*& buffer,
@@ -60,7 +60,7 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     // true color
     if (color_type == 2) {
         sample_size = 3;
-        if (bit_depth != 8 || bit_depth != 16) {
+        if (bit_depth != 8 && bit_depth != 16) {
             return;
         }
     // true color & alpha channel
@@ -92,12 +92,17 @@ void img::PNGImage::read_ihdr(char*& buffer) {
 void img::PNGImage::read_idat(char*& buffer, size_t size) {
     switch(color_type) {
     case 2:
-        size_t dest_len {_map.rows() * (_map.columns() + 1) * 3 * bit_depth};
+    case 6:
+        size_t dest_len {_map.rows() * (_map.columns() + 1) * 3 * (bit_depth / 8)};
         auto dest = std::make_unique<std::uint8_t[]>(dest_len);
         auto result = uncompress(dest.get(),
                                  &dest_len,
                                  reinterpret_cast<std::uint8_t*>(buffer),
                                  size);
+        auto ptr_dest = dest.get();
+        if (result == Z_OK) {
+            parse_8b_truecolor(ptr_dest, dest_len);
+        }
     }
 }
 
@@ -148,13 +153,19 @@ void img::PNGImage::read(std::string_view path) {
         read_chunk_header(ptr_buffer, chunk, chunk_size);
 
         if (chunk == img::PNGImage::Chunk::IDAT) {
-            scline.call_read(chunk_size);
+            scline.call_read(chunk_size + 4);
             GET_BUFF(8, chunk_size + 8);
             read_idat(ptr_buffer, chunk_size);
+            GET_BUFF(4, chunk_size + 8);
+            read_crc(ptr_buffer, chunk_size + 8);
+            scline.reset_buffer(scline.size());
         } else if (chunk == img::PNGImage::Chunk::IEND) {
-
+            scline.call_read(4);
+            GET_BUFF(4, 12);
+            read_crc(ptr_buffer, 8);
+            scline.reset_buffer(scline.size());
         } else {
-            scline.call_read(chunk_size - 4);
+            scline.call_read(chunk_size + 4);
             scline.reset_buffer(scline.size());
         }
 

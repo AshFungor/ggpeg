@@ -269,20 +269,23 @@ namespace img {
         int filter_method;
         int interlace_method;
         int sample_size;
-        // parse functions
+        // parse functions (chunks)
         bool read_crc(char* buffer, size_t size);
         void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
         void read_ihdr(char*& buffer);
         void read_idat(char*& buffer, size_t size);
+        // parse functions (IDAT)
+        void parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
+        void parse_16b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
         // filters
-        void apply_sub(char* raw_buffer, size_t size);
-        void apply_up(char* current_buffer, char* upper_buffer, size_t size);
-        void apply_avg(char* current_buffer, char* upper_buffer, size_t size);
-        void apply_paeth(char* current_buffer, char* upper_buffer, size_t size);
-        void reverse_sub(char* processed_buffer, size_t size);
-        void reverse_up(char* processed_buffer, char* upper_buffer, size_t size);
-        void reverse_paeth(char* processed_buffer, char* upper_buffer, size_t size);
-        void reverse_avg(char* processed_buffer, char* upper_buffer, size_t size);
+        void apply_sub(std::uint8_t* raw_buffer, size_t size);
+        void apply_up(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void apply_avg(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void apply_paeth(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_sub(std::uint8_t* processed_buffer, size_t size);
+        void reverse_up(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_paeth(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_avg(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

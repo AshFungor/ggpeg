@@ -29,6 +29,18 @@ TEST_CASE("Scanline functionality", "[base]") {
     }
 }
 
+TEST_CASE("More complicated use of scanline", "[base]") {
+    using Scanline = img::Image::Scanline;
+    char data[] {"Hello, world!\n"};
+    Scanline file {"resources/test_text_file.txt", img::Image::ScanMode::read};
+    file.call_read(6);
+    auto buff = file.get_chunk(0, 6);
+    REQUIRE(Scanline::_cmp_chunks(buff.get(), 6, data, 6));
+    file.reset_buffer(file.size());
+    file.call_read(9);
+    buff = file.get_chunk(0, 9);
+    REQUIRE(Scanline::_cmp_chunks(buff.get(), 9, data + 6, 9));
+}
 
 TEST_CASE("Scanline helper functions", "[base]") {
     // compare_chunks test

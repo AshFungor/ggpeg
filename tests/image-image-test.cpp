@@ -42,6 +42,9 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
 
     img::PNGImage img {};
     img.read("resources/good_normal_tiny-rgb-gray.png");
+    img::PPMImage img_2 {};
+    img_2.get_map() = img.get_map();
+    img_2.write("resources/result.ppm");
 
 }
 
