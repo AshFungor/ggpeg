@@ -256,7 +256,7 @@ namespace img {
         constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
         // chunk types
         enum class Chunk {
-            IHDR, IDAT, IEND
+            IHDR, IDAT, IEND, Unknown
         };
         // buffers
         static char _chunk_1b[1];

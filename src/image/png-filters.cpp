@@ -10,7 +10,7 @@ int raw(std::uint8_t* buffer, int index) {
     return buffer[index];
 }
 int prior(std::uint8_t* buffer, int index) {
-    if (index < 0) { return 0; }
+    if (index < 0 || !buffer) { return 0; }
     return buffer[index];
 }
 std::uint8_t mod256(int value) {
@@ -40,8 +40,8 @@ void img::PNGImage::apply_sub(std::uint8_t* raw_buffer, size_t size) {
     std::uint8_t waiting_byte {0};
     for (int i{0}; i < size; ++i) {
         auto result = mod256(raw(raw_buffer, i) - raw(raw_buffer, i - bpp));
-        waiting_byte = result;
         if (i > 0) { raw_buffer[i - 1] = waiting_byte; }
+        waiting_byte = result;
     }
     raw_buffer[size - 1] = waiting_byte;
 }
@@ -81,9 +81,10 @@ void img::PNGImage::apply_avg(std::uint8_t* current_buffer,
     for (int i {0}; i < size; ++i) {
         auto result = mod256(raw(current_buffer, i) -
                              floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i))));
-        waiting_byte = result;
         if (i > 0) { current_buffer[i - 1] = waiting_byte; }
+        waiting_byte = result;
     }
+    current_buffer[size - 1] = waiting_byte;
 }
 
 void img::PNGImage::reverse_avg(std::uint8_t* current_buffer,
@@ -107,9 +108,10 @@ void img::PNGImage::apply_paeth(std::uint8_t* current_buffer,
                              paeth_predictor(raw(current_buffer, i - bpp),
                                              prior(upper_buffer, i),
                                              prior(upper_buffer, i - bpp)));
-        waiting_byte = result;
         if (i > 0) { current_buffer[i - 1] = waiting_byte; }
+        waiting_byte = result;
     }
+    current_buffer[size - 1] = waiting_byte;
 }
 
 void img::PNGImage::reverse_paeth(std::uint8_t* current_buffer,

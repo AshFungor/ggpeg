@@ -33,6 +33,8 @@ void img::PNGImage::read_chunk_header(char*& buffer,
         chunk = img::PNGImage::Chunk::IDAT;
     } else if (Scanline::_cmp_chunks(_chunk_4b, 4, _iend_name, 4)) {
         chunk = img::PNGImage::Chunk::IEND;
+    } else {
+        chunk = img::PNGImage::Chunk::Unknown;
     }
 }
 
@@ -93,7 +95,9 @@ void img::PNGImage::read_idat(char*& buffer, size_t size) {
     switch(color_type) {
     case 2:
     case 6:
-        size_t dest_len {_map.rows() * (_map.columns() + 1) * 3 * (bit_depth / 8)};
+        size_t dest_len {_map.rows() * (_map.columns() + 1) *
+                        (3 + (color_type == 6)) *
+                        (bit_depth / 8)};
         auto dest = std::make_unique<std::uint8_t[]>(dest_len);
         auto result = uncompress(dest.get(),
                                  &dest_len,
@@ -101,7 +105,12 @@ void img::PNGImage::read_idat(char*& buffer, size_t size) {
                                  size);
         auto ptr_dest = dest.get();
         if (result == Z_OK) {
-            parse_8b_truecolor(ptr_dest, dest_len);
+            if (color_type == 2) {
+                parse_8b_truecolor(ptr_dest, dest_len);
+            }
+            else {
+                parse_8b_truecolor(ptr_dest, dest_len, true);
+            }
         }
     }
 }
@@ -144,7 +153,12 @@ void img::PNGImage::read(std::string_view path) {
     if (!read_crc(ptr_buffer, 21)) {
         return;
     }
-    scline.reset_buffer(25);
+    scline.reset_buffer(scline.size());
+
+    std::unique_ptr<char[]> data_stream;
+    char* ptr_data_stream;
+    size_t data_stream_size {0};
+    bool is_data_stream {false};
 
     while (chunk != img::PNGImage::Chunk::IEND) {
 
@@ -152,10 +166,27 @@ void img::PNGImage::read(std::string_view path) {
         GET_BUFF(0, 8);
         read_chunk_header(ptr_buffer, chunk, chunk_size);
 
+        if (is_data_stream && chunk != img::PNGImage::Chunk::IDAT) {
+            is_data_stream = false;
+            read_idat(ptr_data_stream, data_stream_size);
+            data_stream.reset();
+        }
+
         if (chunk == img::PNGImage::Chunk::IDAT) {
+            if (!is_data_stream) { is_data_stream = true; }
             scline.call_read(chunk_size + 4);
             GET_BUFF(8, chunk_size + 8);
-            read_idat(ptr_buffer, chunk_size);
+            auto expanded_stream = std::make_unique<char[]>(data_stream_size + chunk_size);
+            size_t i;
+            for (i = 0; i < data_stream_size; ++i) {
+                expanded_stream[i] = data_stream[i];
+            }
+            data_stream_size += chunk_size;
+            for (size_t initial {i}; i < data_stream_size; ++i) {
+                expanded_stream[i] = ptr_buffer[i - initial];
+            }
+            data_stream = std::move(expanded_stream);
+            ptr_data_stream = data_stream.get();
             GET_BUFF(4, chunk_size + 8);
             read_crc(ptr_buffer, chunk_size + 8);
             scline.reset_buffer(scline.size());
@@ -164,13 +195,11 @@ void img::PNGImage::read(std::string_view path) {
             GET_BUFF(4, 12);
             read_crc(ptr_buffer, 8);
             scline.reset_buffer(scline.size());
-        } else {
+        } else if (chunk == img::PNGImage::Chunk::Unknown) {
             scline.call_read(chunk_size + 4);
             scline.reset_buffer(scline.size());
         }
 
-
-        return;
     }
 }
 

@@ -41,7 +41,9 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
     }
 
     img::PNGImage img {};
-    img.read("resources/good_normal_tiny-rgb-gray.png");
+    std::string_view path {"resources/sample_png_100kb.png"};
+    img.read(path);
+    // img.read(path);
     img::PPMImage img_2 {};
     img_2.get_map() = img.get_map();
     img_2.write("resources/result.ppm");
