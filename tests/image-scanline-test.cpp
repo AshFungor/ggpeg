@@ -16,7 +16,7 @@ TEST_CASE("Scanline functionality", "[base]") {
         REQUIRE(file.size() == 15);
         auto data_ptr = std::make_unique<char[]>(sizeof(data));
         for (int i {0}; i < sizeof(data); ++i) {data_ptr[i] = data[i]; }
-        file.set_chunk(0, 15, std::move(data_ptr));
+        file.set_chunk(0, 15, data_ptr.get());
         file.call_write(15);
         REQUIRE(file.size() == 0);
     }
@@ -88,5 +88,10 @@ TEST_CASE("Scanline helper functions", "[base]") {
     char iend_input[] = {'I', 'E', 'N', 'D'};
     REQUIRE(img::Image::Scanline::_crc(sample_input, 17) == 2889923504);
     REQUIRE(img::Image::Scanline::_crc(iend_input, 4) == 2923585666);
+    // set_chunk set
+    std::uint8_t number_full_ones[4] {0xFF, 0xFF, 0xFF, 0xFF};
+    auto result = img::Image::Scanline::_set_chunk(0 - 1, 4);
+    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*>(number_full_ones), 4,
+                                              result.get(), 4));
 
 }

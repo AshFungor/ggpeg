@@ -40,13 +40,21 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
         REQUIRE(check);
     }
 
+//    img::PPMImage img {};
+//    std::string_view path {"resources/house_2.ppm"};
+//    img.read(path);
+//    // img.read(path);
+//    img::PNGImage img_2 {};
+//    img_2.get_map() = img.get_map();
+//    img_2.write("resources/result.png");
+
     img::PNGImage img {};
-    std::string_view path {"resources/sample_png_100kb.png"};
+    std::string_view path {"resources/result.png"};
     img.read(path);
     // img.read(path);
     img::PPMImage img_2 {};
     img_2.get_map() = img.get_map();
-    img_2.write("resources/result.ppm");
+    img_2.write("resources/result_2.ppm");
 
 }
 

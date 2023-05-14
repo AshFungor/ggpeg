@@ -61,7 +61,7 @@ std::unique_ptr<char[]> img::Image::Scanline::get_chunk(size_t start, size_t end
     return std::move(new_buff);
 }
 
-void img::Image::Scanline::set_chunk(size_t start, size_t end, std::unique_ptr<char[]> chunk) {
+void img::Image::Scanline::set_chunk(size_t start, size_t end, const char* chunk) {
     for (size_t i {start}; i < end; ++i) {
         _buffer[i] = chunk[i - start];
     }
@@ -114,7 +114,7 @@ std::uint64_t img::Image::Scanline::_parse_chunk(char* bytes, size_t size) {
     return result;
 }
 
-std::uint32_t img::Image::Scanline::_crc(char* buffer, size_t size) {
+std::uint32_t img::Image::Scanline::_crc(const char* buffer, size_t size) {
     if (!_crc_lookup_table) {
         _crc_lookup_table = std::make_unique<std::uint32_t[]>(256);
         std::uint32_t curr;
@@ -144,4 +144,13 @@ void img::Image::Scanline::_extr_chunk(char*& buffer, char* chunk, size_t size) 
         ++chunk;
         ++buffer;
     }
+}
+
+std::unique_ptr<char[]> img::Image::Scanline::_set_chunk(std::uint64_t value, size_t size) {
+    auto chunk = std::make_unique<char[]>(size);
+    for (int i {0}; i < size; ++i) {
+        std::uint8_t byte {static_cast<std::uint8_t>((value >> ((size - i - 1) * 8)) & 0xFF)};
+        chunk[i] = reinterpret_cast<char&>(byte);
+    }
+    return std::move(chunk);
 }

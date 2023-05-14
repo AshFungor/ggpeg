@@ -20,7 +20,7 @@ std::uint8_t mod256(int value) {
     return out;
 }
 std::uint8_t paeth_predictor(std::uint8_t left, std::uint8_t up, std::uint8_t up_left) {
-    auto p = left +up - up_left;
+    auto p = left + up - up_left;
     auto p_left = abs(p - left);
     auto p_up = abs(p - up);
     auto p_up_left = abs(p - up_left);
@@ -80,7 +80,7 @@ void img::PNGImage::apply_avg(std::uint8_t* current_buffer,
     std::uint8_t waiting_byte {0};
     for (int i {0}; i < size; ++i) {
         auto result = mod256(raw(current_buffer, i) -
-                             floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i))));
+                             mod256(floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i)))));
         if (i > 0) { current_buffer[i - 1] = waiting_byte; }
         waiting_byte = result;
     }
@@ -93,7 +93,7 @@ void img::PNGImage::reverse_avg(std::uint8_t* current_buffer,
     int bpp {std::max(sample_size * bit_depth / 8, 1)};
     for (int i {0}; i < size; ++i) {
         auto result = mod256(raw(current_buffer, i) +
-                             floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i))));
+                             mod256(floor((raw(current_buffer, i - bpp) + prior(upper_buffer, i)))));
         current_buffer[i] = result;
     }
 }
