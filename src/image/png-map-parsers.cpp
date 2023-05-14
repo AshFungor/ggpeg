@@ -51,7 +51,7 @@ void img::PNGImage::assemble_8b_truecolor(std::unique_ptr<std::uint8_t[]>& buffe
     std::unique_ptr<std::uint8_t[]> upper {nullptr};
     for (int row {0}; row < _map.rows(); ++row) {
         auto line = std::make_unique<std::uint8_t[]>(_map.columns() * 3 + 1);
-        line[0] = 2; // Up filter
+        line[0] = 4; // Up filter
         for (int column {0}; column < _map.columns(); ++column) {
             auto color = _map.at(row, column);
             line[1 + column * 3] = color.R();
@@ -62,7 +62,8 @@ void img::PNGImage::assemble_8b_truecolor(std::unique_ptr<std::uint8_t[]>& buffe
         for (int i {0}; i < _map.columns() * 3 + 1; ++i) {
             temp_buff[i] = line[i];
         }
-        apply_up(line.get() + 1, (upper) ? upper.get() + 1 : upper.get(), _map.columns() * 3);
+        apply_paeth(line.get() + 1, (upper) ? upper.get() + 1 : upper.get(), _map.columns() * 3);
+        // apply_sub(line.get() + 1, _map.columns() * 3);
         upper = std::move(temp_buff);
         for (size_t i {row * (_map.columns() * 3 + 1)};
              i < (row + 1) * (_map.columns() * 3 + 1);
