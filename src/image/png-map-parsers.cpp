@@ -2,8 +2,8 @@
 #include <memory>
 #include <cstddef>
 
-void img::PNGImage::parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha) {
-    auto step = 3 + has_alpha;
+void img::PNGImage::parse_8b_truecolor(std::uint8_t*& buffer, size_t size) {
+    auto step = 3;
     auto window = _map.columns() * step + 1;
     auto current_line = std::make_unique<std::uint8_t[]>(window);
     std::unique_ptr<std::uint8_t[]> upper_line {nullptr};

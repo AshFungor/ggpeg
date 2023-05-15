@@ -94,7 +94,6 @@ void img::PNGImage::read_ihdr(char*& buffer) {
 void img::PNGImage::read_idat(char*& buffer, size_t size) {
     switch(color_type) {
     case 2:
-    case 6:
         size_t dest_len {_map.rows() * (_map.columns() + 1) *
                         (3 + (color_type == 6)) *
                         (bit_depth / 8)};
@@ -107,9 +106,6 @@ void img::PNGImage::read_idat(char*& buffer, size_t size) {
         if (result == Z_OK) {
             if (color_type == 2) {
                 parse_8b_truecolor(ptr_dest, dest_len);
-            }
-            else {
-                parse_8b_truecolor(ptr_dest, dest_len, true);
             }
         }
     }

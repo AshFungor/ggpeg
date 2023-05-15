@@ -206,7 +206,7 @@ namespace img {
             static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
         };
         PixelMap _map {0, 0};
-        bool _status {false};
+        bool _status {true};
         Image() = default;
     public:
         /** \brief Read map of pixels from a file.
@@ -271,6 +271,11 @@ namespace img {
         int interlace_method    {0}; // no interlace, default byte order
         int sample_size         {3}; // 3 units in sample
         // parse functions (chunks)
+        /** \brief Reads and checks CRC.
+         * @param buffer chunk of data with calculated CRC
+         * @param size size of buffer
+         * @return Returns true if CRC is correct.
+         */
         bool read_crc(char* buffer, size_t size);
         void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
         void read_ihdr(char*& buffer);
@@ -279,8 +284,7 @@ namespace img {
         void write_idat(Scanline& scanline);
         void write_iend(Scanline& scanline);
         // parse functions (IDAT)
-        void parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
-        void parse_16b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
+        void parse_8b_truecolor(std::uint8_t*& buffer, size_t size);
         void assemble_8b_truecolor(std::unique_ptr<std::uint8_t[]>& buffer, size_t& size);
         // filters
         void apply_sub(std::uint8_t* raw_buffer, size_t size);

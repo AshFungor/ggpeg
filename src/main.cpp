@@ -143,7 +143,7 @@ int main(int argc, char** argv)
                     case clpp::CommandType::reflect_x: 
                     {
                         std::cerr<<"reflect_x"<<std::endl;
-                        proc::reflex_x(main_image);
+                        proc::reflect_x(main_image);
                         main_image.write(new_path);
                         break;
                     }
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
                     case clpp::CommandType::reflect_y: 
                     {
                         std::cerr<<"reflect_y"<<std::endl;
-                        proc::reflex_y(main_image);
+                        proc::reflect_y(main_image);
                         main_image.write(new_path);
                         break;
                     }
@@ -239,14 +239,14 @@ int main(int argc, char** argv)
                     }
                     case clpp::CommandType::reflect_x: 
                     {
-                        proc::reflex_x(main_image);
+                        proc::reflect_x(main_image);
                         main_image.write(new_path);
                         break;
                     }
                 
                     case clpp::CommandType::reflect_y: 
                     {
-                        proc::reflex_y(main_image);
+                        proc::reflect_y(main_image);
                         main_image.write(new_path);
                         break;
                     }
