@@ -18,13 +18,13 @@ void for_each_in_map(img::PixelMap& map, std::function<void(int row, int column)
     }
 }
 
-TEST_CASE("Construction of class <PixelMap> and elements' access", "[pixel_map][base]") {
+TEST_CASE("Construction of class <PixelMap> and elements' access", "[base]") {
     img::PixelMap map {magic_size, magic_size};
     map.at(1, 1) = img::Color{0, 0, 0};
     REQUIRE(map.at(1, 1) == img::Color{0, 0, 0});
 }
 
-TEST_CASE("Expansion of class <PixelMap>", "[pixel_map]") {
+TEST_CASE("Expansion of class <PixelMap>", "[base]") {
     img::PixelMap map {magic_size, magic_size};
     for_each_in_map(map, [&map](int r, int c) { map.at(r, c) = img::Color{0, 0, 0}; });
     SECTION("One-side expansion") {
@@ -76,7 +76,7 @@ TEST_CASE("Expansion of class <PixelMap>", "[pixel_map]") {
     }
 }
 
-TEST_CASE("Trimming class <PixelMap>", "[pixel_map]") {
+TEST_CASE("Trimming class <PixelMap>", "[base]") {
     img::PixelMap map {magic_size, magic_size};
     SECTION("Trimming one-side") {
         using img::Side;

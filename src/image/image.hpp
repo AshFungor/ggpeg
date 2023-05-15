@@ -191,7 +191,7 @@ namespace img {
             void expand_buffer(size_t number);
             size_t size();
             std::unique_ptr<char[]> get_chunk(size_t start, size_t end);
-            void set_chunk(size_t start, size_t end, std::unique_ptr<char[]> chunk);
+            void set_chunk(size_t start, size_t end, const char* chunk);
             void call_read(size_t number);
             void call_write(size_t number);
             char& operator[](size_t index);
@@ -202,7 +202,8 @@ namespace img {
                                     const char* chunk_2, size_t size_2);
             static std::uint64_t _parse_chunk(char* bytes, size_t size);
             static void _extr_chunk(char*& buffer, char* chunk, size_t size);
-            static std::uint32_t _crc(char* buffer, size_t size);
+            static std::uint32_t _crc(const char* buffer, size_t size);
+            static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
         };
         PixelMap _map {0, 0};
         bool _status {false};
@@ -234,7 +235,7 @@ namespace img {
         constexpr static std::uint_fast64_t _size_limit {5000};
         constexpr static char _binary_magic_number[3] {"P6"};
         constexpr static char _ascii_magic_number[3] {"P3"};
-        int _max_color {0};
+        int _max_color {255};
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
@@ -248,31 +249,48 @@ namespace img {
          * Then CR + LF
          * Then ^Z + LF
          */
-        constexpr static char _signature[9]
-        {-119, 80, 78, 71, 13, 10, 26, 10, 0};
+        constexpr static char _signature[8]
+        {-119, 80, 78, 71, 13, 10, 26, 10};
         // chunk names
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
         constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
         constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
         // chunk types
         enum class Chunk {
-            IHDR, IDAT, IEND
+            IHDR, IDAT, IEND, Unknown
         };
         // buffers
         static char _chunk_1b[1];
         static char _chunk_4b[4];
         static char _chunk_8b[8];
         // fields of PNG header
-        int bit_depth;
-        int color_type;
-        int compression_method;
-        int filter_method;
-        int interlace_method;
-        // parse functions
+        int bit_depth           {8}; // 1 byte per sample unit (for ex. color component)
+        int color_type          {2}; // type of samples
+        int compression_method  {0}; // deflate/inflte compression
+        int filter_method       {0}; // adaptive filter
+        int interlace_method    {0}; // no interlace, default byte order
+        int sample_size         {3}; // 3 units in sample
+        // parse functions (chunks)
         bool read_crc(char* buffer, size_t size);
         void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
         void read_ihdr(char*& buffer);
         void read_idat(char*& buffer, size_t size);
+        void write_ihdr(Scanline& scanline);
+        void write_idat(Scanline& scanline);
+        void write_iend(Scanline& scanline);
+        // parse functions (IDAT)
+        void parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
+        void parse_16b_truecolor(std::uint8_t*& buffer, size_t size, bool has_alpha = false);
+        void assemble_8b_truecolor(std::unique_ptr<std::uint8_t[]>& buffer, size_t& size);
+        // filters
+        void apply_sub(std::uint8_t* raw_buffer, size_t size);
+        void apply_up(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void apply_avg(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void apply_paeth(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_sub(std::uint8_t* processed_buffer, size_t size);
+        void reverse_up(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_paeth(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        void reverse_avg(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

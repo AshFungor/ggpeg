@@ -15,6 +15,9 @@ char img::PNGImage::_chunk_1b[1] {};
 char img::PNGImage::_chunk_4b[4] {};
 char img::PNGImage::_chunk_8b[8] {};
 
+#define GET_BUFF(start, end)                        \
+    smart_buffer = scline.get_chunk(start, end);    \
+    ptr_buffer = smart_buffer.get();
 
 void img::PNGImage::read_chunk_header(char*& buffer,
                                       img::PNGImage::Chunk& chunk,
@@ -30,6 +33,8 @@ void img::PNGImage::read_chunk_header(char*& buffer,
         chunk = img::PNGImage::Chunk::IDAT;
     } else if (Scanline::_cmp_chunks(_chunk_4b, 4, _iend_name, 4)) {
         chunk = img::PNGImage::Chunk::IEND;
+    } else {
+        chunk = img::PNGImage::Chunk::Unknown;
     }
 }
 
@@ -54,11 +59,15 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     bit_depth = Scanline::_parse_chunk(_chunk_1b, 1);
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     color_type = Scanline::_parse_chunk(_chunk_1b, 1);
+    // true color
     if (color_type == 2) {
+        sample_size = 3;
         if (bit_depth != 8 && bit_depth != 16) {
             return;
         }
+    // true color & alpha channel
     } else if (color_type == 6) {
+        sample_size = 4;
         if (bit_depth != 8 && bit_depth != 16) {
             return;
         }
@@ -82,7 +91,29 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     }
 }
 
-void img::PNGImage::read_idat(char*& buffer, size_t size) {}
+void img::PNGImage::read_idat(char*& buffer, size_t size) {
+    switch(color_type) {
+    case 2:
+    case 6:
+        size_t dest_len {_map.rows() * (_map.columns() + 1) *
+                        (3 + (color_type == 6)) *
+                        (bit_depth / 8)};
+        auto dest = std::make_unique<std::uint8_t[]>(dest_len);
+        auto result = uncompress(dest.get(),
+                                 &dest_len,
+                                 reinterpret_cast<std::uint8_t*>(buffer),
+                                 size);
+        auto ptr_dest = dest.get();
+        if (result == Z_OK) {
+            if (color_type == 2) {
+                parse_8b_truecolor(ptr_dest, dest_len);
+            }
+            else {
+                parse_8b_truecolor(ptr_dest, dest_len, true);
+            }
+        }
+    }
+}
 
 void img::PNGImage::read(std::string_view path) {
 
@@ -91,6 +122,8 @@ void img::PNGImage::read(std::string_view path) {
     Scanline scline {path.data(), ScanMode::read};
     img::PNGImage::Chunk chunk;
     size_t chunk_size;
+    _map.trim(Side::bottom, _map.rows());
+    _map.trim(Side::right, _map.columns());
 
     // parse 8-bit header
 
@@ -100,13 +133,11 @@ void img::PNGImage::read(std::string_view path) {
     if (!Scanline::_cmp_chunks(ptr_buffer, 8, _signature, 8)) {
         return;
     }
-    return;
     scline.reset_buffer(8);
 
     // parse IHDR
     scline.call_read(25);
-    smart_buffer = scline.get_chunk(0, 8);
-    ptr_buffer = smart_buffer.get();
+    GET_BUFF(0, 8);
     read_chunk_header(ptr_buffer, chunk, chunk_size);
     if (chunk_size != 13) {
         return;
@@ -114,34 +145,137 @@ void img::PNGImage::read(std::string_view path) {
     if (chunk != img::PNGImage::Chunk::IHDR) {
         return;
     }
-    smart_buffer = scline.get_chunk(8, 21);
-    ptr_buffer = smart_buffer.get();
+    GET_BUFF(8, 21);
     auto start_ptr = ptr_buffer;
     read_ihdr(ptr_buffer);
     if (ptr_buffer - 13 != start_ptr) {
         return;
     }
-    smart_buffer = scline.get_chunk(4, 25);
-    ptr_buffer = smart_buffer.get();
-    if (!read_crc(ptr_buffer, 21)) {
-        return;
-    }
-    scline.reset_buffer(25);
+    GET_BUFF(4, 25);
+    read_crc(ptr_buffer, 21);
+    scline.reset_buffer(scline.size());
+
+    std::unique_ptr<char[]> data_stream;
+    char* ptr_data_stream;
+    size_t data_stream_size {0};
+    bool is_data_stream {false};
 
     while (chunk != img::PNGImage::Chunk::IEND) {
 
         scline.call_read(8);
-        smart_buffer = scline.get_chunk(0, 8);
-        ptr_buffer = smart_buffer.get();
+        GET_BUFF(0, 8);
         read_chunk_header(ptr_buffer, chunk, chunk_size);
 
-        if (chunk == img::PNGImage::Chunk::IDAT) {
-
+        if (is_data_stream && chunk != img::PNGImage::Chunk::IDAT) {
+            is_data_stream = false;
+            read_idat(ptr_data_stream, data_stream_size);
+            data_stream.reset();
         }
 
+        if (chunk == img::PNGImage::Chunk::IDAT) {
+            if (!is_data_stream) { is_data_stream = true; }
+            scline.call_read(chunk_size + 4);
+            GET_BUFF(8, chunk_size + 8);
+            auto expanded_stream = std::make_unique<char[]>(data_stream_size + chunk_size);
+            size_t i;
+            for (i = 0; i < data_stream_size; ++i) {
+                expanded_stream[i] = data_stream[i];
+            }
+            data_stream_size += chunk_size;
+            for (size_t initial {i}; i < data_stream_size; ++i) {
+                expanded_stream[i] = ptr_buffer[i - initial];
+            }
+            data_stream = std::move(expanded_stream);
+            ptr_data_stream = data_stream.get();
+            GET_BUFF(4, chunk_size + 8);
+            read_crc(ptr_buffer, chunk_size + 8);
+            scline.reset_buffer(scline.size());
+        } else if (chunk == img::PNGImage::Chunk::IEND) {
+            scline.call_read(4);
+            GET_BUFF(4, 12);
+            read_crc(ptr_buffer, 8);
+            scline.reset_buffer(scline.size());
+        } else if (chunk == img::PNGImage::Chunk::Unknown) {
+            scline.call_read(chunk_size + 4);
+            scline.reset_buffer(scline.size());
+        }
 
-        return;
+    }
+
+    _status = true;
+}
+
+void img::PNGImage::write(std::string_view path) {
+
+    _status = false;
+    Scanline scline {path.data(), ScanMode::write};
+
+    scline.expand_buffer(8);
+    scline.set_chunk(0, 8, _signature);
+    scline.call_write(8);
+
+    write_ihdr(scline);
+    write_idat(scline);
+    write_iend(scline);
+    _status = true;
+}
+
+void img::PNGImage::write_ihdr(Scanline& scanline) {
+    scanline.reset_buffer(scanline.size());
+    scanline.expand_buffer(8 + 13 + 4);
+    auto buffer = Scanline::_set_chunk(13, 4);
+    scanline.set_chunk(0, 4, buffer.get());
+    scanline.set_chunk(4, 8, _ihdr_name);
+    buffer = Scanline::_set_chunk(_map.columns(), 4);
+    scanline.set_chunk(8, 12, buffer.get());
+    buffer = Scanline::_set_chunk(_map.rows(), 4);
+    scanline.set_chunk(12, 16, buffer.get());
+    buffer = Scanline::_set_chunk(8, 1);        // bit depth is always 8
+    scanline.set_chunk(16, 17, buffer.get());
+    buffer = Scanline::_set_chunk(2, 1);        // color type is RGB
+    scanline.set_chunk(17, 18, buffer.get());
+    buffer = Scanline::_set_chunk(0, 3);
+    scanline.set_chunk(18, 21, buffer.get());
+    buffer = scanline.get_chunk(4, 21);
+    auto crc = Scanline::_crc(buffer.get(), 21 - 4);
+    buffer = Scanline::_set_chunk(crc, 4);
+    scanline.set_chunk(21, 25, buffer.get());
+    scanline.call_write(scanline.size());
+}
+
+void img::PNGImage::write_idat(Scanline& scanline) {
+    std::unique_ptr<std::uint8_t[]> data {nullptr};
+    size_t size;
+    assemble_8b_truecolor(data, size);
+    size_t comp_size {static_cast<size_t>(std::ceil(size * 1.2))};
+    auto compressed = std::make_unique<std::uint8_t[]>(comp_size);
+    auto result = compress(compressed.get(), &comp_size, data.get(), size);
+    if (result == Z_OK) {
+        scanline.reset_buffer(scanline.size());
+        scanline.expand_buffer(8 + comp_size + 4);
+        auto buffer = Scanline::_set_chunk(comp_size, 4);
+        scanline.set_chunk(0, 4, buffer.get());
+        scanline.set_chunk(4, 8, _idat_name);
+        scanline.set_chunk(8, 8 + comp_size, reinterpret_cast<char*>(compressed.get()));
+        buffer = scanline.get_chunk(4, 8 + comp_size);
+        auto crc = Scanline::_crc(buffer.get(), comp_size + 4);
+        buffer = Scanline::_set_chunk(crc, 4);
+        scanline.set_chunk(8 + comp_size, 8 + comp_size + 4, buffer.get());
+        scanline.call_write(scanline.size());
     }
 }
 
-void img::PNGImage::write(std::string_view path) {}
+void img::PNGImage::write_iend(Scanline& scanline) {
+    scanline.reset_buffer(scanline.size());
+    scanline.expand_buffer(12);
+    auto buffer = Scanline::_set_chunk(0, 4);
+    scanline.set_chunk(0, 4, buffer.get());
+    scanline.set_chunk(4, 8, _iend_name);
+    auto crc = Scanline::_crc(_iend_name, 4);
+    buffer = Scanline::_set_chunk(crc, 4);
+    scanline.set_chunk(8, 12, buffer.get());
+    scanline.call_write(scanline.size());
+}
+
+
+

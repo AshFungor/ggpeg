@@ -2,6 +2,7 @@
 #include <catch2/catch_all.hpp>
 #include <string>
 #include <memory>
+#include <processing/processing.hpp>
 
 #define private public
 #define protected public
@@ -39,10 +40,6 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
         }
         REQUIRE(check);
     }
-
-    img::PNGImage img {};
-    img.read("resources/good_normal_tiny-rgb-gray.png");
-
 }
 
 
