@@ -235,7 +235,7 @@ namespace img {
         constexpr static std::uint_fast64_t _size_limit {5000};
         constexpr static char _binary_magic_number[3] {"P6"};
         constexpr static char _ascii_magic_number[3] {"P3"};
-        int _max_color {0};
+        int _max_color {255};
     public:
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;

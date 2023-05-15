@@ -122,6 +122,8 @@ void img::PNGImage::read(std::string_view path) {
     Scanline scline {path.data(), ScanMode::read};
     img::PNGImage::Chunk chunk;
     size_t chunk_size;
+    _map.trim(Side::bottom, _map.rows());
+    _map.trim(Side::right, _map.columns());
 
     // parse 8-bit header
 
@@ -150,9 +152,7 @@ void img::PNGImage::read(std::string_view path) {
         return;
     }
     GET_BUFF(4, 25);
-    if (!read_crc(ptr_buffer, 21)) {
-        return;
-    }
+    read_crc(ptr_buffer, 21);
     scline.reset_buffer(scline.size());
 
     std::unique_ptr<char[]> data_stream;

@@ -2,6 +2,7 @@
 #include <catch2/catch_all.hpp>
 #include <string>
 #include <memory>
+#include <processing/processing.hpp>
 
 #define private public
 #define protected public
@@ -39,23 +40,6 @@ TEST_CASE("PPM reading an writing in <Image> class", "[base]") {
         }
         REQUIRE(check);
     }
-
-    img::PPMImage img {};
-    std::string_view path {"resources/west_1.ppm"};
-    img.read(path);
-    // img.read(path);
-    img::PNGImage img_2 {};
-    img_2.get_map() = img.get_map();
-    img_2.write("resources/result.png");
-
-//    img::PNGImage img {};
-//    std::string_view path {"sample_png_100kb.png"};
-//    img.read(path);
-//    // img.read(path);
-//    img::PPMImage img_2 {};
-//    img_2.get_map() = img.get_map();
-//    img_2.write("resources/result_2.ppm");
-
 }
 
 

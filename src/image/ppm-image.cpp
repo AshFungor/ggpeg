@@ -49,15 +49,6 @@ void img::PPMImage::write(std::string_view path) {
 
     _status = false;
 
-    if (!_max_color) {
-        for (int i {0}; i < _map.rows(); ++i) {
-            for (int j {0}; j < _map.columns(); ++j) {
-                auto color = _map.at(i, j);
-                _max_color = std::max({color.R(), color.G(), color.B()});
-            }
-        }
-    }
-
     std::ofstream file {path.data(), std::ios::out | std::ios::binary};
     file << _binary_magic_number << '\n';
     file << _map.columns() << ' ' << _map.rows() << '\n';

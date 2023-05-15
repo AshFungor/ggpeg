@@ -8,9 +8,10 @@ void img::PNGImage::parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool 
     auto current_line = std::make_unique<std::uint8_t[]>(window);
     std::unique_ptr<std::uint8_t[]> upper_line {nullptr};
     for (int row {0}; row < _map.rows(); ++row) {
-        for (size_t i {row * window}; i < (row + 1) * window; ++i) {
-            current_line[i - row * window] = buffer[i];
+        for (size_t i {0}; i < window; ++i) {
+            current_line[i] = buffer[i];
         }
+        buffer += window;
         auto filter = current_line[0];
         switch (filter) {
         case 1:
@@ -35,11 +36,13 @@ void img::PNGImage::parse_8b_truecolor(std::uint8_t*& buffer, size_t size, bool 
             break;
         }
         for (int column {0}; column < _map.columns(); ++column) {
-            auto red = current_line[1 + column * step];
-            auto green = current_line[1 + column * step + 1];
-            auto blue = current_line[1 + column * step + 2];
-            _map.at(row, column) = img::Color{red, green, blue};
+            auto color = img::Color{};
+            color.R(current_line[1 + column * step]);
+            color.G(current_line[1 + column * step + 1]);
+            color.B(current_line[1 + column * step + 2]);
+            _map.at(row, column) = color;
         }
+        upper_line.reset();
         upper_line = std::move(current_line);
         current_line = std::make_unique<std::uint8_t[]>(window);
     }
