@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <rang.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -20,9 +21,18 @@ namespace clpp {
     
     // Code for CLI parser.
     inline std::string global_Path; ///< Path to main image
-    inline bool cerr_disabled = true;
+    inline bool cerr_disabled = true; ///< Permission to display
     inline std::vector<std::string> allowed_Format = {"ppm", "png"}; ///< Allowed file formats
 
+    /** \brief Help function
+     * \details This function show help message with allowed command and rules for writing them.
+     */
+    inline void help();
+
+    /** \brief Version show function
+     * \details This function show version of GGPEG.
+     */
+    inline void version();
     
     /** \brief Enumeration specifying the type of command.
      * \details Used to set the type of command in the Сommand class.
@@ -59,10 +69,12 @@ namespace clpp {
              * parameters.
              * 
              * \param command command consisting of a string 
-             * \param display command consisting of a string 
             */
             Command(std::string& command);
 
+            /** \brief Destructs for Command class. 
+            */
+            ~Command();
             /** \brief Displays the command parameters
              * 
              * This function displays command parameters
@@ -156,9 +168,6 @@ namespace clpp {
 
     };
 
-    inline void helppp(){
-        std::cerr<<"help.."<<std::endl;
-    }
 
     /** \brief A class for parsing tokens and generating correct commands for them.
      * 
@@ -188,6 +197,7 @@ namespace clpp {
          * that are strings are converted into a command class and a queue is created.
          *
          * \param token string with token from commandline
+         * \param display permission to display
         */
         Parser(const std::vector<std::string> &tokens, const bool display);
 

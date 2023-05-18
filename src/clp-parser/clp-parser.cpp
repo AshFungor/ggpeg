@@ -1,4 +1,4 @@
-#include <rang.hpp>
+
 #include "clp-parser.hpp"
 
 
@@ -15,11 +15,12 @@ clpp::Parser::Parser(const std::vector<std::string>& tokens, const bool display)
 	clpp::cerr_disabled = display;
 	if (tokens[0] == "--help" || tokens[0] == "-h")
 	{ 
-		
-		CERR << rang::fg::red << "aaaaaaaa" << rang::fg::reset;
-
-		// clpp::helppp(); 
-		
+		clpp::help();
+		throw std::runtime_error("");
+	}
+	else if (tokens[0] == "--version" || tokens[0] == "-v")
+	{
+		clpp::version();
 		throw std::runtime_error("");
 	}
 	else { global_Path = tokens[0]; }
@@ -39,6 +40,7 @@ clpp::Parser::Parser(const std::vector<std::string>& tokens, const bool display)
 clpp::Parser::~Parser()
 {
 	_tokens.clear();
+	_line_of_command.clear();
 }
 void clpp::Parser::_check_combination_short_command(const std::string &combination_short_command)
 {
@@ -76,7 +78,6 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
         CERR << " There is no such file in this directory" << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
 	}
 
 	// check format
@@ -99,7 +100,7 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 		CERR<< rang::fg::reset <<std::endl;
 		
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 }
 void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
@@ -114,7 +115,7 @@ void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
               << std::endl;
 	CERR << rang::fg::reset;
 	throw std::runtime_error("");
-	// exit(EXIT_FAILURE);
+	
 }
 void clpp::Parser::_exceptions_for_short_command(const char token)
 {
@@ -130,7 +131,7 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
                   << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 	else if (token == 'r')
 	{ 
@@ -141,7 +142,7 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
                   << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 	else if (token == 'i')
 	{ 
@@ -152,7 +153,7 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
                   << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 	else
 	{ 
@@ -163,7 +164,7 @@ void clpp::Parser::_exceptions_for_short_command(const char token)
                   << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 }
 std::string clpp::Parser::_convert_to_long(const char sh)
@@ -345,6 +346,12 @@ clpp::Command::Command(std::string& command)
 	else if (first_part == "version")   { _command = clpp::CommandType::version;   }
 	else if (first_part == "help")      { _command = clpp::CommandType::help;      }
 }
+
+clpp::Command::~Command()
+{
+	_param.clear();
+}
+
 void clpp::Command::_parser_param_crop(const std::string& second_part)
 {	
 	if (second_part.size() == 0) { _error_param(); }
@@ -374,6 +381,13 @@ void clpp::Command::_parser_param_crop(const std::string& second_part)
 	else{ _error_param(); }
 	
 	if (_param.size() != 4) { _error_param(); }
+
+	int left = std::stoi(_param[0]);
+	int top = std::stoi(_param[1]);
+	int right = std::stoi(_param[2]);
+	int bottom = std::stoi(_param[3]);
+
+	if ((left + right) >= 100 || (top + bottom) >= 100) { _error_param(); }
 }
 
 void clpp::Command::_parser_param_rotate(const std::string& second_part)
@@ -487,7 +501,7 @@ void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 		CERR << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 	_param.emplace_back(new_format);
 }
@@ -506,7 +520,7 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		CERR << "There is no such file in this directory." << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 
 	// check format
@@ -528,7 +542,7 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		CERR << std::endl;
 		CERR << rang::fg::reset;
 		throw std::runtime_error("");
-		// exit(EXIT_FAILURE);
+		
 	}
 }
 void clpp::Command::_error_param()
@@ -544,7 +558,7 @@ void clpp::Command::_error_param()
 	CERR << rang::fg::reset;
 
 	throw std::runtime_error("");
-	// exit(EXIT_FAILURE);	
+		
 }
 void clpp::Command::show_param()
 {	
@@ -577,4 +591,90 @@ std::vector<std::string> clpp::Command::get_param()
 clpp::CommandType clpp::Command::get_command()
 {
 	return _command;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////// Definitions for help and version functions //////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+void clpp::help()
+{
+	std::cerr << std::endl;
+
+	std::cerr << rang::fg::yellow 
+				<< "---------------------------------------------------------" << std::endl
+				<< "|" << " GGPEG is a command line utility for image processing. " << "|" << std::endl
+				<< "---------------------------------------------------------" << std::endl
+				<< "|" << " Utility can only be run with pre-passed commands.     " << "|" <<std::endl
+				<< "---------------------------------------------------------" << std::endl
+				<< rang::fg::reset << std::endl;
+	
+	std::cerr << rang::fg::green
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   " << rang::bg::green << "name" << rang::bg::reset << "        |   " << rang::bg::green << "parametrs" << rang::bg::reset << "       |   " << rang::bg::green << "description" << rang::bg::reset << "                            |   " << rang::bg::green << "short command" << rang::bg::reset << "   |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   crop        |   left_margin     |   crop left                              |   unavailable     |" << std::endl
+				<< "|               |   top_margin      |   crop top                               |                   |" << std::endl
+				<< "|               |   right_margin    |   crop right                             |                   |" << std::endl
+				<< "|               |   bottom_margin   |   crop bottom                            |                   |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --crop=left_margin/top_margin/right_margin/bottom_margin                        |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   rotate      |   degrees         |   angle of rotation                      |   unavailable     |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --rotate=degrees                                                                |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   resize      |   k               |   multiplicity of resolution changes.    |   unavailable     |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --resize=0.3                                                                    |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   negative    |   -               |   filter negative                        |   n               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --negative or -n                                                                |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   insert      |   x               |   insert x coordinate                    |   unavailable     |" << std::endl
+				<< "|               |   y               |   insert y coordinate                    |                   |" << std::endl
+				<< "|               |   path_to_new     |   path to the inserted image             |                   |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --insert=x/y#path_to_new                                                        |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   convert     |   new_format      |   one of the valid options: ppm or png   |   unavailable     |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --convert=new_format                                                            |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   reflect_x   |   -               |   reflection X                           |   x               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --reflect_x or -x                                                               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   reflect_y   |   -               |   reflection Y                           |   y               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --reflect_y or -y                                                               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   version     |   -               |   show version                           |   v               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --version or -v                                                                 |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   help        |   -               |   show help message                      |   h               |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "|   FORMAT:     |  --help or -h                                                                    |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl;
+	std::cerr << std::endl;
+	std::cerr << rang::fg::green 
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "| " << rang::bg::green << "Rules" << rang::bg::reset <<   "                                                                                            |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl
+				<< "| # All long commands start with --                                                                |" << std::endl
+				<< "| # All short commands start with -                                                                |" << std::endl
+				<< "| # Complex commands are written strictly separately, while simple ones can be combined,           |" << std::endl
+				<< "| # for example: -hxv                                                                              |" << std::endl
+				<< "----------------------------------------------------------------------------------------------------" << std::endl;
+}
+
+void clpp::version()
+{
+	std::cerr << std::endl;
+	std::cerr << rang::fg::green << "------------------" << std::endl;
+	std::cerr << "| " <<  "version: 1.0.0 |" << std::endl; 
+	std::cerr << "------------------" << rang::fg::reset << std::endl;
 }

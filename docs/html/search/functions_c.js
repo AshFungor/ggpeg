@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eparser_0',['~Parser',['../classclpp_1_1Parser.html#aed85df23aadbc44534d7a1dfbf5ac308',1,'clpp::Parser']]]
+  ['version_0',['version',['../namespaceclpp.html#af84ac668e046be9b18a4daf075929f80',1,'clpp']]]
 ];

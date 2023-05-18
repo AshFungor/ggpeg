@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['global_5fpath_0',['global_Path',['../namespaceclpp.html#a2a575ba136dd7f5620b63a1980631faa',1,'clpp']]]
+  ['cerr_5fdisabled_0',['cerr_disabled',['../namespaceclpp.html#ad5d6e90eddf2d334666c4597b7a9c0cb',1,'clpp']]]
 ];
