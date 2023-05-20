@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['insert_0',['insert',['../namespaceproc.html#a8b1b24c098967b5d754b305521804fca',1,'proc']]]
+  ['help_0',['help',['../namespaceclpp.html#a321fbde3f1e04fe4ed4cdccfdc7fc5ec',1,'clpp']]]
 ];
