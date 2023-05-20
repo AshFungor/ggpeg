@@ -612,7 +612,7 @@ void clpp::help()
 	
 	std::cerr << rang::fg::green
 				<< "----------------------------------------------------------------------------------------------------" << std::endl
-				<< "|   " << rang::bg::green << "name" << rang::bg::reset << "        |   " << rang::bg::green << "parametrs" << rang::bg::reset << "       |   " << rang::bg::green << "description" << rang::bg::reset << "                            |   " << rang::bg::green << "short command" << rang::bg::reset << "   |" << std::endl
+                << "|   " << "name" << "        |   " "parametrs" << "       |   " << "description" << "                            |   " << "short command" << "   |" << std::endl
 				<< "----------------------------------------------------------------------------------------------------" << std::endl
 				<< "|   crop        |   left_margin     |   crop left                              |   unavailable     |" << std::endl
 				<< "|               |   top_margin      |   crop top                               |                   |" << std::endl
@@ -662,7 +662,7 @@ void clpp::help()
 	std::cerr << std::endl;
 	std::cerr << rang::fg::green 
 				<< "----------------------------------------------------------------------------------------------------" << std::endl
-				<< "| " << rang::bg::green << "Rules" << rang::bg::reset <<   "                                                                                            |" << std::endl
+                << "| " << "Rules" <<   "                                                                                            |" << std::endl
 				<< "----------------------------------------------------------------------------------------------------" << std::endl
 				<< "| # All long commands start with --                                                                |" << std::endl
 				<< "| # All short commands start with -                                                                |" << std::endl

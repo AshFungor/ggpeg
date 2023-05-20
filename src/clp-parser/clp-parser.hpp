@@ -27,12 +27,12 @@ namespace clpp {
     /** \brief Help function
      * \details This function show help message with allowed command and rules for writing them.
      */
-    inline void help();
+    void help();
 
     /** \brief Version show function
      * \details This function show version of GGPEG.
      */
-    inline void version();
+    void version();
     
     /** \brief Enumeration specifying the type of command.
      * \details Used to set the type of command in the Сommand class.
