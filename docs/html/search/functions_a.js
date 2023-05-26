@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['show_5fcommand_0',['show_command',['../classclpp_1_1Command.html#a45e0dec5da92220c774b701a42be8151',1,'clpp::Command']]],
-  ['show_5fcorrect_5flong_5fcommand_1',['show_correct_long_command',['../classclpp_1_1Parser.html#a492fe658e60f49a6f63ddc5bd35f0ebf',1,'clpp::Parser']]],
-  ['show_5fcorrect_5fshort_5fcommand_2',['show_correct_short_command',['../classclpp_1_1Parser.html#a0ff5a61273dd16ae2771be0dddf6931a',1,'clpp::Parser']]],
-  ['show_5fline_5fof_5fcommand_3',['show_line_of_command',['../classclpp_1_1Parser.html#ab21f2efcdd18c25a44075973ba59f899',1,'clpp::Parser']]],
-  ['show_5fparam_4',['show_param',['../classclpp_1_1Command.html#ae2091c1dda775a49417e88f875cdfd99',1,'clpp::Command']]],
-  ['show_5fqueue_5fof_5fcommand_5',['show_queue_of_command',['../classclpp_1_1Parser.html#aba8464c3e0e92d90fc89818b962816d3',1,'clpp::Parser']]],
-  ['show_5ftokens_6',['show_tokens',['../classclpp_1_1Parser.html#a7d01cc9b663bba1c032ea4248c9ead7a',1,'clpp::Parser']]]
+  ['r_0',['R',['../classimg_1_1Color.html#adadaa1a78dcba04db78a0a3c54ceebde',1,'img::Color::R() const'],['../classimg_1_1Color.html#a3d5f24b12e8fc81fafdbb3d342ea0fb1',1,'img::Color::R(int value)']]],
+  ['read_1',['read',['../classimg_1_1Image.html#a9676a0ee85e0bde300b8139117fd2804',1,'img::Image::read()'],['../classimg_1_1PPMImage.html#aa98396a002bcf0440136dd70d20aea0d',1,'img::PPMImage::read()'],['../classimg_1_1PNGImage.html#a107d2af39550f6300411ff44a05a6e7a',1,'img::PNGImage::read()']]],
+  ['reflect_5fx_2',['reflect_x',['../namespaceproc.html#a2d0c6f7b6c2f64445f1e8151ba82d81c',1,'proc']]],
+  ['reflect_5fy_3',['reflect_y',['../namespaceproc.html#a48d2bd02fab2463c39fb2a30fe1bf11d',1,'proc']]],
+  ['reset_5fbuffer_4',['reset_buffer',['../classimg_1_1Image_1_1Scanline.html#aab58a54f51317af4df2da9aa5390ee3d',1,'img::Image::Scanline']]],
+  ['resize_5',['resize',['../namespaceproc.html#acfa68ab1cc8885b435a40492855ea88e',1,'proc']]],
+  ['rotate_6',['rotate',['../namespaceproc.html#a402049b6d0e8a4de766402ad2c37db79',1,'proc']]],
+  ['rows_7',['rows',['../classimg_1_1PixelMap.html#a1e4b6771cfd3cc24d5f9f5fdef8e44ed',1,'img::PixelMap']]]
 ];

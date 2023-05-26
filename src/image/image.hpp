@@ -45,12 +45,15 @@ namespace img {
      */
     class Color {
         using data32_t = std::uint_least32_t;
+        // Bit flags for color location.
         static constexpr data32_t red    {0x00ff0000};
         static constexpr data32_t green  {0x0000ff00};
         static constexpr data32_t blue   {0x000000ff};
+        // Offset of color bits.
         static constexpr data32_t red_shift   {8 * 2};
         static constexpr data32_t green_shift {8 * 1};
         static constexpr data32_t blue_shift      {0};
+        // Single 4-byte variable, where RGB data is stored.
         data32_t _data;
     public:
         /** \brief Get red component of the color.
@@ -91,7 +94,7 @@ namespace img {
         void B(int value);
         bool operator==(Color other) const;
         /** \brief Default constructor.
-         * Initializes white color (0xFFFFFF).
+         * Initializes black color (0x000000).
          */
         Color();
         /** \brief Constructor with three color components.
@@ -109,7 +112,9 @@ namespace img {
      */
     class PixelMap {
         using pixel_map_t = std::vector<std::vector<Color>>;
+        // Map of pixels.
         pixel_map_t _map;
+        // Dimensions of pixel map.
         size_t _width;
         size_t _height;
         PixelMap() = default;
@@ -176,36 +181,88 @@ namespace img {
      */
     class Image {
     protected:
+        /** \brief Enumeration that represents mode of \a Scanline.
+         *  Used to specify mode of Scanline: either read or write.
+         */
         enum class ScanMode {
-            read, write
+            read,   ///< Read mode.
+            write   ///< Write mode.
         };
+        /** \brief Class that manages IO operations, provided with internal buffer.
+         *  This class offers integrated buffer that can be utilized to make IO operations
+         *  more flexible and simple.
+         */
         class Scanline {
+            // Underlying file stream.
             std::fstream _str {};
+            // Buffered data.
             std::unique_ptr<char[]> _buffer {nullptr};
+            // Buffer size.
             size_t _buffer_size {0};
+            // Scanline mode (See ScanMode enum).
             ScanMode _mode;
             // CRC table
             static std::unique_ptr<std::uint32_t[]> _crc_lookup_table;
         public:
+            /** \brief Resets buffer by a number of bytes.
+             * \param number defines [0; number) interval to be removed
+             */
             void reset_buffer(size_t number);
+            /** \brief Expands buffer by a number of bytes.
+             * \param number defines how many bytes to be added
+             */
             void expand_buffer(size_t number);
+            /** \brief Gets size of internal buffer.
+             * \return Number of bytes in buffer.
+             */
             size_t size();
+            /** \brief Gets buffer in [start; end) interval.
+             * \param start beginning of new buffer relative to internal
+             * \param end last non-included byte relative to internal
+             * \return New buffer copied in defined interval.
+             */
             std::unique_ptr<char[]> get_chunk(size_t start, size_t end);
+            /** \brief Sets buffer in [start; end) interval.
+             * \param start beginning of inserted buffer relative to internal
+             * \param end last non-included byte relative to internal
+             * \param chunk buffer to insert
+             */
             void set_chunk(size_t start, size_t end, const char* chunk);
+            /** \brief Reads bytes to the end of internal buffer.
+             * \param number number of bytes to read
+             */
             void call_read(size_t number);
+            /** \brief Flushes bytes and resets written bytes in the internal buffer.
+             * \param number number of bytes to flush and reset
+             */
             void call_write(size_t number);
+            /** \brief Returns byte at specified position.
+             * \param index position of the byte
+             * \return Byte at \a index position.
+             */
             char& operator[](size_t index);
+            /** \brief Constructor that binds stream to a file for IO operations.
+             * \param path path to file
+             * @param mode mode of \a Scanline
+             */
             Scanline(std::string_view path, ScanMode mode);
             ~Scanline();
-            // helper methods
+            // helper methods (these are not part of actual scanline functionality)
+            // Compares two chunks of data.
             static bool _cmp_chunks(const char* chunk_1, size_t size_1,
                                     const char* chunk_2, size_t size_2);
+            // Parses chunk of bytes into a number.
             static std::uint64_t _parse_chunk(char* bytes, size_t size);
+            // Extracts chunk of specified size from buffer.
             static void _extr_chunk(char*& buffer, char* chunk, size_t size);
+            // Calculates CRC.
             static std::uint32_t _crc(const char* buffer, size_t size);
+            // Turns number into chunk of bytes.
             static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
         };
+        // Map of pixels.
         PixelMap _map {0, 0};
+        // Status of the last IO operation.
         bool _status {true};
         Image() = default;
     public:
@@ -232,11 +289,15 @@ namespace img {
 
     class PPMImage : public Image {
     private:
+        // Probably useless.
         constexpr static std::uint_fast64_t _size_limit {5000};
+        // PPM file signatures.
         constexpr static char _binary_magic_number[3] {"P6"};
         constexpr static char _ascii_magic_number[3] {"P3"};
+        // Max allowed color value.
         int _max_color {255};
     public:
+        // These are the same to base class.
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
         PPMImage() = default;
@@ -251,51 +312,64 @@ namespace img {
          */
         constexpr static char _signature[8]
         {-119, 80, 78, 71, 13, 10, 26, 10};
-        // chunk names
+        // Chunk names.
         constexpr static char _iend_name[4] {'I', 'E', 'N', 'D'};
         constexpr static char _idat_name[4] {'I', 'D', 'A', 'T'};
         constexpr static char _ihdr_name[4] {'I', 'H', 'D', 'R'};
-        // chunk types
+        // Chunk types.
         enum class Chunk {
             IHDR, IDAT, IEND, Unknown
         };
-        // buffers
+        // Buffers.
         static char _chunk_1b[1];
         static char _chunk_4b[4];
         static char _chunk_8b[8];
-        // fields of PNG header
+        // Fields of PNG header.
         int bit_depth           {8}; // 1 byte per sample unit (for ex. color component)
         int color_type          {2}; // type of samples
-        int compression_method  {0}; // deflate/inflte compression
+        int compression_method  {0}; // deflate/inflate compression
         int filter_method       {0}; // adaptive filter
         int interlace_method    {0}; // no interlace, default byte order
         int sample_size         {3}; // 3 units in sample
-        // parse functions (chunks)
-        /** \brief Reads and checks CRC.
-         * @param buffer chunk of data with calculated CRC
-         * @param size size of buffer
-         * @return Returns true if CRC is correct.
-         */
+        // Parse functions. (chunks)
+        // Reads and checks CRC.
         bool read_crc(char* buffer, size_t size);
+        // Reads header of a chunk.
         void read_chunk_header(char*& buffer, Chunk& chunk, size_t& size);
+        // Reads IHDR data.
         void read_ihdr(char*& buffer);
+        // Reads IDAT data.
         void read_idat(char*& buffer, size_t size);
+        // Writes IHDR.
         void write_ihdr(Scanline& scanline);
+        // Writes IDAT.
         void write_idat(Scanline& scanline);
+        // Writes IEND.
         void write_iend(Scanline& scanline);
-        // parse functions (IDAT)
+        // Parse functions. (IDAT)
+        // Parses data of 8-bit true color image.
         void parse_8b_truecolor(std::uint8_t*& buffer, size_t size);
+        // Assembles data of 8-bit true color image.
         void assemble_8b_truecolor(std::unique_ptr<std::uint8_t[]>& buffer, size_t& size);
-        // filters
+        // Filters.
+        // Applies Sub filter.
         void apply_sub(std::uint8_t* raw_buffer, size_t size);
+        // Applies Up filter.
         void apply_up(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        // Applies Avg filter.
         void apply_avg(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        // Applies Paeth filter.
         void apply_paeth(std::uint8_t* current_buffer, std::uint8_t* upper_buffer, size_t size);
+        // Reverses Sub filter.
         void reverse_sub(std::uint8_t* processed_buffer, size_t size);
+        // Reverses Up filter.
         void reverse_up(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
-        void reverse_paeth(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        // Reverses Avg filter.
         void reverse_avg(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
+        // Reverses Paeth filter.
+        void reverse_paeth(std::uint8_t* processed_buffer, std::uint8_t* upper_buffer, size_t size);
     public:
+        // These are the same to base class.
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
         PNGImage() = default;
