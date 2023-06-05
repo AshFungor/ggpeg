@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['_7ecommand_0',['~Command',['../classclpp_1_1Command.html#aa5e2a7e2b8de9c8fe76a5bbd808f00e0',1,'clpp::Command']]],
-  ['_7eparser_1',['~Parser',['../classclpp_1_1Parser.html#aed85df23aadbc44534d7a1dfbf5ac308',1,'clpp::Parser']]]
+  ['write_0',['write',['../classimg_1_1Image.html#a54e06d99fceecf77e2ca105a2cb5e643',1,'img::Image::write()'],['../classimg_1_1PPMImage.html#a94dc9b4cf2bcb54bddc439ad6967ca07',1,'img::PPMImage::write()'],['../classimg_1_1PNGImage.html#a36e2529ba4020eb204f0cafce40e2e0f',1,'img::PNGImage::write()'],['../classimg_1_1Image.html#a01d7b06a0561776e26c26ce44916a27faefb2a684e4afb7d55e6147fbe5a332ee',1,'img::Image::write']]]
 ];

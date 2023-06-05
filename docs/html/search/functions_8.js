@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_5b_5d_0',['operator[]',['../classimg_1_1Image_1_1Scanline.html#aeb6bf4fb7d161642c288bf83f477a975',1,'img::Image::Scanline']]]
+  ['negative_0',['negative',['../namespaceproc.html#a29135d8f9340fd5d2e153629c8506df2',1,'proc']]]
 ];
