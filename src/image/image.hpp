@@ -243,21 +243,47 @@ namespace img {
             char& operator[](size_t index);
             /** \brief Constructor that binds stream to a file for IO operations.
              * \param path path to file
-             * @param mode mode of \a Scanline
+             * \param mode mode of \a Scanline
              */
             Scanline(std::string_view path, ScanMode mode);
             ~Scanline();
             // helper methods (these are not part of actual scanline functionality)
-            // Compares two chunks of data.
+            /** \brief Compares two chunks of data
+             * \param chunk_1 first chunk
+             * \param size_1 size of first chunk
+             * \param chunk_2 second chunk
+             * \param size_2 size of second chunk
+             * \return Result of the comparison.
+             * \details Comparison is done for each respective byte. If at least one pair of them
+             * does not match, the result is \a false.
+             */
             static bool _cmp_chunks(const char* chunk_1, size_t size_1,
                                     const char* chunk_2, size_t size_2);
-            // Parses chunk of bytes into a number.
+            /** \brief Parses byte array into number.
+             * \param bytes array to parse
+             * \param size size of this array
+             * \return A number, which is stored in maximum non-negative integer type.
+             */
             static std::uint64_t _parse_chunk(char* bytes, size_t size);
-            // Extracts chunk of specified size from buffer.
+            /** \brief Copies first \a size bytes into another buffer and moves initial for \a size.
+             * \param buffer initial buffer
+             * \param chunk chunk to fill
+             * \param size size to extract from initial
+             * \details Gets first \a size bytes from initial buffer, fills chunk with them and
+             * moves initial by \a size bytes.
+             */
             static void _extr_chunk(char*& buffer, char* chunk, size_t size);
-            // Calculates CRC.
+            /** \brief Gets CRC for chunk of size \a size.
+             * \param buffer chunk to calculate CRC of
+             * \param size size of chunk
+             * \return 4-byte CRC.
+             */
             static std::uint32_t _crc(const char* buffer, size_t size);
-            // Turns number into chunk of bytes.
+            /** \brief Assembles chunk of bytes with value \a value.
+             * \param value value of a new buffer
+             * \param size size of new buffer
+             * \return Pointer to the buffer, which holds value \a value.
+             */
             static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
         };
         // Map of pixels.
