@@ -600,8 +600,10 @@ clpp::CommandType clpp::Command::get_command()
 
 void clpp::help()
 {
-	std::cerr << std::endl;
+	if (!clpp::cerr_disabled){
+		std::cerr << std::endl;
 
+<<<<<<< HEAD
 	std::cerr << rang::fg::yellow 
 				<< "---------------------------------------------------------" << std::endl
 				<< "|" << " GGPEG is a command line utility for image processing. " << "|" << std::endl
@@ -669,12 +671,92 @@ void clpp::help()
 				<< "| # Complex commands are written strictly separately, while simple ones can be combined,           |" << std::endl
 				<< "| # for example: -hxv                                                                              |" << std::endl
 				<< "----------------------------------------------------------------------------------------------------" << std::endl;
+=======
+		std::cerr << rang::fg::yellow 
+					<< "---------------------------------------------------------" << std::endl
+					<< "|" << " GGPEG is a command line utility for image processing. " << "|" << std::endl
+					<< "---------------------------------------------------------" << std::endl
+					<< "|" << " Utility can only be run with pre-passed commands.     " << "|" <<std::endl
+					<< "---------------------------------------------------------" << std::endl
+					<< rang::fg::reset << std::endl;
+		
+		std::cerr << rang::fg::green
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   " << rang::bg::green << "name" << rang::bg::reset << "        |   " << rang::bg::green << "parametrs" << rang::bg::reset << "       |   " << rang::bg::green << "description" << rang::bg::reset << "                            |   " << rang::bg::green << "short command" << rang::bg::reset << "   |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   crop        |   left_margin     |   crop left                              |   unavailable     |" << std::endl
+					<< "|               |   top_margin      |   crop top                               |                   |" << std::endl
+					<< "|               |   right_margin    |   crop right                             |                   |" << std::endl
+					<< "|               |   bottom_margin   |   crop bottom                            |                   |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --crop=left_margin/top_margin/right_margin/bottom_margin                        |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   rotate      |   degrees         |   angle of rotation                      |   unavailable     |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --rotate=degrees                                                                |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   resize      |   k               |   multiplicity of resolution changes.    |   unavailable     |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --resize=0.3                                                                    |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   negative    |   -               |   filter negative                        |   n               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --negative or -n                                                                |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   insert      |   x               |   insert x coordinate                    |   unavailable     |" << std::endl
+					<< "|               |   y               |   insert y coordinate                    |                   |" << std::endl
+					<< "|               |   path_to_new     |   path to the inserted image             |                   |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --insert=x/y#path_to_new                                                        |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   convert     |   new_format      |   one of the valid options: ppm or png   |   unavailable     |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --convert_to=new_format                                                            |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   reflect_x   |   -               |   reflection X                           |   x               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --reflect_x or -x                                                               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   reflect_y   |   -               |   reflection Y                           |   y               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --reflect_y or -y                                                               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   version     |   -               |   show version                           |   v               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --version or -v                                                                 |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   help        |   -               |   show help message                      |   h               |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "|   FORMAT:     |  --help or -h                                                                    |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl;
+		std::cerr << std::endl;
+		std::cerr << rang::fg::green 
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "| " << rang::bg::green << "Rules" << rang::bg::reset <<   "                                                                                            |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl
+					<< "| # All long commands start with --                                                                |" << std::endl
+					<< "| # All short commands start with -                                                                |" << std::endl
+					<< "| # Complex commands are written strictly separately, while simple ones can be combined,           |" << std::endl
+					<< "| # for example: -hxv                                                                              |" << std::endl
+					<< "----------------------------------------------------------------------------------------------------" << std::endl;
+	}
+>>>>>>> Ilya_branch
 }
 
 void clpp::version()
 {
+<<<<<<< HEAD
 	std::cerr << std::endl;
 	std::cerr << rang::fg::green << "------------------" << std::endl;
 	std::cerr << "| " <<  "version: 1.0.0 |" << std::endl; 
 	std::cerr << "------------------" << rang::fg::reset << std::endl;
 }
+=======
+	if (!clpp::cerr_disabled){
+		std::cerr << std::endl;
+		std::cerr << rang::fg::green << "------------------" << std::endl;
+		std::cerr << "| " <<  "version: 1.0.0 |" << std::endl; 
+		std::cerr << "------------------" << rang::fg::reset << std::endl;
+	}
+}
+>>>>>>> Ilya_branch

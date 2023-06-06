@@ -80,15 +80,14 @@ TEST_CASE("The parser returns correct line of commands", "[parse]")
 
 TEST_CASE("The parser returns correct queue of commands", "[parse]")
 {
-	std::vector<std::string> correct_tokens = {"resources/house_1.ppm", "--rotate=90", "-y", "--insert=23/32#resources/house_2.ppm", "--crop=45/67/52/90"};
-	std::vector<std::string> correct_commands= {"rotate=90", "reflect_y", "insert=23/32#resources/house_2.ppm", "crop=45/67/52/90"};
+	std::vector<std::string> correct_tokens = {"resources/house_1.ppm", "--rotate=90", "-y", "--insert=23/32#resources/house_2.ppm", "--crop=10/10/10/10"};
+	std::vector<std::string> correct_commands= {"rotate=90", "reflect_y", "insert=23/32#resources/house_2.ppm", "crop=10/10/10/10"};
 
 	std::queue<clpp::Command> test_queue;
 
 	clpp::Parser test_parser{correct_tokens, non_display};
-
 	test_queue = test_parser.get_queue_of_command();
-
+	
 	SECTION("Size of queue", "[parser]")
 	{
 		CHECK(test_queue.size() == 4);
@@ -112,7 +111,7 @@ TEST_CASE("The parser returns correct queue of commands", "[parse]")
 		test_queue.pop();
 
 		CHECK(test_queue.front().get_command() == clpp::CommandType::crop);
-		std::vector<std::string> test_param_4 = {"45", "67", "52", "90"};
+		std::vector<std::string> test_param_4 = {"10", "10", "10", "10"};
 		CHECK(test_queue.front().get_param() == test_param_4);
 		test_queue.pop();
 	}
