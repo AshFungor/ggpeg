@@ -36,6 +36,7 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
             case clpp::CommandType::rotate:
             {
                 double degrees{std::stod(tp_param[0])};
+
                 proc::rotate(main_image, degrees);
                 main_image.write(new_path);
                 break;
@@ -45,8 +46,8 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
             {               
                 double k{std::stod(tp_param[0])};
                 
-                proc::resize(main_image, 3);
-                main_image.write(new_path);
+                proc::resize(main_image, k);
+                main_image.write(new_path);Yt? z 
                 break;
             }
 
@@ -60,12 +61,12 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
             {
                 double x_ins{std::stod(tp_param[0])};
                 double y_ins{std::stod(tp_param[1])};
-                std::string new_imag{tp_param[2]};
+                std::string new_img{tp_param[2]};
                 
                 if (file_format == "ppm")
                 {
                     img::PPMImage tp_new_image;
-                    tp_new_image.read(new_imag);
+                    tp_new_image.read(new_img);
                     img::Image& ins_image = static_cast<img::Image&>(tp_new_image);
 
                     proc::insert(main_image, ins_image, x_ins, y_ins);
@@ -74,7 +75,7 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
                 else if (file_format == "png")
                 {
                     img::PNGImage tp_new_image;
-                    tp_new_image.read(new_imag);
+                    tp_new_image.read(new_img);
                     img::Image& ins_image = static_cast<img::Image&>(tp_new_image);
 
                     proc::insert(main_image, ins_image, x_ins, y_ins);
@@ -84,6 +85,35 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
             }
             case clpp::CommandType::convert_to:
             {
+                std::string new_format{tp_param[0]};
+                if (new_format == "ppm") 
+                {
+                    img::PNGImage tp_old_image;
+                    tp_old_image.read(clpp::global_Path);
+                    img::Image& cont_image = static_cast<img::Image&>(tp_old_image);
+                    img::PixelMap &pixel_map = cont_image.get_map();
+
+                    img::PPMImage tp_new_image;
+                    img::Image& new_cont_image = static_cast<img::Image&>(tp_new_image);
+                    new_cont_image.get_map() = pixel_map;
+                    std::string new_path_format{new_path.begin(), new_path.end()-3};
+                    new_path_format += "ppm";
+                    new_cont_image.write(new_path_format);
+                }
+                else 
+                {
+                    img::PPMImage tp_old_image;
+                    tp_old_image.read(clpp::global_Path);
+                    img::Image& cont_image = static_cast<img::Image&>(tp_old_image);
+                    img::PixelMap &pixel_map = cont_image.get_map();
+
+                    img::PNGImage tp_new_image;
+                    img::Image& new_cont_image = static_cast<img::Image&>(tp_new_image);
+                    new_cont_image.get_map() = pixel_map;
+                    std::string new_path_format{new_path.begin(), new_path.end()-3};
+                    new_path_format += "png";
+                    new_cont_image.write(new_path_format);
+                }
                 break;
             }
             case clpp::CommandType::reflect_x: 
