@@ -143,14 +143,8 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
 std::string path_forming(std::string& gl_path, std::string& file_format)
 {
     std::string new_path{""}; 
-    std::string name{""};
-    size_t i{gl_path.size() - 5};
-
-    while (gl_path[i] != '/')
-    {
-        name = gl_path[i] + name;
-        i--;
-    }
+    std::string name{"new_file"};
+    
     for (int x{1}; x != 1000000; ++x)
     {
         std::ifstream check_existence(name + "(" + std::to_string(x) + ")." + file_format);

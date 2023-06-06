@@ -640,7 +640,7 @@ void clpp::help()
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "|   FORMAT:     |  --insert=x/y#path_to_new                                                        |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
-					<< "|   convert     |   new_format      |   one of the valid options: ppm or png   |   unavailable     |" << std::endl
+					<< "|   convert_to  |   new_format      |   one of the valid options: ppm or png   |   unavailable     |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "|   FORMAT:     |  --convert_to=new_format                                                            |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
