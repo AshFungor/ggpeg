@@ -47,7 +47,7 @@ void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, s
                 double k{std::stod(tp_param[0])};
                 
                 proc::resize(main_image, k);
-                main_image.write(new_path);Yt? z 
+                main_image.write(new_path);
                 break;
             }
 
