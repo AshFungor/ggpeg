@@ -5,6 +5,7 @@
 #include <string_view>
 #include <fstream>
 #include <memory>
+#include <stdexcept>
 
 // Header guard.
 #pragma once
@@ -327,6 +328,29 @@ namespace img {
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
         PPMImage() = default;
+        // Error types.
+        enum class ErrorType {
+            BadSignature,
+            BadImageSize,
+            BadMaxPixelValue,
+            BadImageData
+        };
+        // Class, that represents general problems with decoding PPM.
+        class DecoderError : public std::exception {
+        private:
+            static constexpr char fmt_bad_signature[]
+                {"Bad signature, decoded: <{}>. Are you sure this image is PPM?"};
+            static constexpr char fmt_bad_size[]
+                {"Bad image dimensions, decoded: <{}>"};
+            static constexpr char fmt_bad_max_color[]
+                {"Bad max pixel value, decoded: <{}>"};
+            static constexpr char fmt_bad_data[]
+                {"Bad image data, decoder status: <{}>"};
+            std::string m_error;
+        public:
+            DecoderError(ErrorType error_type, std::string actual);
+            const char * what() const noexcept override;
+        };
     };
 
     class PNGImage : public Image {
