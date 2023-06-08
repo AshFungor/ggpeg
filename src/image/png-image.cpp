@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <memory>
 #include <cmath>
+#include <format>
+#include <climits>
 
 char img::PNGImage::_chunk_1b[1] {};
 char img::PNGImage::_chunk_4b[4] {};
@@ -42,7 +44,7 @@ void img::PNGImage::read_chunk_header(char*& buffer,
 
 bool img::PNGImage::read_crc(char* buffer, size_t size) {
     auto expected_crc = Scanline::_crc(buffer, size - 4);
-    auto actual_crc = Scanline::_parse_chunk(buffer + size - 4, 4);
+    auto actual_crc = Scanline::_parse_chunk(buffer + size - 4, 4) % UINT32_MAX;
     return expected_crc == actual_crc;
 }
 
@@ -59,56 +61,45 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     bit_depth = Scanline::_parse_chunk(_chunk_1b, 1);
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     color_type = Scanline::_parse_chunk(_chunk_1b, 1);
-    // true color
-    if (color_type == 2) {
-        sample_size = 3;
-        if (bit_depth != 8 && bit_depth != 16) {
-            return;
-        }
-    // true color & alpha channel
-    } else if (color_type == 6) {
-        sample_size = 4;
-        if (bit_depth != 8 && bit_depth != 16) {
-            return;
-        }
-    } else {
-        return;
-    }
+    sample_size = 3;
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     compression_method = Scanline::_parse_chunk(_chunk_1b, 1);
-    if (compression_method) {
-        return;
-    }
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     filter_method = Scanline::_parse_chunk(_chunk_1b, 1);
-    if (filter_method) {
-        return;
-    }
     Scanline::_extr_chunk(buffer, _chunk_1b, 1);
     interlace_method = Scanline::_parse_chunk(_chunk_1b, 1);
+
+    if (color_type != 2) {
+        throw IHDRDecoderError(IHDRErrorType::BadColorType, std::to_string(color_type));
+    }
+    if (bit_depth != 8) {
+        throw IHDRDecoderError(IHDRErrorType::BadBitDepth, std::to_string(bit_depth));
+    }
+    if (compression_method) {
+        throw IHDRDecoderError(IHDRErrorType::BadCompession, std::to_string(compression_method));
+    }
+    if (filter_method) {
+        throw IHDRDecoderError(IHDRErrorType::BadFilter, std::to_string(filter_method));
+    }
     if (interlace_method) {
-        return;
+        throw IHDRDecoderError(IHDRErrorType::BadCompession, std::to_string(interlace_method));
     }
 }
 
 void img::PNGImage::read_idat(char*& buffer, size_t size) {
-    switch(color_type) {
-    case 2:
-        size_t dest_len {_map.rows() * (_map.columns() + 1) *
-                        (3 + (color_type == 6)) *
-                        (bit_depth / 8)};
-        auto dest = std::make_unique<std::uint8_t[]>(dest_len);
-        auto result = uncompress(dest.get(),
-                                 &dest_len,
-                                 reinterpret_cast<std::uint8_t*>(buffer),
-                                 size);
-        auto ptr_dest = dest.get();
-        if (result == Z_OK) {
-            if (color_type == 2) {
-                parse_8b_truecolor(ptr_dest, dest_len);
-            }
-        }
+    size_t dest_len {_map.rows() * (_map.columns() + 1) *
+                    (3 + (color_type == 6)) *
+                    (bit_depth / 8)};
+    auto dest = std::make_unique<std::uint8_t[]>(dest_len);
+    auto result = uncompress(dest.get(),
+                             &dest_len,
+                             reinterpret_cast<std::uint8_t*>(buffer),
+                             size);
+    auto ptr_dest = dest.get();
+    if (result != Z_OK) {
+        throw DecoderError(ErrorType::BadDeflateCompression, std::format("Status: {}", result));
     }
+    parse_8b_truecolor(ptr_dest, dest_len);
 }
 
 void img::PNGImage::read(std::string_view path) {
@@ -127,7 +118,7 @@ void img::PNGImage::read(std::string_view path) {
     auto smart_buffer = scline.get_chunk(0, 8);
     auto ptr_buffer = smart_buffer.get();
     if (!Scanline::_cmp_chunks(ptr_buffer, 8, _signature, 8)) {
-        return;
+        throw DecoderError(ErrorType::BadSignature, std::string{ptr_buffer});
     }
     scline.reset_buffer(8);
 
@@ -136,19 +127,21 @@ void img::PNGImage::read(std::string_view path) {
     GET_BUFF(0, 8);
     read_chunk_header(ptr_buffer, chunk, chunk_size);
     if (chunk_size != 13) {
-        return;
+        throw DecoderError(ErrorType::BadChunkOrder,
+                           std::format("IHDR size must 13, decoded: {}", chunk_size));
     }
     if (chunk != img::PNGImage::Chunk::IHDR) {
-        return;
+        throw DecoderError(ErrorType::BadChunkOrder,
+                           std::format("IHDR expected, decoded (ID) - {}",
+                                       static_cast<int>(chunk)));
     }
     GET_BUFF(8, 21);
-    auto start_ptr = ptr_buffer;
     read_ihdr(ptr_buffer);
-    if (ptr_buffer - 13 != start_ptr) {
-        return;
-    }
     GET_BUFF(4, 25);
-    read_crc(ptr_buffer, 21);
+    if (!read_crc(ptr_buffer, 21)) {
+        throw DecoderError(ErrorType::BadCRC,
+                           std::string{"CRC of IHDR did not match decoded value"});
+    }
     scline.reset_buffer(scline.size());
 
     std::unique_ptr<char[]> data_stream;
@@ -183,13 +176,19 @@ void img::PNGImage::read(std::string_view path) {
             }
             data_stream = std::move(expanded_stream);
             ptr_data_stream = data_stream.get();
-            GET_BUFF(4, chunk_size + 8);
-            read_crc(ptr_buffer, chunk_size + 8);
+            GET_BUFF(4, chunk_size + 12);
+            if (!read_crc(ptr_buffer, chunk_size + 8)) {
+                throw DecoderError(ErrorType::BadCRC,
+                                   std::string{"CRC of IDAT did not match decoded value"});
+            }
             scline.reset_buffer(scline.size());
         } else if (chunk == img::PNGImage::Chunk::IEND) {
             scline.call_read(4);
             GET_BUFF(4, 12);
-            read_crc(ptr_buffer, 8);
+            if (!read_crc(ptr_buffer, 8)) {
+                throw DecoderError(ErrorType::BadCRC,
+                                   std::string{"CRC of IEND did not match decoded value"});
+            }
             scline.reset_buffer(scline.size());
         } else if (chunk == img::PNGImage::Chunk::Unknown) {
             scline.call_read(chunk_size + 4);

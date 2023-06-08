@@ -47,8 +47,8 @@ TEST_CASE("PNG reading and writing in <Image> class", "[base]") {
     const std::string files[] {
         "good_normal_tiny-rgb-gray.png",
         "sample-bumblebee-400x300.png",
-        "sample-clouds2-400x300",
-        "sample-hut-400x300.png",
+        "sample-clouds2-400x300.png",
+        "sample-hut-400x300.png"
     };
 
     for (auto& img_path : files) {

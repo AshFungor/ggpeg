@@ -335,7 +335,7 @@ namespace img {
             BadMaxPixelValue,
             BadImageData
         };
-        // Class, that represents general problems with decoding PPM.
+        // Class that represents general problems with decoding PPM.
         class DecoderError : public std::exception {
         private:
             static constexpr char fmt_bad_signature[]
@@ -381,6 +381,7 @@ namespace img {
         int filter_method       {0}; // adaptive filter
         int interlace_method    {0}; // no interlace, default byte order
         int sample_size         {3}; // 3 units in sample
+        static constexpr int _size_limit {5000};
         // Parse functions. (chunks)
         // Reads and checks CRC.
         bool read_crc(char* buffer, size_t size);
@@ -423,6 +424,65 @@ namespace img {
         virtual void read(std::string_view path) override;
         virtual void write(std::string_view path) override;
         PNGImage() = default;
+
+        // Possible general problems with PNG (Including IDAT and IEND chunks).
+        enum class ErrorType {
+            BadCRC,
+            BadSignature,
+            BadChunkOrder,
+            BadDeflateCompression,
+            BadImageData
+        };
+
+        // Possible problems with IHDR.
+        enum class IHDRErrorType {
+            BadImageSize,
+            BadBitDepth,
+            BadColorType,
+            BadCompession,
+            BadFilter,
+            BadInterlace
+        };
+
+        // Class that represents decoding problems with IHDR chunk.
+        class IHDRDecoderError : public std::exception {
+        private:
+            static constexpr char fmt_bad_size[]
+                {"Bad image dimensions, decoded: <{}>"};
+            static constexpr char fmt_bad_bit_depth[]
+                {"Bad bit depth, decoded: <{}>"};
+            static constexpr char fmt_bad_color_type[]
+                {"Bad color type, decoded: <{}>"};
+            static constexpr char fmt_bad_compression[]
+                {"Bad compression type, decoded: <{}>"};
+            static constexpr char fmt_bad_filter[]
+                {"Bad filter type, decoded: <{}>"};
+            static constexpr char fmt_bad_interlace[]
+                {"Bad interlace, decoded: <{}>"};
+            std::string m_error;
+        public:
+            IHDRDecoderError(IHDRErrorType error_type, std::string actual);
+            const char * what() const noexcept override;
+        };
+
+        // Class that represents general decoding problems.
+        class DecoderError : public std::exception {
+        private:
+            static constexpr char fmt_bad_crc[]
+                {"Bad CRC, decoder message: <{}>"};
+            static constexpr char fmt_bad_signature[]
+                {"Bad signature, decoded: <{}>. Are you sure this image is PNG?"};
+            static constexpr char fmt_bad_chunk_order[]
+                {"Bad chunk ordering, decoder message: <{}>"};
+            static constexpr char fmt_bad_compression[]
+                {"Bad compressed data, decoder message: <{}>"};
+            static constexpr char fmt_bad_data[]
+                {"Bad image data, decoder message: <{}>"};
+            std::string m_error;
+        public:
+            DecoderError(ErrorType error_type, std::string actual);
+            const char * what() const noexcept override;
+        };
     };
 
 
