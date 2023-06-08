@@ -11,9 +11,12 @@
 TEST_CASE("PPM reading and writing in <Image> class", "[base]") {
     using img_t = img::PPMImage;
     const std::string files[] {
-        "boxes.ppm",      "house.ppm",
-        "stop.ppm",       "sign.ppm",
-        "tree.ppm",       "west.ppm",
+        "boxes.ppm",
+        "house.ppm",
+        "stop.ppm",
+        "sign.ppm",
+        "tree.ppm",
+        "west.ppm",
     };
 
 
@@ -65,5 +68,20 @@ TEST_CASE("PNG reading and writing in <Image> class", "[base]") {
             }
         }
         REQUIRE(check);
+    }
+}
+
+TEST_CASE("PNG exceptions", "[added]") {
+    using img_t = img::PNGImage;
+    const std::string bad_files_ihdr[] {
+        "bad_ihdr_bit_depth.png",
+        "bad_ihdr_methods.png",
+        "bad_ihdr_size.png"
+    };
+
+    auto image = img_t{};
+    for (auto& file : bad_files_ihdr) {
+        CHECK_THROWS_AS(image.read(std::string{"resources/"}.append(file)),
+                        img_t::IHDRDecoderError);
     }
 }

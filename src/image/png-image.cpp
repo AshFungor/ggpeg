@@ -54,6 +54,11 @@ void img::PNGImage::read_ihdr(char*& buffer) {
     int width = Scanline::_parse_chunk(_chunk_4b, 4);
     Scanline::_extr_chunk(buffer, _chunk_4b, 4);
     int height = Scanline::_parse_chunk(_chunk_4b, 4);
+    if (!(0 <= width && width < _size_limit) || !(0 <= height && height < _size_limit)) {
+        throw IHDRDecoderError{IHDRErrorType::BadImageSize,
+                               std::format("w: {}, h: {}", width, height)};
+    }
+
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
 
