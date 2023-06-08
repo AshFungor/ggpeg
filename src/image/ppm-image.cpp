@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <memory>
 #include <algorithm>
+#include <format>
 
 void img::PPMImage::read(std::string_view path) {
     using byte = char;
@@ -20,14 +21,31 @@ void img::PPMImage::read(std::string_view path) {
 
     file >> magic_number >> std::ws;
     if (magic_number != _binary_magic_number) {
-        return;
+        throw DecoderError{ErrorType::BadSignature, magic_number};
     }
+
+    // metadata
     file >> width >> std::ws;
     file >> height >> std::ws;
     file >> max_color >> std::ws;
+    if (!(0 <= width && width <= _size_limit) || !(0 <= height && height <= _size_limit)) {
+        throw DecoderError{ErrorType::BadImageSize, std::format("w: {}, h: {}", width, height)};
+    }
+    if (max_color > 255) {
+        throw DecoderError{ErrorType::BadMaxPixelValue, std::to_string(max_color)};
+    }
+
+    // actual image data
     _max_color = max_color;
     std::unique_ptr<byte[]> buffer = std::make_unique<byte[]>(height * width * 3);
     file.read(buffer.get(), height * width * 3);
+    if (file.gcount() != height * width * 3) {
+        throw DecoderError{ErrorType::BadImageData,
+                           std::format("only {} bytes extracted out of {}",
+                                       file.gcount(),
+                                       height * width * 3)};
+    }
+
     _map.expand(Side::bottom, height);
     _map.expand(Side::right, width);
     std::uint8_t red, green, blue;
