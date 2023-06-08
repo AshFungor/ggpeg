@@ -11,13 +11,13 @@
 TEST_CASE("PPM reading and writing in <Image> class", "[base]") {
     using img_t = img::PPMImage;
     const std::string files[] {
-        "boxes_1.ppm",  "house_1.ppm",
+        "boxes_1.ppm",      "house_1.ppm",
         "moreboxes_1.ppm",  "sign_1.ppm",
-        "stop_1.ppm", "stop_2.ppm",
-        "tree_1.ppm",  "west_1.ppm",
-        "boxes_2.ppm",  "house_2.ppm",
+        "stop_1.ppm",       "stop_2.ppm",
+        "tree_1.ppm",       "west_1.ppm",
+        "boxes_2.ppm",      "house_2.ppm",
         "moreboxes_2.ppm",  "sign_2.ppm",
-        "tree_2.ppm",  "west_2.ppm",
+        "tree_2.ppm",       "west_2.ppm",
     };
 
 

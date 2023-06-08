@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_all.hpp>
 #include <memory>
 #include <cstddef>
 
@@ -39,36 +39,48 @@ TEST_CASE("<sub>, <up> and <avg> filters", "[base]") {
                                               reinterpret_cast<char*&>(ptr_init_buff), magic_size));
     // Up filter.
     // For first scanline.
-    test_img.apply_up(buffer_1.get(), nullptr, magic_size);
-    test_img.reverse_up(buffer_1.get(), nullptr, magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Up filter for first scanline") {
+        test_img.apply_up(buffer_1.get(), nullptr, magic_size);
+        test_img.reverse_up(buffer_1.get(), nullptr, magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
     // For defined upper buffer (any other scanline except for the upper one)
-    test_img.apply_up(buffer_1.get(), buffer_2.get(), magic_size);
-    test_img.reverse_up(buffer_1.get(), buffer_2.get(), magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Up filter for non-first scanline") {
+        test_img.apply_up(buffer_1.get(), buffer_2.get(), magic_size);
+        test_img.reverse_up(buffer_1.get(), buffer_2.get(), magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
     // Average filter.
     // For first scanline.
-    test_img.apply_avg(buffer_1.get(), nullptr, magic_size);
-    test_img.reverse_avg(buffer_1.get(), nullptr, magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Avg filter for first scanline") {
+        test_img.apply_avg(buffer_1.get(), nullptr, magic_size);
+        test_img.reverse_avg(buffer_1.get(), nullptr, magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
     // For any other.
-    test_img.apply_avg(buffer_1.get(), buffer_2.get(), magic_size);
-    test_img.reverse_avg(buffer_1.get(), buffer_2.get(), magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Avg filter for non-first scanline") {
+        test_img.apply_avg(buffer_1.get(), buffer_2.get(), magic_size);
+        test_img.reverse_avg(buffer_1.get(), buffer_2.get(), magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
     // Paeth filter.
     // For first scanline.
-    test_img.apply_paeth(buffer_1.get(), nullptr, magic_size);
-    test_img.reverse_paeth(buffer_1.get(), nullptr, magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Paeth filter for first scanline") {
+        test_img.apply_paeth(buffer_1.get(), nullptr, magic_size);
+        test_img.reverse_paeth(buffer_1.get(), nullptr, magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
     // For any other.
-    test_img.apply_paeth(buffer_1.get(), buffer_2.get(), magic_size);
-    test_img.reverse_paeth(buffer_1.get(), buffer_2.get(), magic_size);
-    REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
-                                              reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    SECTION("Paeth filter for non-first scanline") {
+        test_img.apply_paeth(buffer_1.get(), buffer_2.get(), magic_size);
+        test_img.reverse_paeth(buffer_1.get(), buffer_2.get(), magic_size);
+        REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*&>(ptr_buff_1), magic_size,
+                                                  reinterpret_cast<char*&>(ptr_init_buff), magic_size));
+    }
 }
 

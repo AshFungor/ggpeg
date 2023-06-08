@@ -400,5 +400,7 @@ namespace img {
         virtual void write(std::string_view path) override;
         PNGImage() = default;
     };
+
+
 }
 
