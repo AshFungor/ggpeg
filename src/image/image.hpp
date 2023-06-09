@@ -204,6 +204,12 @@ namespace img {
             ScanMode _mode;
             // CRC table
             static std::unique_ptr<std::uint32_t[]> _crc_lookup_table;
+            // Window size
+            static constexpr std::uint64_t window_size  {8 * 1024 * 32};
+            // Single Block size
+            static constexpr std::uint64_t block_size   {1024 * 64 - 1 - 1000};
+            // Default compression level
+            static constexpr int default_compression    {3};
         public:
             /** \brief Resets buffer by a number of bytes.
              * \param number defines [0; number) interval to be removed
@@ -286,6 +292,7 @@ namespace img {
              * \return Pointer to the buffer, which holds value \a value.
              */
             static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
+            static int deflate(char* dest, int& size_out, char* const data, int size);
         };
         // Map of pixels.
         PixelMap _map {0, 0};
@@ -349,7 +356,7 @@ namespace img {
             std::string m_error;
         public:
             DecoderError(ErrorType error_type, std::string actual);
-            const char * what() const noexcept override;
+            const char* what() const noexcept override;
         };
     };
 
@@ -462,7 +469,7 @@ namespace img {
             std::string m_error;
         public:
             IHDRDecoderError(IHDRErrorType error_type, std::string actual);
-            const char * what() const noexcept override;
+            const char* what() const noexcept override;
         };
 
         // Class that represents general decoding problems.
@@ -481,7 +488,7 @@ namespace img {
             std::string m_error;
         public:
             DecoderError(ErrorType error_type, std::string actual);
-            const char * what() const noexcept override;
+            const char* what() const noexcept override;
         };
     };
 
