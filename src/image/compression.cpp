@@ -5,14 +5,15 @@
 #include <bitset>
 #include <iostream>
 
+#define protected public
 #include "image.hpp"
 
-static char* buffer_start;
-static char* buffer_end;
-constexpr uint32_t mod_adler {65521};
+using i = img::Image;
 
-uint32_t adler32(std::uint8_t* data, size_t len)
-{
+char* i::Scanline::buffer_start {nullptr};
+char* i::Scanline::buffer_end   {nullptr};
+
+uint32_t i::Scanline::adler32(std::uint8_t* data, size_t len) {
     uint32_t a {1}, b {0};
     size_t index;
     for (index = 0; index < len; ++index)
@@ -23,13 +24,7 @@ uint32_t adler32(std::uint8_t* data, size_t len)
     return (b << 16) | a;
 }
 
-struct triplet {
-    std::uint8_t byte {0};
-    std::uint32_t offset;
-    std::uint32_t length;
-};
-
-std::uint8_t* move_buffer(std::uint8_t* data, std::int32_t number) {
+std::uint8_t* i::Scanline::move_buffer(std::uint8_t* data, std::int32_t number) {
     if (number < 0) {
         return data - std::min<std::int32_t>(abs(number),
                                              data - reinterpret_cast<std::uint8_t*&>(buffer_start));
@@ -38,7 +33,7 @@ std::uint8_t* move_buffer(std::uint8_t* data, std::int32_t number) {
                                          reinterpret_cast<std::uint8_t*&>(buffer_end) - data);
 }
 
-triplet find_match(std::uint8_t* sliding_window, int size) {
+i::Scanline::triplet i::Scanline::find_match(std::uint8_t* sliding_window, int size) {
     std::uint32_t i {0};
     while (sliding_window[i] != sliding_window[size] && i < size)
     { ++i; }
@@ -64,7 +59,8 @@ triplet find_match(std::uint8_t* sliding_window, int size) {
     return {sliding_window[i - (size - offset) + size], offset, length};
 }
 
-std::list<triplet> lz77(std::uint8_t* data, int size, const std::uint64_t window_size) {
+std::list<i::Scanline::triplet> i::Scanline::lz77(std::uint8_t* data, int size,
+                                                  const std::uint64_t window_size) {
     std::list<triplet> result {};
     std::uint32_t position {0};
     while (position < size) {
@@ -77,7 +73,16 @@ std::list<triplet> lz77(std::uint8_t* data, int size, const std::uint64_t window
     return result;
 }
 
-std::uint32_t match_offset(std::uint32_t offset) {
+void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos) {
+    int len {31};
+    while (!((bits >> len) & 1) || len >= 0) { --len; }
+    while (len--) {
+        source.set(pos, (bits >> len) & 1);
+        ++pos;
+    }
+}
+
+std::uint32_t i::Scanline::match_offset(std::uint32_t offset) {
     int dist {1};
     if (offset <= 4) {
         return offset - dist;
@@ -101,7 +106,7 @@ std::uint32_t match_offset(std::uint32_t offset) {
     return result;
 }
 
-std::uint32_t match_length(std::uint32_t length) {
+std::uint32_t i::Scanline::match_length(std::uint32_t length) {
     int dist {1};
     if (length == 258) {
         return 285;
@@ -123,18 +128,9 @@ std::uint32_t match_length(std::uint32_t length) {
         }
     }
     std::uint32_t result {number};
-    std::cout << "inside: " << length << ' ' << curr_length << std::endl;
+//    std::cout << "inside: " << length << ' ' << curr_length << std::endl;
     result |= (length - curr_length) << 9;
     return result;
-}
-
-void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos) {
-    int len {31};
-    while (!((bits >> len) & 1) || len >= 0) { --len; }
-    while (len--) {
-        source.set(pos, (bits >> len) & 1);
-        ++pos;
-    }
 }
 
 int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, int size) {

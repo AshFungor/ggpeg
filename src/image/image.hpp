@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdexcept>
 #include <bitset>
+#include <list>
 
 // Header guard.
 #pragma once
@@ -211,6 +212,31 @@ namespace img {
             static constexpr std::uint64_t block_size   {1024 * 32 - 1};
             // Default compression level
             static constexpr int default_compression    {3};
+            // Data node for LZ77 algorithm
+            struct triplet {
+                std::uint8_t byte {0};
+                std::uint32_t offset;
+                std::uint32_t length;
+            };
+            // Needed for range checking
+            static char* buffer_start;
+            static char* buffer_end;
+            // Constant for Adler32 checksum
+            static constexpr uint32_t mod_adler {65521};
+            // Calculates Adler32 checksum
+            static uint32_t adler32(std::uint8_t* data, size_t len);
+            // Gets moved buffer after range check
+            static std::uint8_t* move_buffer(std::uint8_t* data, std::int32_t number);
+            // Finds string match in window and return LZ77 node
+            static triplet find_match(std::uint8_t* sliding_window, int size);
+            // Performs initial compression in Deflate algorithm
+            static std::list<triplet> lz77(std::uint8_t* data, int size,
+                                           const std::uint64_t window_size);
+            // Matches offset to static Huffman code
+            static std::uint32_t match_offset(std::uint32_t offset);
+            // Matches length to static Huffman code
+            static std::uint32_t match_length(std::uint32_t length);
+            // Adds a number to bitset, also moving current pointer by number of bits inserted.
             static void add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos);
         public:
             /** \brief Resets buffer by a number of bytes.
@@ -294,6 +320,7 @@ namespace img {
              * \return Pointer to the buffer, which holds value \a value.
              */
             static std::unique_ptr<char[]> _set_chunk(std::uint64_t value, size_t size);
+            // Compression
             static int deflate(char* dest, int& size_out, char* const data, int size);
         };
         // Map of pixels.
