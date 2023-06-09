@@ -6,6 +6,7 @@
 #include <fstream>
 #include <memory>
 #include <stdexcept>
+#include <bitset>
 
 // Header guard.
 #pragma once
@@ -207,9 +208,10 @@ namespace img {
             // Window size
             static constexpr std::uint64_t window_size  {8 * 1024 * 32};
             // Single Block size
-            static constexpr std::uint64_t block_size   {1024 * 64 - 1 - 1000};
+            static constexpr std::uint64_t block_size   {1024 * 32 - 1};
             // Default compression level
             static constexpr int default_compression    {3};
+            static void add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos);
         public:
             /** \brief Resets buffer by a number of bytes.
              * \param number defines [0; number) interval to be removed
