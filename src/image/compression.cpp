@@ -128,9 +128,9 @@ std::uint32_t match_length(std::uint32_t length) {
     return result;
 }
 
-void img::Image::Scanline::add_bits(std::bitset<block_size>& source, std::uint32_t bits, int& pos) {
+void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos) {
     int len {31};
-    while (!(bits >> len)) { --len; }
+    while (!((bits >> len) & 1) || len >= 0) { --len; }
     while (len--) {
         source.set(pos, (bits >> len) & 1);
         ++pos;
@@ -167,7 +167,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
     int index         {0};
     // encode with Huffman
     for (auto& list : blocks) {
-        std::bitset<block_size> bits;
+        std::bitset<block_size * 8> bits;
         if (index++ == blocks.size()) {
             bits.set(position_bit++);
             bits.set(position_bit++);
@@ -180,7 +180,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
         position_bit += 3;
         for (auto& triple : list) {
             std::uint64_t encoded_value = {0};
-            // case (literal)
+            // case (length + offset)
             if (triple.length != 0) {
                 auto length = match_length(triple.length);
                 auto offset = match_offset(triple.offset);
@@ -194,6 +194,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
                 add_bits(bits, offset & 0b11111, position_bit);
                 add_bits(bits, offset >> 5, position_bit);
             }
+            // case (literal)
             if (triple.byte < 144) {
                 add_bits(bits, triple.byte + 0b00110000, position_bit);
             } else if (143 < triple.byte) {
@@ -201,7 +202,31 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
             }
         }
         position_bit += 8;
+        // inverse order of all bits in bytes (docs say so) and write to dest
+        int i;
+        for (i = 0; i < position_bit; i += 8) {
+            std::uint8_t byte {0};
+            for (int p {0}; p < 8; ++p) {
+                byte += bits[i + p] << p;
+            }
+            dest[position_byte++] = reinterpret_cast<char&>(byte);
+        }
+        // fill space before the next byte
+        position_bit += (position_bit - i);
     }
+
+    auto temp_dest_pr = dest + 2;
+    auto check_sum = adler32(reinterpret_cast<std::uint8_t*&>(temp_dest_pr), size_out);
+    std::uint8_t byte = check_sum & 0xFF;
+    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
+    byte = (check_sum & 0xFF00) >> 8;
+    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
+    byte = (check_sum & 0xFF0000) >> 16;
+    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
+    byte = (check_sum & 0xFF000000) >> 24;
+    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
+
+    size_out = position_byte;
 
     return 0;
 }
