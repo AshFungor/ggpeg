@@ -85,6 +85,7 @@ void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::ui
 std::uint32_t i::Scanline::match_offset(std::uint32_t offset, int& out_len) {
     int dist {1};
     if (offset <= 4) {
+        out_len = 0;
         return offset - dist;
     }
     std::uint32_t counter     {0};
@@ -110,9 +111,11 @@ std::uint32_t i::Scanline::match_offset(std::uint32_t offset, int& out_len) {
 std::uint32_t i::Scanline::match_length(std::uint32_t length, int& out_len) {
     int dist {1};
     if (length == 258) {
+        out_len = 0;
         return 285;
     }
     if (length <= 10) {
+        out_len = 0;
         return length - dist + 257 - 2;
     }
     std::uint32_t counter     {0};
@@ -189,9 +192,9 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
                     add_bits(bits, length & 0b111111111 - 280 + 0b11000000, position_bit, 8);
                 }
                 length >>= 9;
-                add_bits(bits, length, position_bit, length_len - 9);
+                add_bits(bits, length, position_bit, length_len);
                 add_bits(bits, offset & 0b11111, position_bit, 5);
-                add_bits(bits, offset >> 5, position_bit, offset_len - 5);
+                add_bits(bits, offset >> 5, position_bit, offset_len);
                 if (local_index++ == list.size()) {
                     break;
                 }

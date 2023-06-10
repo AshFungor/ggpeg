@@ -60,6 +60,28 @@ TEST_CASE("Appending bits to the end of bitset", "[added]") {
     REQUIRE(check);
 }
 
+TEST_CASE("Matching length to static Huffman code", "[added]") {
+    int initial_length {20}, bit_len;
+    CHECK((sc::match_length(initial_length, bit_len) & 0x1FF) == 269);
+    CHECK(bit_len == 2);
+    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 1);
+    initial_length = 200;
+    CHECK((sc::match_length(initial_length, bit_len) & 0x1FF) == 283);
+    CHECK(bit_len == 5);
+    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 5);
+}
+
+TEST_CASE("Matching offset to static Huffman code", "[added]") {
+    int initial_offset {11}, bit_len;
+    CHECK((sc::match_offset(initial_offset, bit_len) & 0x1F) == 6);
+    CHECK(bit_len == 2);
+    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 2);
+    initial_offset = 2060;
+    CHECK((sc::match_offset(initial_offset, bit_len) & 0x1F) == 22);
+    CHECK(bit_len == 10);
+    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 11);
+}
+
 TEST_CASE("Deflate compression", "[added]") {
     std::uint8_t array_in[] =   {0,
                                 255, 153, 0,
