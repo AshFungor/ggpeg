@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <fstream>
 
+#include <zlib.h>
+
 #define private public
 #define protected public
 #include <image/image.hpp>
@@ -18,9 +20,10 @@ bool check_triple(sc::triplet one, sc::triplet other) {
 
 TEST_CASE("LZ77", "[added]") {
     char buffer[] {"abacabadaba"};
+    constexpr size_t window_size {20};
     sc::buffer_start = buffer;
     sc::buffer_end = buffer + sizeof(buffer);
-    auto res = sc::lz77(reinterpret_cast<std::uint8_t*>(buffer), sizeof(buffer), sc::window_size);
+    auto res = sc::lz77(reinterpret_cast<std::uint8_t*>(buffer), sizeof(buffer), window_size);
     // Since it is required that length of match must be at least 3, result should be:
     // (a, 0, 0) - just symbol a
     // (b, 0, 0) - just symbol b
@@ -57,6 +60,11 @@ TEST_CASE("Appending bits to the end of bitset", "[added]") {
     for (int i {pos - 4}; i < pos; ++i) {
         check &= bits[i];
     }
+    sc::add_bits(bits, 0x9, pos, 4);
+    check &= bits[pos - 4];
+    check &= !bits[pos - 3];
+    check &= !bits[pos - 2];
+    check &= bits[pos - 1];
     REQUIRE(check);
 }
 
@@ -64,22 +72,22 @@ TEST_CASE("Matching length to static Huffman code", "[added]") {
     int initial_length {20}, bit_len;
     CHECK((sc::match_length(initial_length, bit_len) & 0x1FF) == 269);
     CHECK(bit_len == 2);
-    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 1);
+    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 2);
     initial_length = 200;
     CHECK((sc::match_length(initial_length, bit_len) & 0x1FF) == 283);
     CHECK(bit_len == 5);
-    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 5);
+    CHECK((sc::match_length(initial_length, bit_len) >> 9) == 20);
 }
 
 TEST_CASE("Matching offset to static Huffman code", "[added]") {
     int initial_offset {11}, bit_len;
     CHECK((sc::match_offset(initial_offset, bit_len) & 0x1F) == 6);
     CHECK(bit_len == 2);
-    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 2);
+    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 1);
     initial_offset = 2060;
     CHECK((sc::match_offset(initial_offset, bit_len) & 0x1F) == 22);
     CHECK(bit_len == 10);
-    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 11);
+    CHECK((sc::match_offset(initial_offset, bit_len) >> 5) == 832);
 }
 
 TEST_CASE("Deflate compression", "[added]") {
@@ -116,6 +124,11 @@ TEST_CASE("Deflate compression", "[added]") {
         file << array_out[i];
     }
     file.close();
+
+//    auto new_buff = std::make_unique<std::uint8_t[]>(100);
+//    size_t buff_len;
+//    auto res = uncompress(new_buff.get(), &buff_len, reinterpret_cast<std::uint8_t*>(array_out.get()), size_out);
+
 //    std::cout << "size in: " << size_in << ", size out: " << size_out;
 //    std::cout << std::hex;
 //    for (int i {0}; i < size_out; i += 3) {
