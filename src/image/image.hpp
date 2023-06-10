@@ -196,6 +196,7 @@ namespace img {
          *  more flexible and simple.
          */
         class Scanline {
+        private:
             // Underlying file stream.
             std::fstream _str {};
             // Buffered data.
@@ -207,7 +208,7 @@ namespace img {
             // CRC table
             static std::unique_ptr<std::uint32_t[]> _crc_lookup_table;
             // Window size
-            static constexpr std::uint64_t window_size  {8 * 1024 * 32};
+            static constexpr std::uint64_t window_size  {1024 * 32};
             // Single Block size
             static constexpr std::uint64_t block_size   {1024 * 32 - 1};
             // Default compression level
@@ -233,11 +234,12 @@ namespace img {
             static std::list<triplet> lz77(std::uint8_t* data, int size,
                                            const std::uint64_t window_size);
             // Matches offset to static Huffman code
-            static std::uint32_t match_offset(std::uint32_t offset);
+            static std::uint32_t match_offset(std::uint32_t offset, int& out_len);
             // Matches length to static Huffman code
-            static std::uint32_t match_length(std::uint32_t length);
+            static std::uint32_t match_length(std::uint32_t length, int& out_len);
             // Adds a number to bitset, also moving current pointer by number of bits inserted.
-            static void add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos);
+            static void add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits,
+                                 int& pos, int number);
         public:
             /** \brief Resets buffer by a number of bytes.
              * \param number defines [0; number) interval to be removed
