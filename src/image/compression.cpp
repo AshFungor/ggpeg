@@ -64,7 +64,7 @@ std::list<i::Scanline::triplet> i::Scanline::lz77(std::uint8_t* data, int size,
     std::list<triplet> result {};
     std::uint32_t position {0};
     while (position < size) {
-        auto node = find_match(move_buffer(data, -window_size),
+        auto node = find_match(move_buffer(data, -(window_size)),
                                data - move_buffer(data, -window_size));
         data += node.length + 1;
         position += node.length + 1;
@@ -102,9 +102,13 @@ std::uint32_t i::Scanline::match_offset(std::uint32_t offset, int& out_len) {
         }
     }
     std::uint32_t result {number};
-//    std::cout << "inside: " << offset << ' ' << curr_offset << std::endl;
-    result |= (offset - curr_offset) << 5;
     out_len = std::round(std::log2(dist));
+//    std::cout << "inside: " << offset << ' ' << curr_offset << std::endl;
+    std::uint32_t added_bits {offset - curr_offset}, resulting {0};
+    for (int p {0}; p < out_len; ++p) {
+        resulting += ((added_bits >> (out_len - 1 - p)) & 1) << p;
+    }
+    result |= (resulting) << 5;
     return result;
 }
 
@@ -132,9 +136,14 @@ std::uint32_t i::Scanline::match_length(std::uint32_t length, int& out_len) {
         }
     }
     std::uint32_t result {number};
-//    std::cout << "inside: " << length << ' ' << curr_length << std::endl;
-    result |= (length - curr_length) << 9;
     out_len = std::round(std::log2(dist));
+//    std::cout << "inside: " << length << ' ' << curr_length << std::endl;
+    // bits are not inverted, so we invert them now to nullify the effect
+    std::uint32_t added_bits {length - curr_length}, resulting {0};
+    for (int p {0}; p < out_len; ++p) {
+        resulting += ((added_bits >> (out_len - 1 - p)) & 1) << p;
+    }
+    result |= (resulting) << 9;
     return result;
 }
 
@@ -195,7 +204,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
                 add_bits(bits, length, position_bit, length_len);
                 add_bits(bits, offset & 0b11111, position_bit, 5);
                 add_bits(bits, offset >> 5, position_bit, offset_len);
-                if (local_index++ == list.size()) {
+                if (local_index == list.size()) {
                     break;
                 }
             }
@@ -205,6 +214,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
             } else if (143 < triple.byte) {
                 add_bits(bits, triple.byte + 0b110010000 - 144, position_bit, 9);
             }
+            local_index++;
         }
         position_bit += 8;
         // inverse order of all bits in bytes (docs say so) and write to dest
