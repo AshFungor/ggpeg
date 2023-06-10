@@ -210,7 +210,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
             }
             // case (literal)
             if (triple.byte < 144) {
-                add_bits(bits, triple.byte + 0b00110000, position_bit, 8);
+                add_bits(bits, triple.byte + 48, position_bit, 8);
             } else if (143 < triple.byte) {
                 add_bits(bits, triple.byte + 0b110010000 - 144, position_bit, 9);
             }
@@ -229,15 +229,14 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
         // fill space before the next byte
         position_bit += (position_bit - i);
     }
-
-    auto check_sum = adler32(reinterpret_cast<std::uint8_t* const&>(data), size_out);
-    std::uint8_t byte = check_sum & 0xFF;
-    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
-    byte = (check_sum & 0xFF00) >> 8;
+    auto check_sum = adler32(reinterpret_cast<std::uint8_t* const>(data), size);
+    std::uint8_t byte = (check_sum & 0xFF000000) >> 24;
     dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
     byte = (check_sum & 0xFF0000) >> 16;
     dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
-    byte = (check_sum & 0xFF000000) >> 24;
+    byte = (check_sum & 0xFF00) >> 8;
+    dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
+    byte = (check_sum & 0xFF);
     dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
 
     size_out = position_byte;

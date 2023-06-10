@@ -107,32 +107,21 @@ TEST_CASE("Deflate compression", "[added]") {
                                 255, 255, 0,
                                 0, 255, 255,
                                 153, 0, 255,
-                                0, 153, 51,
+                                0, 153, 20,
                                 255, 0, 255,
                                 0, 0, 255,
                                 255, 153, 0,
                                 255, 0, 153,
-                                51, 255, 255,
+                                54, 255, 255,
                                 153, 0, 255};
     int size_in {sizeof(array_in)};
-    int size_out {0};
-    auto array_out = std::make_unique<char[]>(std::ceil(size_in * 1.1));
+    int size_out = {static_cast<int>(std::ceil(1.1 * size_in))};
+    auto array_out = std::make_unique<char[]>(static_cast<int>(std::ceil(1.1 * size_in)));
     sc::deflate(array_out.get(), size_out, reinterpret_cast<char*>(array_in), sizeof(array_in));
-    std::fstream file;
-    file.open("output.txt", std::ios::binary | std::ios::out);
-    for (int i{0}; i < size_out; ++i) {
-        file << array_out[i];
-    }
-    file.close();
 
-//    auto new_buff = std::make_unique<std::uint8_t[]>(100);
-//    size_t buff_len;
-//    auto res = uncompress(new_buff.get(), &buff_len, reinterpret_cast<std::uint8_t*>(array_out.get()), size_out);
-
-//    std::cout << "size in: " << size_in << ", size out: " << size_out;
-//    std::cout << std::hex;
-//    for (int i {0}; i < size_out; i += 3) {
-//        std::cout << std::endl << int(array_out[i]) << '\t'
-//                  << int(array_out[i + 1]) << '\t' << int(array_out[i + 2]);
-//    }
+    auto new_buff = std::make_unique<std::uint8_t[]>(static_cast<int>(std::ceil(1.1 * size_out)));
+    size_t buff_len {static_cast<size_t>(std::ceil(1.1 * size_in))};
+    auto res = uncompress(new_buff.get(), &buff_len,
+                          reinterpret_cast<std::uint8_t*>(array_out.get()), size_out);
+    REQUIRE(!res);
 }
