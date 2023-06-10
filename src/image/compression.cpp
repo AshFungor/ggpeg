@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <bitset>
 #include <iostream>
+#include <cmath>
 
-#define protected public
 #include "image.hpp"
 
 using i = img::Image;
@@ -73,16 +73,16 @@ std::list<i::Scanline::triplet> i::Scanline::lz77(std::uint8_t* data, int size,
     return result;
 }
 
-void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos) {
-    int len {31};
-    while (!((bits >> len) & 1) || len >= 0) { --len; }
-    while (len--) {
-        source.set(pos, (bits >> len) & 1);
+void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos, int number) {
+    number -= 1;
+    while (number >= 0) {
+        source.set(pos, (bits >> number) & 1);
         ++pos;
+        --number;
     }
 }
 
-std::uint32_t i::Scanline::match_offset(std::uint32_t offset) {
+std::uint32_t i::Scanline::match_offset(std::uint32_t offset, int& out_len) {
     int dist {1};
     if (offset <= 4) {
         return offset - dist;
@@ -103,10 +103,11 @@ std::uint32_t i::Scanline::match_offset(std::uint32_t offset) {
     std::uint32_t result {number};
 //    std::cout << "inside: " << offset << ' ' << curr_offset << std::endl;
     result |= (offset - curr_offset) << 5;
+    out_len = std::round(std::log2(dist));
     return result;
 }
 
-std::uint32_t i::Scanline::match_length(std::uint32_t length) {
+std::uint32_t i::Scanline::match_length(std::uint32_t length, int& out_len) {
     int dist {1};
     if (length == 258) {
         return 285;
@@ -130,6 +131,7 @@ std::uint32_t i::Scanline::match_length(std::uint32_t length) {
     std::uint32_t result {number};
 //    std::cout << "inside: " << length << ' ' << curr_length << std::endl;
     result |= (length - curr_length) << 9;
+    out_len = std::round(std::log2(dist));
     return result;
 }
 
@@ -160,7 +162,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
 //    return 0;
     int position_byte {2};
     int position_bit  {0};
-    int index         {0};
+    int index         {1};
     // encode with Huffman
     for (auto& list : blocks) {
         std::bitset<block_size * 8> bits;
@@ -173,28 +175,32 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
             bits.set(position_bit++);
             ++position_bit;
         }
-        position_bit += 3;
+        int local_index {1};
         for (auto& triple : list) {
             std::uint64_t encoded_value = {0};
             // case (length + offset)
             if (triple.length != 0) {
-                auto length = match_length(triple.length);
-                auto offset = match_offset(triple.offset);
+                int offset_len, length_len;
+                auto length = match_length(triple.length, length_len);
+                auto offset = match_offset(triple.offset, offset_len);
                 if (triple.length < 115) {
-                    add_bits(bits, length & 0b111111111 - 256, position_bit);
+                    add_bits(bits, length & 0b111111111 - 256, position_bit, 7);
                 } else if (triple.length >= 115) {
-                    add_bits(bits, length & 0b111111111 - 280 + 0b11000000, position_bit);
+                    add_bits(bits, length & 0b111111111 - 280 + 0b11000000, position_bit, 8);
                 }
                 length >>= 9;
-                add_bits(bits, length, position_bit);
-                add_bits(bits, offset & 0b11111, position_bit);
-                add_bits(bits, offset >> 5, position_bit);
+                add_bits(bits, length, position_bit, length_len - 9);
+                add_bits(bits, offset & 0b11111, position_bit, 5);
+                add_bits(bits, offset >> 5, position_bit, offset_len - 5);
+                if (local_index++ == list.size()) {
+                    break;
+                }
             }
             // case (literal)
             if (triple.byte < 144) {
-                add_bits(bits, triple.byte + 0b00110000, position_bit);
+                add_bits(bits, triple.byte + 0b00110000, position_bit, 8);
             } else if (143 < triple.byte) {
-                add_bits(bits, triple.byte + 0b110010000 - 144, position_bit);
+                add_bits(bits, triple.byte + 0b110010000 - 144, position_bit, 9);
             }
         }
         position_bit += 8;
@@ -211,8 +217,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
         position_bit += (position_bit - i);
     }
 
-    auto temp_dest_pr = dest + 2;
-    auto check_sum = adler32(reinterpret_cast<std::uint8_t*&>(temp_dest_pr), size_out);
+    auto check_sum = adler32(reinterpret_cast<std::uint8_t* const&>(data), size_out);
     std::uint8_t byte = check_sum & 0xFF;
     dest[position_byte++] = reinterpret_cast<std::uint8_t&>(byte);
     byte = (check_sum & 0xFF00) >> 8;
