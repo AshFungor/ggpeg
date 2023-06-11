@@ -5,6 +5,7 @@
 #include <bitset>
 #include <iostream>
 #include <cmath>
+#include <climits>
 
 #include "image.hpp"
 
@@ -73,7 +74,7 @@ std::list<i::Scanline::triplet> i::Scanline::lz77(std::uint8_t* data, int size,
     return result;
 }
 
-void img::Image::Scanline::add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits, int& pos, int number) {
+void img::Image::Scanline::add_bits(std::bitset<block_size * 64>& source, std::uint32_t bits, int& pos, int number) {
     number -= 1;
     while (number >= 0) {
         source.set(pos, (bits >> number) & 1);
@@ -177,7 +178,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
     int index         {1};
     // encode with Huffman
     for (auto& list : blocks) {
-        std::bitset<block_size * 8> bits;
+        std::bitset<block_size * 64> bits;
         if (index++ == blocks.size()) {
             bits.set(position_bit++);
             bits.set(position_bit++);

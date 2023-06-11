@@ -43,7 +43,7 @@ TEST_CASE("LZ77", "[added]") {
 }
 
 TEST_CASE("Appending bits to the end of bitset", "[added]") {
-    std::bitset<sc::block_size * 8> bits {};
+    std::bitset<sc::block_size * 64> bits {};
     int pos {0};
     sc::add_bits(bits, 0xF, pos, 4);
     sc::add_bits(bits, 0xF0, pos, 8);
