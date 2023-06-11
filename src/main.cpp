@@ -136,19 +136,19 @@ int main(int argc, char** argv)
         clpp::Parser parser {input_Tokens, non_display};
         std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
         auto file_format = img::get_type(clpp::global_Path);
-        img::Image main_image = img::PNGImage{};
+        img::Image* main_image;
 
         if (file_format == img::ImageType::PPM)
         {
-            img::PPMImage tp_image;
+            static img::PPMImage tp_image;
             tp_image.read(clpp::global_Path);
-            main_image = tp_image;
+            main_image = &tp_image;
         }
         else if (file_format == img::ImageType::PNG)
         {
-            img::PNGImage tp_image;
+            static img::PNGImage tp_image;
             tp_image.read(clpp::global_Path);
-            main_image = tp_image;
+            main_image = &tp_image;
         }
         else
         {
@@ -161,13 +161,13 @@ int main(int argc, char** argv)
             clpp::CommandType tp_command_type = tp_command.get_command();
             std::vector<std::string> tp_param = tp_command.get_param();
 
-            img_processing(main_image, tp_command_type, tp_param, file_format);
+            img_processing(*main_image, tp_command_type, tp_param, file_format);
 
             queue_of_command.pop();
         }
         const std::string new_path{std::format("target.{}", (file_format ==
                                                              img::ImageType::PNG) ? "png" : "ppm")};
-        main_image.write(new_path);
+        main_image->write(new_path);
           
     }
     catch(const std::exception& e)
