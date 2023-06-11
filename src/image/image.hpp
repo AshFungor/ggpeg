@@ -544,6 +544,8 @@ namespace img {
         friend ImageType get_type(std::string_view path);
     };
 
+    // Converts to another image type
+    Image convert(Image& img, ImageType new_type);
 
 }
 

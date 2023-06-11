@@ -34,3 +34,16 @@ img::ImageType img::get_type(std::string_view path) {
     return ImageType::Unknown;
 }
 
+img::Image img::convert(img::Image& img, img::ImageType new_type) {
+    if (new_type == img::ImageType::PNG) {
+        PNGImage new_img {};
+        new_img.get_map() = img.get_map();
+        return new_img;
+    } else if (new_type == img::ImageType::PPM) {
+        PPMImage new_img {};
+        new_img.get_map() = img.get_map();
+        return new_img;
+    } else {
+        throw std::runtime_error("Invalid type; cannot perform conversion");
+    }
+}

@@ -86,9 +86,20 @@ TEST_CASE("PNG exceptions", "[added]") {
     }
 }
 
-TEST_CASE("Getting type of image", "[added]") {
+TEST_CASE("Get type of image", "[added]") {
     std::string image_png {"simple.png"};
     std::string image_ppm {"boxes.ppm"};
     REQUIRE(img::get_type(std::string{"resources/"}.append(image_png)) == img::ImageType::PNG);
     REQUIRE(img::get_type(std::string{"resources/"}.append(image_ppm)) == img::ImageType::PPM);
+}
+
+TEST_CASE("Convert image to new type", "[added]") {
+    img::PNGImage img_png {};
+    img_png.read("resources/simple.png");
+    auto new_ppm = img::convert(img_png, img::ImageType::PPM);
+    new_ppm.write("resources/result.ppm");
+    REQUIRE(img::get_type("resources/result.ppm") == img::ImageType::PPM);
+    auto new_png = img::convert(new_ppm, img::ImageType::PNG);
+    new_png.write("resources/result.png");
+    REQUIRE(img::get_type("resources/result.png") == img::ImageType::PNG);
 }

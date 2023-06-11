@@ -1,163 +1,110 @@
 #include <rang.hpp>
 #include <iostream>
 #include <vector>
-
+#include <stdexcept>
+#include <format>
 
 // Local headers.
 #include <clp-parser/clp-parser.hpp>
 #include <image/image.hpp>
 #include <processing/processing.hpp>
 
-
-std::string format( std::string& path_to_image)
-{
-    std::string format{path_to_image.end() - 3, path_to_image.end()};
-
-    if (format == "ppm") { return "ppm"; }
-    else                 { return "png"; }
-}
-
-void img_processing(img::Image& main_image, clpp::CommandType tp_command_type, std::vector<std::string>& tp_param, std::string& new_path, std::string& file_format)
+void img_processing(img::Image& main_image,
+                    clpp::CommandType tp_command_type,
+                    std::vector<std::string>& tp_param,
+                    img::ImageType& file_format)
 {
     switch(tp_command_type)
-        {
-            case clpp::CommandType::crop: 
-            {
-                double left_margin{std::stod(tp_param[0])};
-                double top_margin{std::stod(tp_param[1])};
-                double right_margin{std::stod(tp_param[2])};
-                double bottom_margin{std::stod(tp_param[3])};
-                
-                proc::crop(main_image, left_margin, top_margin, right_margin, bottom_margin);
-                main_image.write(new_path);
-                break;
-            }
-
-            case clpp::CommandType::rotate:
-            {
-                double degrees{std::stod(tp_param[0])};
-
-                proc::rotate(main_image, degrees);
-                main_image.write(new_path);
-                break;
-            }
-
-            case clpp::CommandType::resize:
-            {               
-                double k{std::stod(tp_param[0])};
-                
-                proc::resize(main_image, k);
-                main_image.write(new_path);
-                break;
-            }
-
-            case clpp::CommandType::negative:
-            {
-                proc::negative(main_image);
-                main_image.write(new_path);
-                break;
-            }
-            case clpp::CommandType::insert:  
-            {
-                double x_ins{std::stod(tp_param[0])};
-                double y_ins{std::stod(tp_param[1])};
-                std::string new_img{tp_param[2]};
-                
-                if (file_format == "ppm")
-                {
-                    img::PPMImage tp_new_image;
-                    tp_new_image.read(new_img);
-                    img::Image& ins_image = static_cast<img::Image&>(tp_new_image);
-
-                    proc::insert(main_image, ins_image, x_ins, y_ins);
-                    main_image.write(new_path);
-                }
-                else if (file_format == "png")
-                {
-                    img::PNGImage tp_new_image;
-                    tp_new_image.read(new_img);
-                    img::Image& ins_image = static_cast<img::Image&>(tp_new_image);
-
-                    proc::insert(main_image, ins_image, x_ins, y_ins);
-                    main_image.write(new_path);
-                }
-                break;
-            }
-            case clpp::CommandType::convert_to:
-            {
-                std::string new_format{tp_param[0]};
-                if (new_format == "ppm") 
-                {
-                    img::PNGImage tp_old_image;
-                    tp_old_image.read(clpp::global_Path);
-                    img::Image& cont_image = static_cast<img::Image&>(tp_old_image);
-                    img::PixelMap &pixel_map = cont_image.get_map();
-
-                    img::PPMImage tp_new_image;
-                    img::Image& new_cont_image = static_cast<img::Image&>(tp_new_image);
-                    new_cont_image.get_map() = pixel_map;
-                    std::string new_path_format{new_path.begin(), new_path.end()-3};
-                    new_path_format += "ppm";
-                    new_cont_image.write(new_path_format);
-                }
-                else 
-                {
-                    img::PPMImage tp_old_image;
-                    tp_old_image.read(clpp::global_Path);
-                    img::Image& cont_image = static_cast<img::Image&>(tp_old_image);
-                    img::PixelMap &pixel_map = cont_image.get_map();
-
-                    img::PNGImage tp_new_image;
-                    img::Image& new_cont_image = static_cast<img::Image&>(tp_new_image);
-                    new_cont_image.get_map() = pixel_map;
-                    std::string new_path_format{new_path.begin(), new_path.end()-3};
-                    new_path_format += "png";
-                    new_cont_image.write(new_path_format);
-                }
-                break;
-            }
-            case clpp::CommandType::reflect_x: 
-            {
-                proc::reflect_x(main_image);
-                main_image.write(new_path); 
-                break;
-            }
-        
-            case clpp::CommandType::reflect_y: 
-            {
-                proc::reflect_y(main_image);
-                main_image.write(new_path);
-                break;
-            }
-            
-            case clpp::CommandType::version: 
-                clpp::version();
-                break;
-            
-            case clpp::CommandType::help: 
-                clpp::help();
-                break;
-        }
-}
-
-std::string path_forming(std::string& gl_path, std::string& file_format)
-{
-    std::string new_path{""}; 
-    std::string name{"new_file"};
-    
-    for (int x{1}; x != 1000000; ++x)
     {
-        std::ifstream check_existence(name + "(" + std::to_string(x) + ")." + file_format);
-	    if (!check_existence.good())
-        {
-            name = name + "(" + std::to_string(x) + ")." + file_format;
-            break;
-        }
-	
+    case clpp::CommandType::crop:
+    {
+        double left_margin{std::stod(tp_param[0])};
+        double top_margin{std::stod(tp_param[1])};
+        double right_margin{std::stod(tp_param[2])};
+        double bottom_margin{std::stod(tp_param[3])};
+
+        proc::crop(main_image, left_margin, top_margin, right_margin, bottom_margin);
+        break;
     }
-    new_path = name;
-    
-    return new_path;
+
+    case clpp::CommandType::rotate:
+    {
+        double degrees{std::stod(tp_param[0])};
+
+        proc::rotate(main_image, degrees);
+        break;
+    }
+
+    case clpp::CommandType::resize:
+    {
+        double k{std::stod(tp_param[0])};
+
+        proc::resize(main_image, k);
+        break;
+    }
+
+    case clpp::CommandType::negative:
+    {
+        proc::negative(main_image);
+        break;
+    }
+    case clpp::CommandType::insert:
+    {
+        double x_ins{std::stod(tp_param[0])};
+        double y_ins{std::stod(tp_param[1])};
+        std::string new_img{tp_param[2]};
+
+        auto type = img::get_type(new_img);
+        img::Image* ins_image;
+        if (type == img::ImageType::PNG) {
+            img::PNGImage tp_new_image;
+            ins_image = &tp_new_image;
+        } else if (type == img::ImageType::PPM) {
+            img::PPMImage tp_new_image;
+            ins_image = &tp_new_image;
+        } else {
+            throw std::runtime_error("File does not exist or has unsupported type");
+        }
+        proc::insert(main_image, *ins_image, x_ins, y_ins);
+        break;
+    }
+    case clpp::CommandType::convert_to:
+    {
+        std::string new_format{tp_param[0]};
+        if (new_format == "ppm")
+        {
+            main_image = img::convert(main_image, img::ImageType::PPM);
+            file_format = img::ImageType::PPM;
+        }
+        else if (new_format == "png")
+        {
+            main_image = img::convert(main_image, img::ImageType::PNG);
+            file_format = img::ImageType::PNG;
+        } else {
+            throw std::runtime_error(std::format("Unsupported file format: {}", new_format));
+        }
+        break;
+    }
+    case clpp::CommandType::reflect_x:
+    {
+        proc::reflect_x(main_image);
+        break;
+    }
+
+    case clpp::CommandType::reflect_y:
+    {
+        proc::reflect_y(main_image);
+        break;
+    }
+
+    case clpp::CommandType::version:
+        clpp::version();
+        break;
+
+    case clpp::CommandType::help:
+        clpp::help();
+        break;
+    }
 }
 
 int main(int argc, char** argv)
@@ -188,54 +135,47 @@ int main(int argc, char** argv)
         bool non_display = false;
         clpp::Parser parser {input_Tokens, non_display};
         std::queue<clpp::Command> queue_of_command = parser.get_queue_of_command();
-        std::string file_format = format(clpp::global_Path);
+        auto file_format = img::get_type(clpp::global_Path);
+        img::Image main_image = img::PNGImage{};
 
-        if (file_format == "ppm")
+        if (file_format == img::ImageType::PPM)
         {
             img::PPMImage tp_image;
             tp_image.read(clpp::global_Path);
-            img::Image& main_image = static_cast<img::Image&>(tp_image);
-            
-            std::string new_path{""};
-            new_path = path_forming(clpp::global_Path, file_format);
-            while(!queue_of_command.empty())
-            {
-                clpp::Command tp_command = queue_of_command.front();
-                clpp::CommandType tp_command_type = tp_command.get_command();
-                std::vector<std::string> tp_param = tp_command.get_param();
-
-                img_processing(main_image, tp_command_type, tp_param, new_path, file_format);
-
-                queue_of_command.pop(); 
-            }
+            main_image = tp_image;
         }
-        else if (file_format == "png")
+        else if (file_format == img::ImageType::PNG)
         {
             img::PNGImage tp_image;
             tp_image.read(clpp::global_Path);
-            img::Image& main_image = static_cast<img::Image&>(tp_image);
-
-            std::string new_path{""};
-            new_path = path_forming(clpp::global_Path, file_format);
-            
-            while(!queue_of_command.empty())
-            {
-                clpp::Command tp_command = queue_of_command.front();
-                clpp::CommandType tp_command_type = tp_command.get_command();
-                std::vector<std::string> tp_param = tp_command.get_param();
-
-                
-                img_processing(main_image, tp_command_type, tp_param, new_path, file_format);
-
-                queue_of_command.pop(); 
-            }
-            
+            main_image = tp_image;
         }
+        else
+        {
+            throw std::runtime_error("File does not exist or is unsupported");
+        }
+
+        while(!queue_of_command.empty())
+        {
+            clpp::Command tp_command = queue_of_command.front();
+            clpp::CommandType tp_command_type = tp_command.get_command();
+            std::vector<std::string> tp_param = tp_command.get_param();
+
+            img_processing(main_image, tp_command_type, tp_param, file_format);
+
+            queue_of_command.pop();
+        }
+        const std::string new_path{std::format("target.{}", (file_format ==
+                                                             img::ImageType::PNG) ? "png" : "ppm")};
+        main_image.write(new_path);
           
     }
     catch(const std::exception& e)
     {
-        return 0;
+        std::cerr << rang::bg::red
+                  << "Execution failed with the following error: "
+                  << rang::bg::reset << std::endl;
+        std::cerr << e.what() << std::endl;
     }
     return 0;
 }
