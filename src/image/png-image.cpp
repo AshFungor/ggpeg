@@ -247,14 +247,14 @@ void img::PNGImage::write_idat(Scanline& scanline) {
     std::unique_ptr<std::uint8_t[]> data {nullptr};
     size_t size;
     assemble_8b_truecolor(data, size);
-    // size_t comp_size {static_cast<size_t>(std::ceil(size * 1.2))};
-    int comp_size {static_cast<int>(std::ceil(size * 1.2))};
+    size_t comp_size {static_cast<size_t>(std::ceil(size * 1.2))};
+//    int comp_size {static_cast<int>(std::ceil(size * 1.2))};
     auto compressed = std::make_unique<std::uint8_t[]>(comp_size);
-    // auto result = compress(compressed.get(), &comp_size, data.get(), size);
-    auto result = Scanline::deflate(reinterpret_cast<char*>(compressed.get()),
-                                    comp_size,
-                                    reinterpret_cast<char*>(data.get()),
-                                    size);
+    auto result = compress(compressed.get(), &comp_size, data.get(), size);
+//    auto result = Scanline::deflate(reinterpret_cast<char*>(compressed.get()),
+//                                    comp_size,
+//                                    reinterpret_cast<char*>(data.get()),
+//                                    size);
     if (result == Z_OK) {
         scanline.reset_buffer(scanline.size());
         scanline.expand_buffer(8 + comp_size + 4);

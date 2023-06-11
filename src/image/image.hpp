@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <bitset>
 #include <list>
+#include <climits>
 
 // Header guard.
 #pragma once
@@ -238,7 +239,7 @@ namespace img {
             // Matches length to static Huffman code
             static std::uint32_t match_length(std::uint32_t length, int& out_len);
             // Adds a number to bitset, also moving current pointer by number of bits inserted.
-            static void add_bits(std::bitset<block_size * 8>& source, std::uint32_t bits,
+            static void add_bits(std::bitset<block_size * 64>& source, std::uint32_t bits,
                                  int& pos, int number);
         public:
             /** \brief Resets buffer by a number of bytes.
