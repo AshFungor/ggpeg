@@ -85,3 +85,10 @@ TEST_CASE("PNG exceptions", "[added]") {
                         img_t::IHDRDecoderError);
     }
 }
+
+TEST_CASE("Getting type of image", "[added]") {
+    std::string image_png {"simple.png"};
+    std::string image_ppm {"boxes.ppm"};
+    REQUIRE(img::get_type(std::string{"resources/"}.append(image_png)) == img::ImageType::PNG);
+    REQUIRE(img::get_type(std::string{"resources/"}.append(image_ppm)) == img::ImageType::PPM);
+}
