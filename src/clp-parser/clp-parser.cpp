@@ -612,7 +612,7 @@ void clpp::help()
 		
 		std::cerr << rang::fg::green
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
-					<< "|   " << rang::bg::green << "name" << rang::bg::reset << "        |   " << rang::bg::green << "parametrs" << rang::bg::reset << "       |   " << rang::bg::green << "description" << rang::bg::reset << "                            |   " << rang::bg::green << "short command" << rang::bg::reset << "   |" << std::endl
+                    << "|   " << "name" << "        |   " << "parameters" << "       |   "  << "description" << "                            |   " << "short command" << "   |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "|   crop        |   left_margin     |   crop left                              |   unavailable     |" << std::endl
 					<< "|               |   top_margin      |   crop top                               |                   |" << std::endl
@@ -641,7 +641,7 @@ void clpp::help()
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "|   convert     |   new_format      |   one of the valid options: ppm or png   |   unavailable     |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
-					<< "|   FORMAT:     |  --convert_to=new_format                                                            |" << std::endl
+                    << "|   FORMAT:     |  --convert_to=new_format                                                         |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "|   reflect_x   |   -               |   reflection X                           |   x               |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
@@ -662,13 +662,14 @@ void clpp::help()
 		std::cerr << std::endl;
 		std::cerr << rang::fg::green 
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
-					<< "| " << rang::bg::green << "Rules" << rang::bg::reset <<   "                                                                                            |" << std::endl
+                    << "| " << "Rules" <<   "                                                                                            |" << std::endl
 					<< "----------------------------------------------------------------------------------------------------" << std::endl
 					<< "| # All long commands start with --                                                                |" << std::endl
 					<< "| # All short commands start with -                                                                |" << std::endl
 					<< "| # Complex commands are written strictly separately, while simple ones can be combined,           |" << std::endl
 					<< "| # for example: -hxv                                                                              |" << std::endl
-					<< "----------------------------------------------------------------------------------------------------" << std::endl;
+                    << "----------------------------------------------------------------------------------------------------" << std::endl
+                  << rang::fg::reset;
 	}
 }
 

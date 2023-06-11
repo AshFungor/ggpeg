@@ -9,6 +9,8 @@
 #include <image/image.hpp>
 #include <processing/processing.hpp>
 
+bool global_dry_run {true};
+
 void img_processing(img::Image& main_image,
                     clpp::CommandType tp_command_type,
                     std::vector<std::string>& tp_param,
@@ -24,28 +26,30 @@ void img_processing(img::Image& main_image,
         double bottom_margin{std::stod(tp_param[3])};
 
         proc::crop(main_image, left_margin, top_margin, right_margin, bottom_margin);
+        global_dry_run = false;
         break;
     }
 
     case clpp::CommandType::rotate:
     {
         double degrees{std::stod(tp_param[0])};
-
         proc::rotate(main_image, degrees);
+        global_dry_run = false;
         break;
     }
 
     case clpp::CommandType::resize:
     {
         double k{std::stod(tp_param[0])};
-
         proc::resize(main_image, k);
+        global_dry_run = false;
         break;
     }
 
     case clpp::CommandType::negative:
     {
         proc::negative(main_image);
+        global_dry_run = false;
         break;
     }
     case clpp::CommandType::insert:
@@ -53,19 +57,20 @@ void img_processing(img::Image& main_image,
         double x_ins{std::stod(tp_param[0])};
         double y_ins{std::stod(tp_param[1])};
         std::string new_img{tp_param[2]};
-
         auto type = img::get_type(new_img);
         img::Image* ins_image;
         if (type == img::ImageType::PNG) {
-            img::PNGImage tp_new_image;
+            static img::PNGImage tp_new_image;
             ins_image = &tp_new_image;
         } else if (type == img::ImageType::PPM) {
-            img::PPMImage tp_new_image;
+            static img::PPMImage tp_new_image;
             ins_image = &tp_new_image;
         } else {
             throw std::runtime_error("File does not exist or has unsupported type");
         }
+        ins_image->read(new_img);
         proc::insert(main_image, *ins_image, x_ins, y_ins);
+        global_dry_run = false;
         break;
     }
     case clpp::CommandType::convert_to:
@@ -83,17 +88,20 @@ void img_processing(img::Image& main_image,
         } else {
             throw std::runtime_error(std::format("Unsupported file format: {}", new_format));
         }
+        global_dry_run = false;
         break;
     }
     case clpp::CommandType::reflect_x:
     {
         proc::reflect_x(main_image);
+        global_dry_run = false;
         break;
     }
 
     case clpp::CommandType::reflect_y:
     {
         proc::reflect_y(main_image);
+        global_dry_run = false;
         break;
     }
 
@@ -120,6 +128,20 @@ int main(int argc, char** argv)
                     << rang::fg::reset << std::endl;
         return 0;
 	}
+    if (argc == 2) {
+        clpp::cerr_disabled = false;
+        if (std::string{argv[1]} == "--help" || std::string{argv[1]} == "-h") {
+            clpp::help();
+        }
+        else if (std::string{argv[1]} == "--version" || std::string{argv[1]} == "-v") {
+            clpp::version();
+        }
+        else {
+            std::cerr << "Unknown single command, use --help to see usage";
+        }
+        return 0;
+    }
+
     // Vector with the values of the 
     // commands given when the program starts
     std::vector<std::string> input_Tokens;
@@ -165,15 +187,18 @@ int main(int argc, char** argv)
 
             queue_of_command.pop();
         }
+        if (global_dry_run)
+        {
+            return 0;
+        }
         const std::string new_path{std::format("target.{}", (file_format ==
                                                              img::ImageType::PNG) ? "png" : "ppm")};
-        main_image->write(new_path);
-          
+        main_image->write(new_path);   
     }
     catch(const std::exception& e)
     {
         std::cerr << rang::bg::red
-                  << "Execution failed with the following error: "
+                  << "Execution failed with the following error:"
                   << rang::bg::reset << std::endl;
         std::cerr << e.what() << std::endl;
     }
