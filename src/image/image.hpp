@@ -180,6 +180,16 @@ namespace img {
         PixelMap(size_t width, size_t height);
     };
 
+    // Type of image
+    enum class ImageType {
+        PPM,
+        PNG,
+        Unknown
+    };
+
+    // Checks type of image at the following path
+    ImageType get_type(std::string_view path);
+
     /** \brief Base image class.
      *  Provides basic interface for image class usage.
      */
@@ -351,6 +361,9 @@ namespace img {
          */
         bool good();
         virtual ~Image() = default;
+
+        // For access to signature
+        friend ImageType get_type(std::string_view path);
     };
 
     class PPMImage : public Image {
@@ -374,6 +387,7 @@ namespace img {
             BadMaxPixelValue,
             BadImageData
         };
+
         // Class that represents general problems with decoding PPM.
         class DecoderError : public std::exception {
         private:
@@ -390,6 +404,9 @@ namespace img {
             DecoderError(ErrorType error_type, std::string actual);
             const char* what() const noexcept override;
         };
+
+        // For access to signature
+        friend ImageType get_type(std::string_view path);
     };
 
     class PNGImage : public Image {
@@ -522,6 +539,9 @@ namespace img {
             DecoderError(ErrorType error_type, std::string actual);
             const char* what() const noexcept override;
         };
+
+        // For access to signature
+        friend ImageType get_type(std::string_view path);
     };
 
 
