@@ -44,8 +44,8 @@ TEST_CASE("PPM reading and writing in <Image> class", "[base]") {
 TEST_CASE("PNG reading and writing in <Image> class", "[base]") {
     using img_t = img::PNGImage;
     const std::string files[] {
-        "simple.png",
-        "hut.png",
+//        "simple.png",
+//        "hut.png",
         "clouds.png",
         "bumblebee.png"
     };

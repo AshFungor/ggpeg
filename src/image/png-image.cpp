@@ -248,7 +248,7 @@ void img::PNGImage::write_idat(Scanline& scanline) {
     size_t size;
     assemble_8b_truecolor(data, size);
     size_t comp_size {static_cast<size_t>(std::ceil(size * 1.2))};
-//    int comp_size {static_cast<int>(std::ceil(size * 1.2))};
+//    int comp_size {static_cast<int>(std::ceil(size * 10))};
     auto compressed = std::make_unique<std::uint8_t[]>(comp_size);
     auto result = compress(compressed.get(), &comp_size, data.get(), size);
 //    auto result = Scanline::deflate(reinterpret_cast<char*>(compressed.get()),

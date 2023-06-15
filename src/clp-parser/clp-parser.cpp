@@ -1,7 +1,5 @@
-
 #include "clp-parser.hpp"
-
-
+#include <format>
 
 #define CERR if (cerr_disabled) {} else std::cerr
 
@@ -12,18 +10,7 @@
 
 clpp::Parser::Parser(const std::vector<std::string>& tokens, const bool display)
 {	
-	clpp::cerr_disabled = display;
-	if (tokens[0] == "--help" || tokens[0] == "-h")
-	{ 
-		clpp::help();
-		throw std::runtime_error("");
-	}
-	else if (tokens[0] == "--version" || tokens[0] == "-v")
-	{
-		clpp::version();
-		throw std::runtime_error("");
-	}
-	else { global_Path = tokens[0]; }
+    global_Path = tokens[0];
 
 	_exceptions_for_image(global_Path);
 
@@ -105,16 +92,8 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 }
 void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
 {	
-	CERR << "--" <<  token << std::endl;
-	CERR << rang::bg::red;
-	CERR << "ERROR:";
-	CERR << rang::bg::reset;
-	CERR << rang::fg::red;
-	CERR << " Is incorrect command. \nTo view the full list of available commands and rules," 
-                 "type -h or --help during the next program launch."
-              << std::endl;
-	CERR << rang::fg::reset;
-	throw std::runtime_error("");
+    throw std::runtime_error(std::format("{} is incorrect command, use -h option to view usage.",
+                                         token));
 	
 }
 void clpp::Parser::_exceptions_for_short_command(const char token)

@@ -74,7 +74,7 @@ std::list<i::Scanline::triplet> i::Scanline::lz77(std::uint8_t* data, int size,
     return result;
 }
 
-void img::Image::Scanline::add_bits(std::bitset<block_size * 64>& source, std::uint32_t bits, int& pos, int number) {
+void img::Image::Scanline::add_bits(std::bitset<block_size * 128>& source, std::uint32_t bits, int& pos, int number) {
     number -= 1;
     while (number >= 0) {
         source.set(pos, (bits >> number) & 1);
@@ -157,11 +157,11 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
     std::uint32_t curr_offset {0};
     while (curr_offset < size) {
         auto curr_data = data + curr_offset;
-        auto optimized = lz77(reinterpret_cast<std::uint8_t*&>(curr_data),
+        auto optimized = lz77(reinterpret_cast<std::uint8_t*>(curr_data),
                               std::min<std::uint32_t>(size - curr_offset, block_size),
                               window_size);
         blocks.push_back(optimized);
-        curr_offset += std::min<std::uint32_t>(size - curr_offset, block_size);
+        curr_offset += block_size;
     }
 //    for (int i {1}; i < 200; i += 20) {
 //        auto res = match_offset(i);
@@ -178,7 +178,7 @@ int img::Image::Scanline::deflate(char* dest, int& size_out, char* const data, i
     int index         {1};
     // encode with Huffman
     for (auto& list : blocks) {
-        std::bitset<block_size * 64> bits;
+        std::bitset<block_size * 128> bits;
         if (index++ == blocks.size()) {
             bits.set(position_bit++);
             bits.set(position_bit++);

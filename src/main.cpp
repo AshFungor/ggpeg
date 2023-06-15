@@ -137,7 +137,7 @@ int main(int argc, char** argv)
             clpp::version();
         }
         else {
-            std::cerr << "Unknown single command, use --help to see usage";
+            std::cerr << "Unknown single command, use --help to see usage" << std::endl;
         }
         return 0;
     }
