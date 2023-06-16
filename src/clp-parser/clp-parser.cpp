@@ -1,5 +1,6 @@
 #include "clp-parser.hpp"
 #include <format>
+#include <cmath>
 
 #define CERR if (cerr_disabled) {} else std::cerr
 
@@ -60,13 +61,6 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 		throw std::runtime_error("There is no such file in this directory");
 	}
 
-	// check format
-    std::string format{path.end() - 3, path.end()};
-	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
-	{
-		throw std::runtime_error(std::format("Unsupported file format: {}", format));
-		
-	}
 }
 void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
 {	
@@ -336,7 +330,9 @@ void clpp::Command::_parser_param_resize(const std::string& second_part)
 	if (str_tp_param.size() > 0)
 	{
 		double double_tp_param{std::stod(str_tp_param)};
-		if (double_tp_param == 0) {_error_param(); }
+		
+		if (double_tp_param <= 0.05) {_error_param();}
+		
 		_param.emplace_back(std::to_string(double_tp_param));
 	}
 	
@@ -416,13 +412,6 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 		
 	}
 
-	// check format
-	std::string format{path.end()-3, path.end()};
-	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
-	{
-		throw std::runtime_error(std::format("Unsupported file format: {}", format));
-		
-	}
 }
 void clpp::Command::_error_param()
 {	

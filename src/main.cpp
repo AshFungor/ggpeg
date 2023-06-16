@@ -9,7 +9,7 @@
 #include <image/image.hpp>
 #include <processing/processing.hpp>
 
-bool global_dry_run {true};
+
 
 void img_processing(img::Image& main_image,
                     clpp::CommandType tp_command_type,
@@ -26,7 +26,7 @@ void img_processing(img::Image& main_image,
         double bottom_margin{std::stod(tp_param[3])};
 
         proc::crop(main_image, left_margin, top_margin, right_margin, bottom_margin);
-        global_dry_run = false;
+        
         break;
     }
 
@@ -34,7 +34,7 @@ void img_processing(img::Image& main_image,
     {
         double degrees{std::stod(tp_param[0])};
         proc::rotate(main_image, degrees);
-        global_dry_run = false;
+        
         break;
     }
 
@@ -42,14 +42,14 @@ void img_processing(img::Image& main_image,
     {
         double k{std::stod(tp_param[0])};
         proc::resize(main_image, k);
-        global_dry_run = false;
+        
         break;
     }
 
     case clpp::CommandType::negative:
     {
         proc::negative(main_image);
-        global_dry_run = false;
+        
         break;
     }
     case clpp::CommandType::insert:
@@ -70,7 +70,7 @@ void img_processing(img::Image& main_image,
         }
         ins_image->read(new_img);
         proc::insert(main_image, *ins_image, x_ins, y_ins);
-        global_dry_run = false;
+        
         break;
     }
     case clpp::CommandType::convert_to:
@@ -88,20 +88,20 @@ void img_processing(img::Image& main_image,
         } else {
             throw std::runtime_error(std::format("Unsupported file format: {}", new_format));
         }
-        global_dry_run = false;
+        
         break;
     }
     case clpp::CommandType::reflect_x:
     {
         proc::reflect_x(main_image);
-        global_dry_run = false;
+        
         break;
     }
 
     case clpp::CommandType::reflect_y:
     {
         proc::reflect_y(main_image);
-        global_dry_run = false;
+        
         break;
     }
 
@@ -189,10 +189,6 @@ int main(int argc, char** argv)
             img_processing(*main_image, tp_command_type, tp_param, file_format);
             
             queue_of_command.pop();
-        }
-        if (global_dry_run)
-        {
-            return 0;
         }
         const std::string new_path{std::format("target.{}", (file_format ==
                                                              img::ImageType::PNG) ? "png" : "ppm")};
