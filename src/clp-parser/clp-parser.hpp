@@ -21,7 +21,7 @@ namespace clpp {
     
     // Code for CLI parser.
     inline std::string global_Path; ///< Path to main image
-    inline bool cerr_disabled = true; ///< Permission to display
+    inline bool cerr_disabled = false; ///< Permission to display
     inline std::vector<std::string> allowed_Format = {"ppm", "png"}; ///< Allowed file formats
 
     /** \brief Help function

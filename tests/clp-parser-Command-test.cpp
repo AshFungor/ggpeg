@@ -39,8 +39,8 @@ TEST_CASE("Class Command return correct type and param of commands", "[command]"
 	}
 	SECTION("insert")
 	{
-		std::string insert{ "insert=56/43#resources/boxes_1.ppm" }; 
-		std::vector<std::string> param_insert{"56", "43", "resources/boxes_1.ppm"};
+		std::string insert{ "insert=56/43#resources/clouds.png" }; 
+		std::vector<std::string> param_insert{"56", "43", "resources/clouds.png"};
 		clpp::Command test_Command{insert};
 		CHECK(test_Command.get_command() == clpp::CommandType::insert);
 		CHECK(test_Command.get_param() == param_insert);

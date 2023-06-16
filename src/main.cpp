@@ -107,10 +107,12 @@ void img_processing(img::Image& main_image,
 
     case clpp::CommandType::version:
         clpp::version();
+        
         break;
 
     case clpp::CommandType::help:
         clpp::help();
+        
         break;
     }
 }
@@ -182,9 +184,10 @@ int main(int argc, char** argv)
             clpp::Command tp_command = queue_of_command.front();
             clpp::CommandType tp_command_type = tp_command.get_command();
             std::vector<std::string> tp_param = tp_command.get_param();
-
+            
+           
             img_processing(*main_image, tp_command_type, tp_param, file_format);
-
+            
             queue_of_command.pop();
         }
         if (global_dry_run)

@@ -57,36 +57,14 @@ void clpp::Parser::_exceptions_for_image(const std::string &path)
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
-        CERR << path << std::endl;
-		CERR << rang::bg::red;
-		CERR << "ERROR:";
-		CERR << rang::bg::reset;
-		CERR << rang::fg::red;
-        CERR << " There is no such file in this directory" << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
+		throw std::runtime_error("There is no such file in this directory");
 	}
 
 	// check format
     std::string format{path.end() - 3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
-		CERR << path << std::endl;
-		CERR << rang::bg::red;
-		CERR << "ERROR:";
-		CERR << rang::bg::reset;
-		CERR << rang::fg::red;
-        CERR << " GGPEG does not support the format of the file that you provided."
-                     "\nFor the program to work correctly, select the file with the extension:"
-                  << std::endl;
-		for (size_t i{0}; i != allowed_Format.size(); ++i)
-		{
-            CERR << rang::fg::cyan << '.' << allowed_Format[i] << ' ';
-		}
-
-		CERR<< rang::fg::reset <<std::endl;
-		
-		throw std::runtime_error("");
+		throw std::runtime_error(std::format("Unsupported file format: {}", format));
 		
 	}
 }
@@ -98,53 +76,9 @@ void clpp::Parser::_exceptions_for_incorrect_format(const std::string &token)
 }
 void clpp::Parser::_exceptions_for_short_command(const char token)
 {
-	CERR << rang::bg::red;
-	CERR << "ERROR:";
-	CERR << rang::bg::reset;
-	if (token == 'c')
-	{ 	
-		CERR << rang::fg::red;
-		CERR << " There is no short <c> command. \nPerhaps you meant --crop or --convert_to." 
-                     "\nTo view the full list of available commands, type -h or --help during "
-                     "the next program launch."
-                  << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
+	throw std::runtime_error(std::format("{} is incorrect short command, use -h option to view usage.",
+                                         token));
 		
-	}
-	else if (token == 'r')
-	{ 
-		CERR << rang::fg::red;
-		CERR << " There is no short <r> command. \nPerhaps you meant --rotate or --resize." 
-                     "\nTo view the full list of available commands, type -h or --help during "
-                     "the next program launch."
-                  << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
-		
-	}
-	else if (token == 'i')
-	{ 
-		CERR << rang::fg::red;
-		CERR << " There is no short <i> command. \nPerhaps you meant --insert." 
-                     "\nTo view the full list of available commands, type -h or --help "
-                     "during the next program launch."
-                  << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
-		
-	}
-	else
-	{ 
-		CERR << rang::fg::red;
-		CERR << " There is no <" << token << "> command." 
-                     "\nTo view the full list of available commands, "
-                     "type -h or --help during the next program launch."
-                  << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
-		
-	}
 }
 std::string clpp::Parser::_convert_to_long(const char sh)
 {
@@ -343,7 +277,7 @@ void clpp::Command::_parser_param_crop(const std::string& second_part)
 			if (str_tp_param.size() > 0)
 			{
 				int int_tp_param{std::stoi(str_tp_param)};
-				if (int_tp_param > 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
+				if (int_tp_param >= 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
 				else                                        { _error_param();                    }
 				str_tp_param = "";
 			}
@@ -354,7 +288,7 @@ void clpp::Command::_parser_param_crop(const std::string& second_part)
 	if (str_tp_param.size() > 0)
 	{
 		int int_tp_param{std::stoi(str_tp_param)};
-		if (int_tp_param > 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
+		if (int_tp_param >= 0 && int_tp_param < 100) { _param.emplace_back(str_tp_param); }
 		else                                        { _error_param();                    }
 	}
 	else{ _error_param(); }
@@ -365,7 +299,7 @@ void clpp::Command::_parser_param_crop(const std::string& second_part)
 	int top = std::stoi(_param[1]);
 	int right = std::stoi(_param[2]);
 	int bottom = std::stoi(_param[3]);
-
+	if (left > 95 || top > 95 || right > 95 || bottom > 95) { _error_param(); }
 	if ((left + right) >= 100 || (top + bottom) >= 100) { _error_param(); }
 }
 
@@ -402,15 +336,17 @@ void clpp::Command::_parser_param_resize(const std::string& second_part)
 	if (str_tp_param.size() > 0)
 	{
 		double double_tp_param{std::stod(str_tp_param)};
+		if (double_tp_param == 0) {_error_param(); }
 		_param.emplace_back(std::to_string(double_tp_param));
 	}
+	
 }
 void clpp::Command::_parser_param_insert(const std::string& second_part)
 {
 	if (second_part.size() == 0) { _error_param(); }
 	std::string str_tp_x_y;
 	std::string path_to_new;
-
+	
 	size_t i = 0;
 	if (second_part.find("#") < second_part.size()) 
 	{	
@@ -447,6 +383,7 @@ void clpp::Command::_parser_param_insert(const std::string& second_part)
 	{
 		std::string main_img_format{global_Path.end() - 3, global_Path.end()};
 		std::string ins_img_format{path_to_new.end() - 3, path_to_new.end()};
+		_exceptions_for_new_image(path_to_new);
 		if (main_img_format != ins_img_format) { _error_param(); }
 	}
 	_exceptions_for_new_image(path_to_new);
@@ -463,23 +400,7 @@ void clpp::Command::_parser_param_convert_to(const std::string& second_part)
 	}
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), new_format) == allowed_Format.end())
 	{
-		CERR << new_format << std::endl;
-		CERR << rang::bg::red;
-		CERR << "ERROR:";
-		CERR << rang::bg::reset;
-		CERR << rang::fg::red;
-		CERR << "GGPEG does not support the format of the file that you provided." 
-                     "\nFor the program to work correctly, select the file with the extension:"
-                  << std::endl;
-		CERR << rang::fg::reset;
-		for (size_t i{0}; i != allowed_Format.size(); ++i)
-		{
-			CERR << rang::fg::cyan; 
-			CERR << '.' <<allowed_Format[i] << ' '; 
-		}
-		CERR << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
+		throw std::runtime_error(std::format("Unsupported file format: {}", new_format));
 		
 	}
 	_param.emplace_back(new_format);
@@ -491,14 +412,7 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 	std::ifstream check_existence(path);
 	if (!check_existence.good())
 	{	
-		CERR << path << std::endl;
-		CERR << rang::bg::red;
-		CERR << "ERROR:";
-		CERR << rang::bg::reset;
-		CERR << rang::fg::red;
-		CERR << "There is no such file in this directory." << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
+		throw std::runtime_error("There is no such file in this directory.");
 		
 	}
 
@@ -506,37 +420,13 @@ void clpp::Command::_exceptions_for_new_image(const std::string &path)
 	std::string format{path.end()-3, path.end()};
 	if (std::find(allowed_Format.begin(), allowed_Format.end(), format) == allowed_Format.end())
 	{
-		CERR << path << std::endl;
-		CERR << rang::bg::red;
-		CERR << "ERROR:";
-		CERR << rang::bg::reset;
-		CERR << rang::fg::red;
-		CERR << " GGPEG does not support the format of the file that you provided." 
-                     "\nFor the program to work correctly, select the file with the extension:"
-                  << std::endl;
-		for (size_t i{0}; i != allowed_Format.size(); ++i)
-		{
-			CERR << rang::fg::cyan << '.' <<allowed_Format[i] << ' '; 
-		}
-		CERR << std::endl;
-		CERR << rang::fg::reset;
-		throw std::runtime_error("");
+		throw std::runtime_error(std::format("Unsupported file format: {}", format));
 		
 	}
 }
 void clpp::Command::_error_param()
 {	
-	CERR << rang::bg::red;
-	CERR << "ERROR:";
-	CERR << rang::bg::reset;
-	CERR << rang::fg::red;
-	CERR << " Error entering command parameters."
-			     "\nTo view the full list of available commands and his parametrs," 
-			     "type -h or --help during the next program launch." 
-			  << std::endl;
-	CERR << rang::fg::reset;
-
-	throw std::runtime_error("");
+	throw std::runtime_error("Error entering command parameters, use -h option to view usage.");
 		
 }
 void clpp::Command::show_param()
