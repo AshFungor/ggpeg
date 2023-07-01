@@ -120,7 +120,7 @@ TEST_CASE("Deflate compression", "[added]") {
     sc::deflate(array_out.get(), size_out, reinterpret_cast<char*>(array_in), sizeof(array_in));
 
     auto new_buff = std::make_unique<std::uint8_t[]>(static_cast<int>(std::ceil(1.1 * size_out)));
-    size_t buff_len {static_cast<size_t>(std::ceil(1.1 * size_in))};
+    unsigned long buff_len {static_cast<unsigned long>(std::ceil(1.1 * size_in))};
     auto res = uncompress(new_buff.get(), &buff_len,
                           reinterpret_cast<std::uint8_t*>(array_out.get()), size_out);
     REQUIRE(!res);

@@ -92,9 +92,9 @@ void img::PNGImage::read_ihdr(char*& buffer) {
 }
 
 void img::PNGImage::read_idat(char*& buffer, size_t size) {
-    size_t dest_len {_map.rows() * (_map.columns() + 1) *
-                    (3 + (color_type == 6)) *
-                    (bit_depth / 8)};
+    unsigned long dest_len {static_cast<unsigned long>(_map.rows() * (_map.columns() + 1) *
+                                                      (3 + (color_type == 6)) *
+                                                      (bit_depth / 8))};
     auto dest = std::make_unique<std::uint8_t[]>(dest_len);
     auto result = uncompress(dest.get(),
                              &dest_len,
@@ -247,7 +247,7 @@ void img::PNGImage::write_idat(Scanline& scanline) {
     std::unique_ptr<std::uint8_t[]> data {nullptr};
     size_t size;
     assemble_8b_truecolor(data, size);
-    size_t comp_size {static_cast<size_t>(std::ceil(size * 1.2))};
+    unsigned long comp_size {static_cast<unsigned long>(std::ceil(size * 1.2))};
 //    int comp_size {static_cast<int>(std::ceil(size * 10))};
     auto compressed = std::make_unique<std::uint8_t[]>(comp_size);
     auto result = compress(compressed.get(), &comp_size, data.get(), size);

@@ -133,7 +133,7 @@ TEST_CASE("Using insert"){
 TEST_CASE("Using reflection by x"){
     using img_t = img::PPMImage;
     img_t image;
-    image.read("resources/west_1.ppm");
+    image.read("resources/west.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
@@ -166,7 +166,7 @@ TEST_CASE("Using reflection by x"){
 TEST_CASE("Using reflection by y"){
     using img_t = img::PPMImage;
     img_t image;
-    image.read("resources/west_1.ppm");
+    image.read("resources/west.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
@@ -198,7 +198,7 @@ TEST_CASE("Using reflection by y"){
 TEST_CASE("Resizing"){
     using img_t = img::PPMImage;
     img_t image;
-    image.read("resources/west_1.ppm");
+    image.read("resources/west.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
@@ -231,7 +231,7 @@ TEST_CASE("Resizing"){
 TEST_CASE("test rotate"){
     using img_t = img::PPMImage;
     img_t image;
-    image.read("resources/west_1.ppm");
+    image.read("resources/west.ppm");
     img::PixelMap pixel_map = image.get_map();
     int rows = pixel_map.rows();
     int columns = pixel_map.columns();
