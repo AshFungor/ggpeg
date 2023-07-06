@@ -35,10 +35,12 @@ RUN cmake --build .
 # Testing stage (2 stage)
 # Here we run all tests to ensure that all modules function
 # correctly.
-FROM alpine:20230329
+# (You need to specify --target to run this stage)
+FROM alpine:20230329 AS test_env
 # This is a depedancy of GGPEG
-RUN apk update && apk add libc++
-COPY --from=build_env /ggpeg/build/*test .
+RUN apk update && apk add gcc
+COPY --from=build_env /ggpeg/build/*-test .
+COPY --from=build_env /ggpeg/build/resources/* ./resources/
 RUN for test in *test; do "./$test"; done
 
 # Packaging into smaller image (3 stage)
