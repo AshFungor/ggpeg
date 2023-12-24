@@ -6,6 +6,7 @@ project(ggpeg LANGUAGES CXX VERSION 1.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Source directory for this project.
 set(GGPEG_SRC_DIR "${CMAKE_SOURCE_DIR}/src")
