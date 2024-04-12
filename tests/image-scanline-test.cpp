@@ -94,5 +94,5 @@ TEST_CASE("Scanline helper functions", "[base]") {
     REQUIRE(img::Image::Scanline::_cmp_chunks(reinterpret_cast<char*>(number_full_ones), 4,
                                               result.get(), 4));
 
+  
 }
-
