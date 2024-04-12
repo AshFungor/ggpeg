@@ -78,3 +78,4 @@ TEST_CASE("Scanline helper functions", "[base]") {
     REQUIRE(img::Image::Scanline::_crc(iend_input, 4) == 2923585666);
 
 }
+
