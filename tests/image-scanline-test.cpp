@@ -95,3 +95,4 @@ TEST_CASE("Scanline helper functions", "[base]") {
                                               result.get(), 4));
 
 }
+
